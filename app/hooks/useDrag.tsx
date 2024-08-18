@@ -36,5 +36,6 @@ export const useDrag = (initialPosition: { x: number; y: number }) => {
   return {
     position,
     startDragging,
+    isDragging,  // Expose isDragging state
   };
 };
