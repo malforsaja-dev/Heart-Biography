@@ -3,8 +3,7 @@ import WorkBench from '../components/WorkBench'
 
 const Seiten = () => {
   return (
-    <div className='bg-gray-200'>
-      <div>Seiten</div>
+    <div className='bg-gray-100 pt-20'>
       <WorkBench />
     </div>
   )

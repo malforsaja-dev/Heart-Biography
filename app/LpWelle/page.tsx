@@ -3,7 +3,7 @@ const LpWelle = () => {
   return (
     <div className="relative w-full h-screen">
 
-      <div className="absolute inset-0 flex flex-col">
+      <div className="absolute inset-0 flex flex-col pt-16">
         <div className="flex-grow bg-yellow-200"></div>
         <div className="flex-grow bg-pink-200"></div>
         <div className="flex-grow bg-green-200"></div>
@@ -11,7 +11,7 @@ const LpWelle = () => {
       </div>
 
       <svg
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full pl-16 pt-16"
         version="1.0"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 3000 1325"
