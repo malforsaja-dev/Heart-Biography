@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleMouseEnter = () => {
@@ -17,10 +16,6 @@ const Navbar: React.FC = () => {
     setTimeout(() => {
       setIsHovered(false);
     }, 100);
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
   };
 
   const toggleDropdown = () => {
@@ -69,16 +64,13 @@ const Navbar: React.FC = () => {
             <span>🚩</span>
             {isDropdownOpen && (
               <div className="absolute top-10 right-0 bg-white text-black rounded shadow-md py-2">
-                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Eng</a>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-200">De</a>
+                <a href="#" className="block px-4 py-2 hover:bg-gray-200">English</a>
+                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Deutsch</a>
+                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Español</a>
               </div>
             )}
           </button>
         </div>
-
-        <button onClick={toggleDarkMode} className="hover:text-blue-400 button-3d">
-          <span>{isDarkMode ? '🌙' : '☀️'}</span>
-        </button>
 
         <button className="hover:text-blue-400 button-3d">
           <span className='bg-blue-200 rounded-full px-2 py-1'>S</span>

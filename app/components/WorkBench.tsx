@@ -21,7 +21,7 @@ const WorkBench = () => {
 
   return (
     <>
-      <div className="mb-5 text-center">
+      <div className="py-5 text-center">
         <button onClick={addTextElement} className="bg-blue-500 text-white px-4 py-2 mr-2">Add Text</button>
         <button onClick={addImageElement} className="bg-green-500 text-white px-4 py-2">Add Image</button>
       </div>
