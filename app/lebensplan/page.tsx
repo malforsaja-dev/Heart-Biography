@@ -14,7 +14,7 @@ const LpWelle = () => {
   return (
     <div className="relative w-full h-full flex flex-col">
       {/* Pagination bullets at the top */}
-      <div className="flex justify-center items-center py-2 z-30 relative bg-gray-100">
+      <div className="flex justify-center items-center py-2 z-20 relative bg-gray-100">
         {Array.from({ length: maxDiagrams }).map((_, index) => (
           <button
             key={index}

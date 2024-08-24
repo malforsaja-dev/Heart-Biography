@@ -1,23 +1,25 @@
-// hooks/useLanguage.ts
-import { useState, useEffect } from 'react';
 
-const useLanguage = () => {
-  // Retrieve language from localStorage or default to 'en'
-  const [language, setLanguage] = useState(() => {
+"use client"
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const LanguageContext = createContext<any>(null);
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [language, setLanguage] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('language') || 'en';
     }
     return 'en';
   });
+
   const [texts, setTexts] = useState<any>({});
 
   useEffect(() => {
     const loadTexts = async () => {
       try {
-        console.log(`Loading language: ${language}`); // Debug log
         const response = await import(`../data/language/${language}.json`);
         setTexts(response.default);
-        console.log('Texts loaded:', response.default); // Debug log
       } catch (error) {
         console.error('Error loading language file:', error);
       }
@@ -27,14 +29,19 @@ const useLanguage = () => {
   }, [language]);
 
   const changeLanguage = (lang: string) => {
-    console.log(`Changing language to: ${lang}`); // Debug log
     setLanguage(lang);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('language', lang); // Persist language choice
+      localStorage.setItem('language', lang);
     }
   };
 
-  return { texts, changeLanguage };
+  return (
+    <LanguageContext.Provider value={{ texts, language, changeLanguage }}>
+      {children}
+    </LanguageContext.Provider>
+  );
 };
 
-export default useLanguage;
+export const useLanguage = () => {
+  return useContext(LanguageContext);
+};

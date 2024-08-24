@@ -2,13 +2,20 @@
   "navbar": {
     "home": "Hogar",
     "lpWelle": "Lp Onda",
-    "seiten": "Páginas",
+    "pages": "Páginas",
     "print": "Imprimir",
     "about": "Acerca"
   },
   "dropdown": {
-    "english": "English",
-    "german": "Deutsch",
+    "english": "Inglés",
+    "german": "Alemán",
     "spanish": "Español"
+  },
+    "lpwelle":{
+      "line": "line"
+  },
+    "pages":{
+      "addText": "Añadir texto",
+      "addImage": "Añadir imagen"
   }
 }

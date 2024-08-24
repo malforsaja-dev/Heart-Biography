@@ -2,13 +2,20 @@
   "navbar": {
     "home": "Home",
     "lpWelle": "Lp Welle",
-    "seiten": "Seiten",
+    "pages": "Seiten",
     "print": "Print",
     "about": "About"
   },
   "dropdown": {
-    "english": "English",
+    "english": "Englisch",
     "german": "Deutsch",
-    "spanish": "Español"
+    "spanish": "Spanisch"
+  },
+    "lpwelle":{
+      "line": "line"
+  },
+    "pages":{
+      "addText": "Text Hinzufügen",
+      "addImage": "Foto Hinzufügen"
   }
 }

@@ -1,14 +1,14 @@
 
-"use client"
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import useLanguage from '../hooks/useLanguage';
+import { useLanguage } from '../context/LanguageContext';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const {texts, changeLanguage} = useLanguage();
+  const { texts, changeLanguage } = useLanguage();
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -34,8 +34,11 @@ const Navbar: React.FC = () => {
         onMouseLeave={handleMouseLeave}
       >
         <div className="text-lg md:text-2xl font-bold mt-4">
-          {isHovered && <span className='mt-16 text-blue-700'>
-            <Link href="/"> Heartthink</Link></span>}
+          {isHovered && (
+            <span className="mt-16 text-blue-700">
+              <Link href="/"> {texts.navbar?.home || 'Heartthink'}</Link>
+            </span>
+          )}
           {!isHovered && <span>❤️</span>}
         </div>
 
@@ -46,7 +49,7 @@ const Navbar: React.FC = () => {
           </Link>
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/seiten-page">
             <span>📝</span>
-            {isHovered && <span className="ml-2">{texts.navbar?.seiten}</span>}
+            {isHovered && <span className="ml-2">{texts.navbar?.pages}</span>}
           </Link>
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/print">
             <span>🖨️</span>
@@ -59,23 +62,28 @@ const Navbar: React.FC = () => {
         </nav>
       </div>
 
-
       <div className="fixed top-0 right-0 z-30 flex justify-end items-center w-full border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4 space-x-4">
         <div className="relative">
           <button onClick={toggleDropdown} className="hover:text-blue-400 flex items-center button-3d">
             <span>🚩</span>
             {isDropdownOpen && (
-              <div className="absolute top-10 right-0 bg-orange-200 text-black rounded shadow-md py-2">
-                <a href="#" onClick={() => changeLanguage('en')} className="block px-4 py-2 hover:bg-orange-300">{texts.dropdown?.english}</a>
-                <a href="#" onClick={() => changeLanguage('de')} className="block px-4 py-2 hover:bg-orange-300">{texts.dropdown?.german}</a>
-                <a href="#" onClick={() => changeLanguage('es')} className="block px-4 py-2 hover:bg-orange-300">{texts.dropdown?.spanish}</a>
+              <div className="absolute top-10 right-0 bg-white text-black rounded shadow-md py-2">
+                <a href="#" onClick={() => changeLanguage('en')} className="block px-4 py-2 hover:bg-gray-200">
+                  {texts.dropdown?.english}
+                </a>
+                <a href="#" onClick={() => changeLanguage('de')} className="block px-4 py-2 hover:bg-gray-200">
+                  {texts.dropdown?.german}
+                </a>
+                <a href="#" onClick={() => changeLanguage('es')} className="block px-4 py-2 hover:bg-gray-200">
+                  {texts.dropdown?.spanish}
+                </a>
               </div>
             )}
           </button>
         </div>
 
         <button className="hover:text-blue-400 button-3d">
-          <span className='bg-blue-200 rounded-full px-2 py-1'>S</span>
+          <span className="bg-blue-200 rounded-full px-2 py-1">S</span>
         </button>
 
         <button className="hover:text-blue-400 button-3d">

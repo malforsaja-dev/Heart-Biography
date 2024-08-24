@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { LanguageProvider } from "./context/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} flex`}>
-        <Navbar />
-        <div className="flex-grow overflow-hidden pl-20 mt-16">
-          {children}
-        </div>
+        <LanguageProvider>
+          <Navbar />
+          <div className="flex-grow overflow-hidden pl-20 mt-16">
+            {children}
+          </div>
+        </LanguageProvider>
       </body>
     </html>
   );

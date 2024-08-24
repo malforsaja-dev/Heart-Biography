@@ -12,14 +12,14 @@ const calculateDates = (birthDate: string, diagramIndex: number) => {
   for (let i = 0; i < 7; i++) {
     const currentDate = new Date(startDate);
     currentDate.setFullYear(currentDate.getFullYear() + i);
-    currentDate.setDate(day);
     currentDate.setMonth(month);
+    currentDate.setDate(day + 1);
     dates.push(currentDate.toLocaleDateString('de-DE'));
   }
 
   const endDate = new Date(startDate);
   endDate.setFullYear(endDate.getFullYear() + 7);
-  endDate.setDate(day - 1);
+  endDate.setDate(day);
   dates.push(endDate.toLocaleDateString('de-DE'));
 
   return dates;
