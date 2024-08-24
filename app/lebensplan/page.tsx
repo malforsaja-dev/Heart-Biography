@@ -1,88 +1,97 @@
-const LpWelle = () => {
-  const text1 = "Text1";
-  const text2 = "Text2";
-  const text3 = "Text3";
-  const text4 = "Text4";
-  const text5 = "Text5";
-  const text6 = "Text6";
-  const text7 = "Text7";
 
-  const date1 = "26.2.1959";
-  const date2 = "26.2.1960";
-  const date3 = "26.2.1961";
-  const date4 = "26.2.1962";
-  const date5 = "26.2.1963";
-  const date6 = "26.2.1964";
-  const date7 = "26.2.1965";
-  const date8 = "25.2.1966";
+"use client"
+
+import { useState } from 'react';
+import useDiagramDates from '../hooks/useDiagramDates';
+import clientData from '../data/clientData.json';
+
+const LpWelle = () => {
+  const [diagramIndex, setDiagramIndex] = useState(0);
+  const { dates, maxDiagrams } = useDiagramDates(diagramIndex);
+
+  const { text1, text2, text3, text4, text5, text6, text7 } = clientData.texts;
 
   return (
     <div className="relative w-full h-full flex flex-col">
+      {/* Pagination bullets at the top */}
+      <div className="flex justify-center items-center py-2 z-30 relative bg-gray-100">
+        {Array.from({ length: maxDiagrams }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setDiagramIndex(index)}
+            aria-label={`Go to diagram ${index + 1}`}
+            className={`w-4 h-4 rounded-full mx-1 ${
+              diagramIndex === index ? 'bg-blue-500' : 'bg-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+  
       <div className="h-[8rem] bg-gray-300 flex flex-col items-center justify-end pb-4">
         <p>line</p>
         <p>line</p>
         <p>line</p>
         <p>line</p>
       </div>
-
-      <div className="relative h-[calc(100vh-12rem)] overflow-hidden">
+  
+      <div className="relative h-[calc(100vh-14rem)] overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1/4 bg-yellow-200"></div>
         <div className="absolute top-1/4 left-0 w-full h-1/4 bg-pink-200"></div>
         <div className="absolute top-1/2 left-0 w-full h-1/4 bg-green-200"></div>
         <div className="absolute bottom-0 left-0 w-full h-1/4 bg-blue-200"></div>
-
+  
         <div className="absolute left-[5%] bottom-[9%] w-[40%] h-[10%] flex flex-col justify-center">
           <p className="text-center">{text1}</p>
         </div>
         <div className="absolute left-[1%] bottom-[1%] w-[1%] h-[5%] flex flex-col justify-center">
-          <p className="text-center">{date1}</p>
+          <p className="text-center">{dates[0]}</p>
         </div>
-
+  
         <div className="absolute left-[5%] bottom-[29%] w-[45%] h-[20%] flex flex-col justify-center">
           <p className="text-center">{text2}</p>
         </div>
         <div className="absolute left-[13%] bottom-[21%] w-[10%] h-[10%] flex flex-col justify-center">
-          <p className="text-center">{date2}</p>
+          <p className="text-center">{dates[1]}</p>
         </div>
-
+  
         <div className="absolute left-[5%] bottom-[57%] w-[45%] h-[15%] flex flex-col justify-center">
           <p className="text-center">{text3}</p>
         </div>
-        <div className="absolute left-[17%] bottom-[46%] w-[10%] h-[10%] flex flex-col justify-center">
-          <p className="text-center">{date3}</p>
+        <div className="absolute left-[17.5%] bottom-[46%] w-[10%] h-[10%] flex flex-col justify-center">
+          <p className="text-center">{dates[2]}</p>
         </div>
-
+  
         <div className="absolute left-[25%] top-[5%] w-[50%] h-[15%] flex flex-col justify-center">
           <p className="text-center">{text4}</p>
         </div>
         <div className="absolute left-[22%] top-[22%] w-[10%] h-[10%] flex justify-center">
-          <p className="text-center">{date4}</p>
+          <p className="text-center">{dates[3]}</p>
         </div>
         <div className="absolute right-[23%] top-[22%] w-[10%] h-[10%] flex justify-center">
-          <p className="text-center">{date5}</p>
+          <p className="text-center">{dates[4]}</p>
         </div>
-
+  
         <div className="absolute right-[5%] bottom-[57%] w-[44%] h-[15%] flex flex-col justify-center">
           <p className="text-center">{text5}</p>
         </div>
         <div className="absolute right-[19%] bottom-[46%] w-[10%] h-[10%] flex flex-col justify-center">
-          <p className="text-center">{date6}</p>
+          <p className="text-center">{dates[5]}</p>
         </div>
-
+  
         <div className="absolute right-[5%] bottom-[33%] w-[44%] h-[15%] flex flex-col justify-center">
           <p className="text-center">{text6}</p>
         </div>
         <div className="absolute right-[14%] bottom-[21%] w-[10%] h-[10%] flex flex-col justify-center">
-          <p className="text-center">{date7}</p>
+          <p className="text-center">{dates[6]}</p>
         </div>
-
+  
         <div className="absolute right-[5%] bottom-[8%] w-[44%] h-[15%] flex flex-col justify-center">
           <p className="text-center">{text7}</p>
         </div>
-        <div className="absolute right-[1%] bottom-[1%] w-[10%] h-[5%] flex flex-col justify-center">
-          <p className="text-center">{date8}</p>
+        <div className="absolute right-0 bottom-[1%] w-[10%] h-[5%] flex flex-col justify-center">
+          <p className="text-center">{dates[7]}</p>
         </div>
-
+  
         <svg
           className="absolute inset-0 w-full h-full opacity-30"
           version="1.0"
@@ -108,6 +117,7 @@ const LpWelle = () => {
       </div>
     </div>
   );
-};
+  
+}
 
-export default LpWelle;
+export default LpWelle
