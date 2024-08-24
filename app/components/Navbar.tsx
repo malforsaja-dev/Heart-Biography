@@ -1,14 +1,16 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
+import useClickOutside from '../hooks/useClickOutside';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { texts, changeLanguage } = useLanguage();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -23,6 +25,10 @@ const Navbar: React.FC = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  useClickOutside(dropdownRef, () => {
+    setIsDropdownOpen(false);
+  });
 
   return (
     <div>
@@ -63,18 +69,18 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className="fixed top-0 right-0 z-30 flex justify-end items-center w-full border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4 space-x-4">
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button onClick={toggleDropdown} className="hover:text-blue-400 flex items-center button-3d">
             <span>🚩</span>
             {isDropdownOpen && (
-              <div className="absolute top-10 right-0 bg-white text-black rounded shadow-md py-2">
-                <a href="#" onClick={() => changeLanguage('en')} className="block px-4 py-2 hover:bg-gray-200">
+              <div className="absolute top-10 right-0 bg-orange-200 text-black rounded shadow-md py-2">
+                <a href="#" onClick={() => changeLanguage('en')} className="block px-4 py-2 hover:bg-orange-300">
                   {texts.dropdown?.english}
                 </a>
-                <a href="#" onClick={() => changeLanguage('de')} className="block px-4 py-2 hover:bg-gray-200">
+                <a href="#" onClick={() => changeLanguage('de')} className="block px-4 py-2 hover:bg-orange-300">
                   {texts.dropdown?.german}
                 </a>
-                <a href="#" onClick={() => changeLanguage('es')} className="block px-4 py-2 hover:bg-gray-200">
+                <a href="#" onClick={() => changeLanguage('es')} className="block px-4 py-2 hover:bg-orange-300">
                   {texts.dropdown?.spanish}
                 </a>
               </div>
