@@ -1,0 +1,14 @@
+{
+  "navbar": {
+    "home": "Hogar",
+    "lpWelle": "Lp Onda",
+    "seiten": "Páginas",
+    "print": "Imprimir",
+    "about": "Acerca"
+  },
+  "dropdown": {
+    "english": "English",
+    "german": "Deutsch",
+    "spanish": "Español"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "navbar": {
+    "home": "Home",
+    "lpWelle": "Lp Welle",
+    "seiten": "Seiten",
+    "print": "Print",
+    "about": "About"
+  },
+  "dropdown": {
+    "english": "English",
+    "german": "Deutsch",
+    "spanish": "Español"
+  }
+}

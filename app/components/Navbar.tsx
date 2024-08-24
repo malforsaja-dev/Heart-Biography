@@ -3,10 +3,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import useLanguage from '../hooks/useLanguage';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const {texts, changeLanguage} = useLanguage();
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -40,19 +42,19 @@ const Navbar: React.FC = () => {
         <nav className="flex flex-col mt-20 space-y-20">
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/lebensplan">
             <span>📈</span>
-            {isHovered && <span className="ml-2">Lp Welle</span>}
+            {isHovered && <span className="ml-2">{texts.navbar?.lpWelle}</span>}
           </Link>
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/seiten-page">
             <span>📝</span>
-            {isHovered && <span className="ml-2">Seiten</span>}
+            {isHovered && <span className="ml-2">{texts.navbar?.seiten}</span>}
           </Link>
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/print">
             <span>🖨️</span>
-            {isHovered && <span className="ml-2">Print</span>}
+            {isHovered && <span className="ml-2">{texts.navbar?.print}</span>}
           </Link>
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/about">
             <span>🅰️</span>
-            {isHovered && <span className="ml-2">About</span>}
+            {isHovered && <span className="ml-2">{texts.navbar?.about}</span>}
           </Link>
         </nav>
       </div>
@@ -63,10 +65,10 @@ const Navbar: React.FC = () => {
           <button onClick={toggleDropdown} className="hover:text-blue-400 flex items-center button-3d">
             <span>🚩</span>
             {isDropdownOpen && (
-              <div className="absolute top-10 right-0 bg-white text-black rounded shadow-md py-2">
-                <a href="#" className="block px-4 py-2 hover:bg-gray-200">English</a>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Deutsch</a>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Español</a>
+              <div className="absolute top-10 right-0 bg-orange-200 text-black rounded shadow-md py-2">
+                <a href="#" onClick={() => changeLanguage('en')} className="block px-4 py-2 hover:bg-orange-300">{texts.dropdown?.english}</a>
+                <a href="#" onClick={() => changeLanguage('de')} className="block px-4 py-2 hover:bg-orange-300">{texts.dropdown?.german}</a>
+                <a href="#" onClick={() => changeLanguage('es')} className="block px-4 py-2 hover:bg-orange-300">{texts.dropdown?.spanish}</a>
               </div>
             )}
           </button>
