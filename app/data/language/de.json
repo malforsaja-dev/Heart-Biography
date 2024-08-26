@@ -16,6 +16,7 @@
   },
     "pages":{
       "addText": "Text Hinzufügen",
-      "addImage": "Foto Hinzufügen"
+      "addImage": "Foto Hinzufügen",
+      "flipPage": "Seite Blättern"
   }
 }
