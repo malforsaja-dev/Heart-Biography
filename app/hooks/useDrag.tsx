@@ -8,9 +8,10 @@ export const useDrag = (initialPosition: { x: number; y: number }) => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging) {
-        const newX = e.clientX - dragOffset.x;
-        const newY = e.clientY - dragOffset.y;
-        setPosition({ x: newX, y: newY });
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
       }
     };
 
@@ -36,6 +37,5 @@ export const useDrag = (initialPosition: { x: number; y: number }) => {
   return {
     position,
     startDragging,
-    isDragging,  // Expose isDragging state
   };
 };

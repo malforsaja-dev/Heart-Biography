@@ -16,6 +16,7 @@
   },
     "pages":{
       "addText": "Añadir texto",
-      "addImage": "Añadir imagen"
+      "addImage": "Añadir imagen",
+      "flipPage": "Voltear página"
   }
 }

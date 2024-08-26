@@ -10,51 +10,43 @@ interface DraggableResizableBoxProps {
 }
 
 const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ content, defaultWidth, defaultHeight }) => {
-  const initialPosition = { x: 100, y: 100 }; // Adjust initial position as needed
+  const initialPosition = { x: 100, y: 100 };
   const initialSize = { width: parseInt(defaultWidth), height: parseInt(defaultHeight) };
   
-  const { position, startDragging, isDragging } = useDrag(initialPosition);
-  const { size, startResizing, isResizing } = useResize(initialSize, position);
-
-  // Prevent dragging when resizing
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!isResizing) {
-      startDragging(e);
-    }
-  };
+  const { position, startDragging } = useDrag(initialPosition);
+  const { size, startResizing } = useResize(initialSize, position);
 
   return (
     <div
-      className="absolute border border-blue-500 bg-white"
+      className="absolute border border-blue-500 bg-white group cursor-move"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
         width: `${size.width}px`,
         height: `${size.height}px`,
-        cursor: isResizing ? 'nwse-resize' : 'move', // Change cursor based on action
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={startDragging}
     >
-      <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="w-full h-full flex justify-center items-center relative">
         {React.isValidElement(content) && content.type === Image ? (
           <Image
             src={(content.props as any).src}
             alt={(content.props as any).alt}
-            layout="fill"
-            objectFit="contain"
+            fill
+            sizes="(max-width: 768px) 100vw, 300px"
+            style={{ objectFit: 'contain' }}
           />
         ) : (
           content
         )}
+        <div
+          className="absolute bottom-0 right-0 w-3 h-3 bg-blue-700 cursor-se-resize z-10 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity"
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            startResizing(e, 'bottom-right');
+          }}
+        />
       </div>
-      <div
-        className="absolute bottom-0 right-0 w-3 h-3 bg-red-500 cursor-se-resize z-10"
-        onMouseDown={(e) => {
-          e.stopPropagation(); // Prevent triggering drag
-          startResizing(e, 'bottom-right');
-        }}
-      />
-      {/* Add similar divs for other corners/sides if needed */}
     </div>
   );
 };
