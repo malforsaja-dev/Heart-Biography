@@ -29,6 +29,7 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
     }
   };
 
+
   const toggleEditMode = () => {
     setIsEditing(true);
     setTempText(text);
@@ -55,6 +56,7 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
         cursor: isResizing ? 'nwse-resize' : 'move',
       }}
       onMouseDown={!isEditing ? startDragging : undefined}
+
     >
       <div className="w-full h-full flex justify-center items-center relative">
         {React.isValidElement(content) && content.type === Image ? (
@@ -93,6 +95,13 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
             <div onMouseDown={handleTextClick} className="whitespace-pre-wrap">{text}</div>
           )
         )}
+        <div
+          className="absolute bottom-0 right-0 w-3 h-3 bg-blue-700 cursor-se-resize z-10 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity"
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            startResizing(e, 'bottom-right');
+          }}
+        />
       </div>
       <div
         className="absolute top-0 right-0 w-5 h-5 bg-red-700 text-white flex justify-center items-center text-xs cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -119,6 +128,7 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
           ✎
         </div>
       )}
+
     </div>
   );
 };
