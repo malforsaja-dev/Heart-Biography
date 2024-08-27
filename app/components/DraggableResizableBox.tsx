@@ -1,60 +1,124 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDrag } from '@/app/hooks/useDrag';
 import { useResize } from '@/app/hooks/useResize';
 import Image from 'next/image';
 
 interface DraggableResizableBoxProps {
-  content: React.ReactNode;
+  id: number;
+  content: string | React.ReactNode;
   defaultWidth: string;
   defaultHeight: string;
+  onRemove: (id: number) => void;
 }
 
-const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ content, defaultWidth, defaultHeight }) => {
-  const initialPosition = { x: 100, y: 100 }; // Adjust initial position as needed
+const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, content, defaultWidth, defaultHeight, onRemove }) => {
+  const initialPosition = { x: 100, y: 100 };
   const initialSize = { width: parseInt(defaultWidth), height: parseInt(defaultHeight) };
   
   const { position, startDragging, isDragging } = useDrag(initialPosition);
   const { size, startResizing, isResizing } = useResize(initialSize, position);
 
-  // Prevent dragging when resizing
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!isResizing) {
+  const [text, setText] = useState(typeof content === 'string' ? content : '');
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempText, setTempText] = useState(text);
+
+  const handleTextClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isEditing) {
       startDragging(e);
     }
   };
 
+  const toggleEditMode = () => {
+    setIsEditing(true);
+    setTempText(text);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setTempText(text);
+  };
+
+  const handleConfirmEdit = () => {
+    setText(tempText);
+    setIsEditing(false);
+  };
+
   return (
     <div
-      className="absolute border border-blue-500 bg-white"
+      className="absolute border border-blue-500 bg-white group cursor-move"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
         width: `${size.width}px`,
         height: `${size.height}px`,
-        cursor: isResizing ? 'nwse-resize' : 'move', // Change cursor based on action
+        cursor: isResizing ? 'nwse-resize' : 'move',
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={!isEditing ? startDragging : undefined}
     >
-      <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="w-full h-full flex justify-center items-center relative">
         {React.isValidElement(content) && content.type === Image ? (
           <Image
             src={(content.props as any).src}
             alt={(content.props as any).alt}
-            layout="fill"
-            objectFit="contain"
+            fill
+            sizes="(max-width: 768px) 100vw, 300px"
+            style={{ objectFit: 'contain' }}
           />
         ) : (
-          content
+          isEditing ? (
+            <>
+              <textarea
+                className="w-full h-full border-none focus:outline-none resize-none bg-transparent text-center whitespace-pre-wrap"
+                value={tempText}
+                onChange={(e) => setTempText(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <div className="absolute -bottom-10 left-1/3 flex space-x-1 p-1 z-20">
+                <button
+                  className="text-2xl  px-2 py-1"
+                  onClick={handleConfirmEdit}
+                >
+                  ✅
+                </button>
+                <button
+                  className="text-2xl  px-2 py-1"
+                  onClick={handleCancelEdit}
+                >
+                  ❌
+                </button>
+              </div>
+            </>
+          ) : (
+            <div onMouseDown={handleTextClick} className="whitespace-pre-wrap">{text}</div>
+          )
         )}
       </div>
       <div
-        className="absolute bottom-0 right-0 w-3 h-3 bg-red-500 cursor-se-resize z-10"
+        className="absolute top-0 right-0 w-5 h-5 bg-red-700 text-white flex justify-center items-center text-xs cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={() => onRemove(id)}
+      >
+        ✕
+      </div>
+      <div
+        className="absolute bottom-0 right-0 w-5 h-5 bg-blue-700 cursor-se-resize z-10 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity"
         onMouseDown={(e) => {
-          e.stopPropagation(); // Prevent triggering drag
+          e.stopPropagation();
           startResizing(e, 'bottom-right');
         }}
       />
-      {/* Add similar divs for other corners/sides if needed */}
+      {typeof content === 'string' && (
+        <div
+          className="absolute bottom-0 left-0 w-5 h-5 bg-yellow-500 text-white flex justify-center items-center text-xs cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleEditMode();
+          }}
+          style={{ transform: 'scaleX(-1)' }}
+        >
+          ✎
+        </div>
+      )}
     </div>
   );
 };
