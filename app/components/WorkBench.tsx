@@ -6,20 +6,27 @@ import A4Template from '@/app/components/A4Template';
 import DraggableResizableBox from '@/app/components/DraggableResizableBox';
 import { useLanguage } from '../context/LanguageContext';
 
+type ElementData = {
+  id: number;
+  content: React.ReactNode;
+  defaultWidth: string;
+  defaultHeight: string;
+};
+
 const WorkBench = () => {
-  const [elementsFront, setElementsFront] = useState([
-    { id: 1, content: <p>Drag me on front!</p>, defaultWidth: '200px', defaultHeight: '50px' },
+  const [elementsFront, setElementsFront] = useState<ElementData[]>([
+    { id: 1, content: 'Drag me on front!', defaultWidth: '200px', defaultHeight: '50px' },
   ]);
 
-  const [elementsBack, setElementsBack] = useState([
-    { id: 1, content: <p>Drag me on back!</p>, defaultWidth: '200px', defaultHeight: '50px' },
+  const [elementsBack, setElementsBack] = useState<ElementData[]>([
+    { id: 1, content: 'Drag me on back!', defaultWidth: '200px', defaultHeight: '50px' },
   ]);
 
   const [isFrontSide, setIsFrontSide] = useState(true);
   const { texts } = useLanguage();
 
   const addTextElement = () => {
-    const newElement = { id: Date.now(), content: <p>{texts.pages?.addText}</p>, defaultWidth: '200px', defaultHeight: '50px' };
+    const newElement: ElementData = { id: Date.now(), content: '', defaultWidth: '200px', defaultHeight: '50px' };
     if (isFrontSide) {
       setElementsFront((prevElements) => [...prevElements, newElement]);
     } else {
@@ -28,11 +35,19 @@ const WorkBench = () => {
   };
 
   const addImageElement = () => {
-    const newElement = { id: Date.now(), content: <Image src="/smile.webp" alt={texts.pages?.addImage} width={100} height={100} />, defaultWidth: '100px', defaultHeight: '100px' };
+    const newElement: ElementData = { id: Date.now(), content: <Image src="/smile.webp" alt={texts.pages?.addImage} width={100} height={100} />, defaultWidth: '100px', defaultHeight: '100px' };
     if (isFrontSide) {
       setElementsFront((prevElements) => [...prevElements, newElement]);
     } else {
       setElementsBack((prevElements) => [...prevElements, newElement]);
+    }
+  };
+
+  const removeElement = (id: number) => {
+    if (isFrontSide) {
+      setElementsFront((prevElements) => prevElements.filter((element) => element.id !== id));
+    } else {
+      setElementsBack((prevElements) => prevElements.filter((element) => element.id !== id));
     }
   };
 
@@ -65,9 +80,11 @@ const WorkBench = () => {
             <A4Template>{elementsFront.map((element) => (
               <DraggableResizableBox
                 key={element.id}
+                id={element.id}
                 content={element.content}
                 defaultWidth={element.defaultWidth}
                 defaultHeight={element.defaultHeight}
+                onRemove={removeElement}
               />
             ))}
             </A4Template>
@@ -82,9 +99,11 @@ const WorkBench = () => {
             <A4Template>{elementsBack.map((element) => (
               <DraggableResizableBox
                 key={element.id}
+                id={element.id}
                 content={element.content}
                 defaultWidth={element.defaultWidth}
                 defaultHeight={element.defaultHeight}
+                onRemove={removeElement}
               />
             ))}
             </A4Template>
