@@ -15,7 +15,7 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
   const initialPosition = { x: 100, y: 100 };
   const initialSize = { width: parseInt(defaultWidth), height: parseInt(defaultHeight) };
   
-  const { position, startDragging, isDragging } = useDrag(initialPosition);
+  const { position, startDragging } = useDrag(initialPosition);
   const { size, startResizing, isResizing } = useResize(initialSize, position);
 
   const [text, setText] = useState(typeof content === 'string' ? content : '');
