@@ -11,12 +11,90 @@
     "german": "Deutsch",
     "spanish": "Spanisch"
   },
-    "lpwelle":{
-      "line": "line"
+  "pages":{
+    "addText": "Text Hinzufügen",
+    "addImage": "Foto Hinzufügen",
+    "flipPage": "Seite Blättern"
   },
-    "pages":{
-      "addText": "Text Hinzufügen",
-      "addImage": "Foto Hinzufügen",
-      "flipPage": "Seite Blättern"
+  "lpwelle": {
+    "1": {
+      "line1": "MOND - Geburt des physischen Leibes",
+      "line2": "Alter der Nachahmung - Widerspiegelung der Umgebung",
+      "line3": "Verehrung - Aufnahme moralisch-religiöser Werte",
+      "line4": "Familie: »Ich fühle mich geliebt, die Menschen sind gut«"
+    },
+    "2": {
+      "line1": "MERKUR - Geburt des Ätherleibes",
+      "line2": "Alter der Identifikation - Zeit der natürlichen Autorität",
+      "line3": "Lebensfreude und Lebenskräfte",
+      "line4": "Vertrauen als Kraft: »Ich glaube«"
+    },
+    "3": {
+      "line1": "VENUS - Geburt des Empfindungsleibes",
+      "line2": "Unabhängigkeit des Innenlebens festigt sich",
+      "line3": "Pubertät - Persönliche Rebellion",
+      "line4": "»Ich urteile selbständig«"
+    },
+    "4": {
+      "line1": "SONNE - Geburt der Empfindungsseele",
+      "line2": "Lehr- und Wanderjahre",
+      "line3": "Suche nach eigener Erfahrung",
+      "line4": "Entdeckung der Welt: »Ich erlebe«"
+    },
+    "5": {
+      "line1": "SONNE - Geburt der Verstandes-und Gemütsseele",
+      "line2": "Gedankliche Verarbeitung aller bisherigen Erfahrungen",
+      "line3": "Suche nach Erkenntnis",
+      "line4": "Ordnen und Gliedern des Wissens »Ich denke«"
+    },
+    "6": {
+      "line1": "SONNE - Geburt der Bewußtseinsseele",
+      "line2": "Dunkle Zeit der Einsamkeit",
+      "line3": "Suche nach Tun und Verantwortung",
+      "line4": "Entdeckung des Selbst: »Ich will handeln«"
+    },
+    "7": {
+      "line1": "MARS - Geburt des Geistselbst",
+      "line2": "Wahrheit wird zum Ideal",
+      "line3": "Urteilskraft: wissendes Handeln",
+      "line4": "Das wahre Arbeiten für die Gemeinschaft beginnt"
+    },
+    "8": {
+      "line1": "JUPITER - Geburt des Lebensgeist",
+      "line2": "Kreative Phase",
+      "line3": "Schönheit in der Lebenskunst: Andere werden inspiriert",
+      "line4": ""
+    },
+    "9": {
+      "line1": "SATURN - Geburt des Geistesmensch",
+      "line2": "Liebe als Erkenntniskraft - Gemeinschaft im Geist",
+      "line3": "Verehrung - moralisch-religiöse Werte werden praktiziert",
+      "line4": ""
+    },
+    "10": {
+      "line1": "URANUS - Vervollkommnung des Geistes",
+      "line2": "Verarbeitung des Vergangenen  und Neuanfang",
+      "line3": "Ich bereite den Boden für meine kreativen Jahre",
+      "line4": ""
+    },
+    "11": {
+      "line1": "NEPTUN - Vervollkommnung des Geistes",
+      "line2": "Ein Kind der Götter.   Die rein kreativen Jahre",
+      "line3": "Ich will der Welt mein Können schenken",
+      "line4": ""
+    },
+    "12": {
+      "line1": "PLUTO - Vervollkommnung des Geistes",
+      "line2": "",
+      "line3": "",
+      "line4": ""
+    },
+
+    "lebensplan": "Lebensplan",
+    "jahrsiebt": "Jahrsiebt",
+    "bottomTextLeft": "Lebens-Stürme",
+    "bottomTextCenter": "Lebens-Insel",
+    "copyright": "Copyright Heartthink @2024 * Nur für den persönlichen Gebrauch bestimmt"
   }
+
 }

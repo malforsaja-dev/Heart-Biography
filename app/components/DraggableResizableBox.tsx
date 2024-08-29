@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDrag } from '@/app/hooks/useDrag';
 import { useResize } from '@/app/hooks/useResize';
+import { useEditableText } from '@/app/hooks/useEditableText';
 import Image from 'next/image';
 
 interface DraggableResizableBoxProps {
@@ -14,34 +15,19 @@ interface DraggableResizableBoxProps {
 const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, content, defaultWidth, defaultHeight, onRemove }) => {
   const initialPosition = { x: 100, y: 100 };
   const initialSize = { width: parseInt(defaultWidth), height: parseInt(defaultHeight) };
-  
+
   const { position, startDragging } = useDrag(initialPosition);
   const { size, startResizing } = useResize(initialSize, position);
 
-  const [text, setText] = useState(typeof content === 'string' ? content : '');
-  const [isEditing, setIsEditing] = useState(false);
-  const [tempText, setTempText] = useState(text);
+  const { text, isEditing, toggleEditMode, renderEditor } = useEditableText(
+    typeof content === 'string' ? content : ''
+  );
 
   const handleTextClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isEditing) {
       startDragging(e);
     }
-  };
-
-  const toggleEditMode = () => {
-    setIsEditing(true);
-    setTempText(text);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setTempText(text);
-  };
-
-  const handleConfirmEdit = () => {
-    setText(tempText);
-    setIsEditing(false);
   };
 
   return (
@@ -65,30 +51,7 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
             style={{ objectFit: 'contain' }}
           />
         ) : (
-          isEditing ? (
-            <>
-              <textarea
-                className="w-full h-full border-none focus:outline-none resize-none bg-transparent text-center whitespace-pre-wrap"
-                value={tempText}
-                onChange={(e) => setTempText(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-              />
-              <div className="absolute -bottom-10 left-1/3 flex space-x-1 p-1">
-                <button
-                  className="text-2xl px-2 py-1"
-                  onClick={handleConfirmEdit}
-                >
-                  ✅
-                </button>
-                <button
-                  className="text-2xl px-2 py-1"
-                  onClick={handleCancelEdit}
-                >
-                  ❌
-                </button>
-              </div>
-            </>
-          ) : (
+          isEditing ? renderEditor() : (
             <div onMouseDown={handleTextClick} className="whitespace-pre-wrap">{text}</div>
           )
         )}
