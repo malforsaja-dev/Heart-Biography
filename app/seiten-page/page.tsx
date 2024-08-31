@@ -1,4 +1,4 @@
-import WorkBench from '../components/WorkBench'
+import WorkBench from '../../components/WorkBench'
 
 const Seiten = () => {
 

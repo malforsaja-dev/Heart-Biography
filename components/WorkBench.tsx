@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import A4Template from '@/app/components/A4Template';
-import DraggableResizableBox from '@/app/components/DraggableResizableBox';
+import A4Template from '@/components/A4Template';
+import DraggableResizableBox from '@/components/DraggableResizableBox';
 import { useLanguage } from '../context/LanguageContext';
 
 type ElementData = {
