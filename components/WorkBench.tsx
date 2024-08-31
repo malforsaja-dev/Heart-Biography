@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import A4Template from '@/components/A4Template';
 import DraggableResizableBox from '@/components/DraggableResizableBox';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 type ElementData = {
   id: number;

@@ -3,8 +3,8 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useLanguage } from '../context/LanguageContext';
-import useClickOutside from '../hooks/useClickOutside';
+import { useLanguage } from '@/context/LanguageContext';
+import useClickOutside from '@/hooks/useClickOutside';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);

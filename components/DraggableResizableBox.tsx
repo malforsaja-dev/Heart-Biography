@@ -1,7 +1,7 @@
 import React from 'react';
-import { useDrag } from '@/app/hooks/useDrag';
-import { useResize } from '@/app/hooks/useResize';
-import { useEditableText } from '@/app/hooks/useEditableText';
+import { useDrag } from '@/hooks/useDrag';
+import { useResize } from '@/hooks/useResize';
+import { useEditableText } from '@/hooks/useEditableText';
 import Image from 'next/image';
 
 interface DraggableResizableBoxProps {

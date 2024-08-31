@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import useClickOutside from './useClickOutside'; // Adjust the path as needed
+import useClickOutside from '@/hooks/useClickOutside';
 
 export const useEditableText = (initialText: string, maxLength?: number) => {
   const [text, setText] = useState(initialText);

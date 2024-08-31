@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import clientData from '../../data/clientData.json';
+import clientData from '@/data/clientData.json';
 
 const calculateDates = (birthDate: string, diagramIndex: number) => {
   const startDate = new Date(birthDate);
