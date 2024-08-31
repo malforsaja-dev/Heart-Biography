@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from 'react';
-import useDiagramDates from '../hooks/useDiagramDates';
-import { useLanguage } from '../context/LanguageContext';
-import MainDiagramContent from '../components/MainDiagramContent';
-import DiagramBackgroundSVG from '../data/DiagramBackgroundSVG';
-import clientData from '../data/clientData.json';
+import useDiagramDates from '@/hooks/useDiagramDates';
+import { useLanguage } from '@/context/LanguageContext';
+import MainDiagramContent from '@/components/MainDiagramContent';
+import DiagramBackgroundSVG from '@/data/DiagramBackgroundSVG';
+import clientData from '@/data/clientData.json';
 
 const LpWelle = () => {
   const [diagramIndex, setDiagramIndex] = useState(0);

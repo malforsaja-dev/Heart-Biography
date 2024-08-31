@@ -1,4 +1,4 @@
-import { useEditableText } from '../hooks/useEditableText';
+import { useEditableText } from '@/hooks/useEditableText';
 
 interface MainDiagramContentProps {
   texts: {
