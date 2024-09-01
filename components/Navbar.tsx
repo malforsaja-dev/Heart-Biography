@@ -108,9 +108,11 @@ const Navbar: React.FC = () => {
           </button>
         </div>
   
-        <button className="hover:text-blue-400 button-3d">
-          <span className="bg-blue-200 rounded-full px-2 py-1">{initials}</span>
-        </button>
+        {initials && (
+          <button className="hover:text-blue-400 button-3d">
+            <span className="bg-blue-200 rounded-full px-2 py-1">{initials}</span>
+          </button>
+        )}
   
         <button className="hover:text-blue-400 button-3d">
           <span>⚙️</span>
