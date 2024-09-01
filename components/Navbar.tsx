@@ -1,16 +1,36 @@
 
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import useClickOutside from '@/hooks/useClickOutside';
+import { supabase } from '@/utils/supabase/client';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { texts, changeLanguage } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [initials, setInitials] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: userDetails, error } = await supabase
+          .from('lpwelle')
+          .select('first_name, last_name')
+          .eq('id', user.id)
+          .single();
+  
+        if (!error && userDetails) {
+          setInitials(`${userDetails.first_name[0]}${userDetails.last_name[0]}`);
+        }
+      }
+    };
+    getUserData();
+  }, []);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -47,7 +67,7 @@ const Navbar: React.FC = () => {
           )}
           {!isHovered && <span>❤️</span>}
         </div>
-
+  
         <nav className="flex flex-col mt-20 space-y-20">
           <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/lebensplan">
             <span>📈</span>
@@ -67,7 +87,7 @@ const Navbar: React.FC = () => {
           </Link>
         </nav>
       </div>
-
+  
       <div className="fixed top-0 right-0 z-30 flex justify-end items-center w-full border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4 space-x-4">
         <div className="relative" ref={dropdownRef}>
           <button onClick={toggleDropdown} className="hover:text-blue-400 flex items-center button-3d">
@@ -87,11 +107,11 @@ const Navbar: React.FC = () => {
             )}
           </button>
         </div>
-
+  
         <button className="hover:text-blue-400 button-3d">
-          <span className="bg-blue-200 rounded-full px-2 py-1">S</span>
+          <span className="bg-blue-200 rounded-full px-2 py-1">{initials}</span>
         </button>
-
+  
         <button className="hover:text-blue-400 button-3d">
           <span>⚙️</span>
         </button>
