@@ -1,8 +1,8 @@
-import React from 'react';
 import { useDrag } from '@/hooks/useDrag';
 import { useResize } from '@/hooks/useResize';
 import { useEditableText } from '@/hooks/useEditableText';
 import Image from 'next/image';
+import React from 'react';
 
 interface DraggableResizableBoxProps {
   id: number;
@@ -19,9 +19,11 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
   const { position, startDragging } = useDrag(initialPosition);
   const { size, startResizing } = useResize(initialSize, position);
 
-  const { text, isEditing, toggleEditMode, renderEditor } = useEditableText(
-    typeof content === 'string' ? content : ''
-  );
+  const { text, isEditing, toggleEditMode, renderEditor } = useEditableText({
+    initialText: typeof content === 'string' ? content : '',
+    onSave: async (newText: string) => {
+    },
+  });
 
   const handleTextClick = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import clientData from '@/data/clientData.json';
+import { supabase } from '@/utils/supabase/client';
 
 const calculateDates = (birthDate: string, diagramIndex: number) => {
   const startDate = new Date(birthDate);
@@ -30,15 +30,39 @@ const useDiagramDates = (diagramIndex: number) => {
   const [maxDiagrams, setMaxDiagrams] = useState<number>(0);
 
   useEffect(() => {
-    const birthDate = new Date(clientData.birthdate);
-    const today = new Date();
+    const fetchBirthDate = async () => {
 
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const maxDiagramsBasedOnAge = Math.min(Math.ceil(age / 7), 15);
-    setMaxDiagrams(maxDiagramsBasedOnAge);
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    const calculatedDates = calculateDates(clientData.birthdate, diagramIndex);
-    setDates(calculatedDates);
+      if (userError) {
+        console.error('Error fetching user:', userError);
+        return;
+      }
+
+      if (user) {
+        const { data, error } = await supabase
+          .from('lpwelle')
+          .select('birth_date')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching birth date:', error);
+        } else {
+          const birthDate = data.birth_date;
+          const today = new Date();
+
+          const age = today.getFullYear() - new Date(birthDate).getFullYear();
+          const maxDiagramsBasedOnAge = Math.min(Math.ceil(age / 7), 15);
+          setMaxDiagrams(maxDiagramsBasedOnAge);
+
+          const calculatedDates = calculateDates(birthDate, diagramIndex);
+          setDates(calculatedDates);
+        }
+      }
+    };
+
+    fetchBirthDate();
   }, [diagramIndex]);
 
   return { dates, maxDiagrams };

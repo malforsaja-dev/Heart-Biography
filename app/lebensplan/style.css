@@ -1,0 +1,31 @@
+.editable-text-container {
+  position: relative;
+  z-index: 10;
+}
+
+.editable-text-controls {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  z-index: 20;
+}
+
+.editable-textarea {
+  width: 100%;
+  max-width: 800px;
+  resize: none;
+  overflow: hidden;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+}
