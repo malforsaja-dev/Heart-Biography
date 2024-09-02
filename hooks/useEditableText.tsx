@@ -1,14 +1,25 @@
 import { useState, useRef, useEffect } from 'react';
-import useClickOutside from '@/hooks/useClickOutside';
+import '@/app/lebensplan/style.css';
 
-export const useEditableText = (initialText: string, maxLength?: number) => {
+interface UseEditableTextParams {
+  initialText: string;
+  maxLength?: number;
+  onSave: (text: string) => Promise<void>;
+}
+
+export const useEditableText = ({ initialText, maxLength = 300, onSave }: UseEditableTextParams) => {
   const [text, setText] = useState(initialText);
   const [isEditing, setIsEditing] = useState(false);
   const [tempText, setTempText] = useState(initialText);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const toggleEditMode = (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  useEffect(() => {
+    setText(initialText);
+    setTempText(initialText);
+  }, [initialText]);
+
+  const toggleEditMode = (e?: React.MouseEvent<HTMLElement, MouseEvent>) => {
     if (e) e.stopPropagation();
     setIsEditing(!isEditing);
     setTempText(text);
@@ -19,9 +30,10 @@ export const useEditableText = (initialText: string, maxLength?: number) => {
     setTempText(text);
   };
 
-  const handleConfirmEdit = () => {
+  const handleConfirmEdit = async () => {
     setText(tempText);
     setIsEditing(false);
+    await onSave(tempText);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -30,8 +42,6 @@ export const useEditableText = (initialText: string, maxLength?: number) => {
     }
   };
 
-  useClickOutside(containerRef, handleCancelEdit);
-
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -39,22 +49,14 @@ export const useEditableText = (initialText: string, maxLength?: number) => {
     }
   }, [tempText]);
 
+
   const renderEditor = () => (
-    <div 
-      ref={containerRef} 
-      className={`relative z-10 ${isEditing && maxLength ? 'border border-blue-500' : ''}`}
-    >
-      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center space-x-4 p-1">
-        <button
-          className="text-2xl px-2 py-1"
-          onClick={handleConfirmEdit}
-        >
+    <div ref={containerRef} className="editable-text-container">
+      <div className="editable-text-controls">
+        <button className="confirm-btn" onClick={handleConfirmEdit}>
           ✅
         </button>
-        <button
-          className="text-2xl px-2 py-1"
-          onClick={handleCancelEdit}
-        >
+        <button className="cancel-btn" onClick={handleCancelEdit}>
           ❌
         </button>
         {maxLength && (
@@ -65,7 +67,7 @@ export const useEditableText = (initialText: string, maxLength?: number) => {
       </div>
       <textarea
         ref={textareaRef}
-        className="w-full max-w-[800px] border-none focus:outline-none resize-none bg-transparent text-center whitespace-pre-wrap overflow-hidden"
+        className="editable-textarea"
         value={tempText}
         onChange={handleChange}
         onClick={(e) => e.stopPropagation()}

@@ -1,29 +1,61 @@
-"use client"
+"use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useDiagramDates from '@/hooks/useDiagramDates';
 import { useLanguage } from '@/context/LanguageContext';
 import MainDiagramContent from '@/components/MainDiagramContent';
 import DiagramBackgroundSVG from '@/data/DiagramBackgroundSVG';
-import clientData from '@/data/clientData.json';
+import { supabase } from '@/utils/supabase/client';
 
 const LpWelle = () => {
   const [diagramIndex, setDiagramIndex] = useState(0);
   const { dates, maxDiagrams } = useDiagramDates(diagramIndex);
   const { texts: languageTexts } = useLanguage();
-  
-  // Merge the static texts with the user-specific texts
+  const [data, setData] = useState({
+    birth_date: null,
+    texts: {}, // Updated to store the JSON texts
+  });
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError) {
+        console.error('Error fetching user:', userError);
+        return;
+      }
+
+      if (user) {
+        setUserId(user.id); // Store userId for later use
+
+        const { data, error } = await supabase
+          .from('lpwelle')
+          .select('birth_date, texts') // Fetch birth_date and texts
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching data:', error);
+        } else {
+          setData(data);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const texts = {
     ...languageTexts?.lpwelle,
-    ...clientData.texts
+    ...data.texts, // Merge the fetched texts with the language texts
   };
 
   const currentPageTexts = texts?.[diagramIndex + 1];
 
   return (
     <div className="relative w-full h-full flex flex-col">
-      {/* Pagination bullets at the top */}
-      <div className="flex justify-center items-center py-2 z-20 relative bg-gray-100">
+      <div className="flex justify-center items-center py-2 z-10 relative bg-gray-100">
         {Array.from({ length: maxDiagrams }).map((_, index) => (
           <button
             key={index}
@@ -36,7 +68,7 @@ const LpWelle = () => {
         ))}
       </div>
 
-      <div className="h-[8rem] bg-gray-300 flex justify-between items-center px-4 pb-4">
+      <div className="h-[8rem] bg-gray-300 flex justify-between items-center px-4 pb-4 z-0">
         <div className="flex flex-col text-left">
           <p className="text-lg font-bold">{texts?.lebensplan}</p>
           <p className="text-lg">{`${diagramIndex + 1}. ${texts?.jahrsiebt}`}</p>
@@ -49,7 +81,12 @@ const LpWelle = () => {
         </div>
       </div>
 
-      <MainDiagramContent texts={texts} dates={dates} />
+      <MainDiagramContent
+        texts={texts}
+        dates={dates}
+        userId={userId as string}
+        diagramIndex={diagramIndex}
+      />
       
       <DiagramBackgroundSVG />
 
