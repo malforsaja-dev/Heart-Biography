@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <main className="bg-gray-100 min-h-screen pb-20">
       <header className="fixed top-0 right-0 z-30 flex justify-end items-center w-full border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4 space-x-4">
-        <Link href={"/"} className="mr-auto font-bold text-xl text-orange-500">Heartthink</Link>
+        <Link href={"/"} className="mr-auto font-bold text-xl text-orange-500">HeartThink</Link>
         <Link href={"/authenticate"} className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600">Let&apos;s get started</Link>
       </header>
 
@@ -39,9 +39,9 @@ export default function Home() {
             <p className="text-lg italic">Place for image</p>
           </div>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-2 text-orange-500">Discover the World of Heartthink</h1>
+            <h1 className="text-3xl font-bold mb-2 text-orange-500">Discover the World of HeartThink</h1>
             <p className="text-lg">
-              Dive into the intricacies of thought and emotion with our latest book, Heartthink.
+              Dive into the intricacies of thought and emotion with our latest book, HeartThink.
             </p>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function Home() {
           <p className="text-lg mb-4 bg-orange-100 indent-12">
             By purchasing this book, you&apos;ll gain full access to exclusive content on this webpage.
             This secret content will not only enhance your reading experience but also provide additional
-            tools and insights that you will appreciate as you delve deeper into the concepts of Heartthink.
+            tools and insights that you will appreciate as you delve deeper into the concepts of HeartThink.
           </p>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed aspernatur saepe possimus ipsum dolorum, tenetur veritatis, laborum atque aliquid nihil dicta mollitia facere fugiat beatae quia ipsam nulla asperiores repellat? Molestias eaque dolores voluptas officiis perspiciatis ipsam nesciunt et placeat quis numquam.</p>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium animi rem minima veniam fugiat iste nostrum. Laudantium doloribus suscipit doloremque, provident debitis veniam consequuntur ducimus. Repellendus nostrum ratione ducimus delectus eligendi, nobis exercitationem perferendis consectetur hic. Magni, consequatur placeat? Dolores quod accusamus beatae, ab voluptas laborum quos odio corrupti, laboriosam dicta molestiae! Voluptate, inventore totam ullam doloribus, eos error officiis quaerat nostrum quasi quo adipisci fuga nisi? Dolores cum ea nostrum voluptate, reprehenderit et necessitatibus, quisquam maxime modi pariatur mollitia facilis iusto quidem? Repellendus consequatur ullam porro assumenda nisi repudiandae quibusdam aspernatur iure labore harum deserunt, enim aliquam. Possimus excepturi dolor corporis veritatis eaque minus quas nam necessitatibus officia laboriosam. Saepe molestias suscipit repellendus culpa, esse a? Nam perferendis, delectus cupiditate praesentium consectetur amet. Perspiciatis optio veritatis nihil sunt corporis molestias vitae quibusdam adipisci fugiat dolore in dolorum sit aspernatur, ducimus asperiores. Porro sit ad debitis libero harum odit minima adipisci exercitationem voluptas velit architecto facilis, enim blanditiis error illum quo, dignissimos repellendus modi dolorem cumque temporibus excepturi! Eveniet doloremque saepe eius repellat inventore, rerum impedit, harum sapiente dolorem nemo incidunt nisi magnam, nostrum quia!</p>

@@ -6,8 +6,8 @@ import ClientLayout from "@/components/ClientLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Heartthink",
-  description: "Website for Heartthink",
+  title: "HeartThink",
+  description: "Website for HeartThink",
 };
 
 export default function RootLayout({

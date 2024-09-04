@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import useClickOutside from '@/hooks/useClickOutside';
 import { supabase } from '@/utils/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navbar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -12,6 +13,7 @@ const Navbar: React.FC = () => {
   const { texts, changeLanguage } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [initials, setInitials] = useState<string | null>(null);
+  const { handleLogout } = useAuth();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -62,7 +64,7 @@ const Navbar: React.FC = () => {
           <div className="text-lg md:text-2xl font-bold">
             <span className=" text-blue-700">
               {isHovered ? (
-                <Link href="/"> {texts.navbar?.home || 'Heartthink'}</Link>
+                <Link href="/"> {texts.navbar?.home || 'HeartThink'}</Link>
               ) : (
                 <span>❤️</span>
               )}
@@ -86,6 +88,13 @@ const Navbar: React.FC = () => {
               <span>🅰️</span>
               {isHovered && <span className="ml-2">{texts.navbar?.about || 'About'}</span>}
             </Link>
+            <button 
+              onClick={handleLogout} 
+              className="text-red-600 hover:text-red-400 flex items-center button-3d mt-4"
+            >
+              <span>🚪</span>
+              {isHovered && <span className="ml-2">Logout</span>}
+            </button>
           </nav>
         </div>
       </div>
