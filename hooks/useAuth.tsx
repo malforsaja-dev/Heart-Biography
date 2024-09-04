@@ -1,3 +1,6 @@
+
+"use client"
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
 import cookie from 'js-cookie';

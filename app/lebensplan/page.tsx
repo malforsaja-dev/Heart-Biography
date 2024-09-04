@@ -13,7 +13,7 @@ const LpWelle = () => {
   const { texts: languageTexts } = useLanguage();
   const [data, setData] = useState({
     birth_date: null,
-    texts: {}, // Updated to store the JSON texts
+    texts: {},
   });
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -27,11 +27,11 @@ const LpWelle = () => {
       }
 
       if (user) {
-        setUserId(user.id); // Store userId for later use
+        setUserId(user.id);
 
         const { data, error } = await supabase
           .from('lpwelle')
-          .select('birth_date, texts') // Fetch birth_date and texts
+          .select('birth_date, texts')
           .eq('id', user.id)
           .single();
 
@@ -48,7 +48,7 @@ const LpWelle = () => {
 
   const texts = {
     ...languageTexts?.lpwelle,
-    ...data.texts, // Merge the fetched texts with the language texts
+    ...data.texts,
   };
 
   const currentPageTexts = texts?.[diagramIndex + 1];
@@ -90,11 +90,15 @@ const LpWelle = () => {
       
       <DiagramBackgroundSVG />
 
-      <div className="relative flex justify-between items-center bg-gray-200 py-2 px-8 mt-auto">
-        <p>{texts?.bottomTextLeft}</p>
-        <p>{texts?.bottomTextCenter}</p>
-        <p className="text-sm text-center">{texts?.copyright}</p>
-      </div>
+      <div className="relative flex justify-between items-start bg-gray-200 pt-2 pb-24 px-8 mt-auto">
+  <p className="text-left">{texts?.bottomTextLeft}</p>
+  <p className="text-center">{texts?.bottomTextCenter}</p>
+  <p></p>
+  
+  <p className="absolute bottom-48 right-0 mb-2 mr-2 text-sm -rotate-90 transform origin-bottom-right">
+    {texts?.copyright}
+  </p>
+</div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "home": "Home",
+    "home": "Heartthink",
     "lpWelle": "Lp Welle",
     "pages": "Seiten",
     "print": "Print",
@@ -93,8 +93,7 @@
     "lebensplan": "Lebensplan",
     "jahrsiebt": "Jahrsiebt",
     "bottomTextLeft": "Lebens-Stürme",
-    "bottomTextCenter": "Lebens-Insel",
+    "bottomTextCenter": "Lebens-Inseln",
     "copyright": "Copyright Heartthink @2024 * Nur für den persönlichen Gebrauch bestimmt"
   }
-
 }

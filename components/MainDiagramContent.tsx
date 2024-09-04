@@ -100,34 +100,34 @@ const MainDiagramContent: React.FC<MainDiagramContentProps> = ({ texts = {}, dat
       <div className="absolute left-[5%] bottom-[29%] w-[45%] h-[20%] flex flex-col justify-center z-20">
         {renderEditableText(editableText2)}
       </div>
-      <div className="absolute left-[13%] bottom-[21%] w-[10%] h-[10%] flex flex-col justify-center z-20">
+      <div className="absolute left-[13%] bottom-[22%] w-[10%] h-[10%] flex flex-col justify-center z-20">
         <p className="text-center">{dates[1]}</p>
       </div>
-      <div className="absolute left-[5%] bottom-[57%] w-[45%] h-[15%] flex flex-col justify-center z-20">
+      <div className="absolute left-[5%] bottom-[58%] w-[45%] h-[15%] flex flex-col justify-center z-20">
         {renderEditableText(editableText3)}
       </div>
-      <div className="absolute left-[17.5%] bottom-[46%] w-[10%] h-[10%] flex flex-col justify-center z-20">
+      <div className="absolute left-[17.5%] bottom-[47%] w-[10%] h-[10%] flex flex-col justify-center z-20">
         <p className="text-center">{dates[2]}</p>
       </div>
       <div className="absolute left-[25%] top-[5%] w-[50%] h-[15%] flex flex-col justify-center z-20">
         {renderEditableText(editableText4)}
       </div>
-      <div className="absolute left-[22%] top-[22%] w-[10%] h-[10%] flex justify-center z-20">
+      <div className="absolute left-[22%] top-[20%] w-[10%] h-[10%] flex justify-center z-20">
         <p className="text-center">{dates[3]}</p>
       </div>
-      <div className="absolute right-[23%] top-[22%] w-[10%] h-[10%] flex justify-center z-20">
+      <div className="absolute right-[22.5%] top-[25%] w-[10%] h-[10%] flex justify-center z-20">
         <p className="text-center">{dates[4]}</p>
       </div>
       <div className="absolute right-[5%] bottom-[57%] w-[44%] h-[15%] flex flex-col justify-center z-20">
         {renderEditableText(editableText5)}
       </div>
-      <div className="absolute right-[19%] bottom-[46%] w-[10%] h-[10%] flex flex-col justify-center z-20">
+      <div className="absolute right-[18%] bottom-[42%] w-[10%] h-[10%] flex flex-col justify-center z-20">
         <p className="text-center">{dates[5]}</p>
       </div>
       <div className="absolute right-[5%] bottom-[33%] w-[44%] h-[15%] flex flex-col justify-center z-20">
         {renderEditableText(editableText6)}
       </div>
-      <div className="absolute right-[14%] bottom-[21%] w-[10%] h-[10%] flex flex-col justify-center z-20">
+      <div className="absolute right-[13%] bottom-[17%] w-[10%] h-[10%] flex flex-col justify-center z-20">
         <p className="text-center">{dates[6]}</p>
       </div>
       <div className="absolute right-[5%] bottom-[8%] w-[44%] h-[15%] flex flex-col justify-center z-20">

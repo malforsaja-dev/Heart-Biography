@@ -49,7 +49,7 @@ const Auth = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 w-screen">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-sm text-center">
         <h2 className="text-2xl font-bold mb-4">Welcome, {user.email}</h2>
         <p>You are logged in, feel free to browse the protected pages!</p>

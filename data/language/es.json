@@ -1,22 +1,98 @@
 {
   "navbar": {
-    "home": "Hogar",
-    "lpWelle": "Lp Onda",
+    "home": "Heartthink",
+    "lpWelle": "Ola Lp",
     "pages": "Páginas",
     "print": "Imprimir",
-    "about": "Acerca"
+    "about": "Acerca de"
   },
   "dropdown": {
     "english": "Inglés",
     "german": "Alemán",
     "spanish": "Español"
   },
-    "lpwelle":{
-      "line": "line"
+  "pages": {
+    "addText": "Añadir Texto",
+    "addImage": "Añadir Foto",
+    "flipPage": "Pasar Página"
   },
-    "pages":{
-      "addText": "Añadir texto",
-      "addImage": "Añadir imagen",
-      "flipPage": "Voltear página"
+  "lpwelle": {
+    "1": {
+      "line1": "LUNA - Nacimiento del Cuerpo Físico",
+      "line2": "Edad de Imitación - Reflexión del Entorno",
+      "line3": "Reverencia - Recepción de Valores Morales y Religiosos",
+      "line4": "Familia: 'Me siento amado, la gente es buena'"
+    },
+    "2": {
+      "line1": "MERCURIO - Nacimiento del Cuerpo Etérico",
+      "line2": "Edad de Identificación - Tiempo de Autoridad Natural",
+      "line3": "Alegría de Vivir y Fuerzas Vitales",
+      "line4": "Confianza como Fuerza: 'Creo'"
+    },
+    "3": {
+      "line1": "VENUS - Nacimiento del Cuerpo Sensitivo",
+      "line2": "Independencia de la Vida Interior",
+      "line3": "Pubertad - Rebelión Personal",
+      "line4": "'Juzgo de forma independiente'"
+    },
+    "4": {
+      "line1": "SOL - Nacimiento del Alma Sensitiva",
+      "line2": "Años de Enseñanza y Viaje",
+      "line3": "Búsqueda de la Experiencia Personal",
+      "line4": "Descubrimiento del Mundo: 'Experimento'"
+    },
+    "5": {
+      "line1": "SOL - Nacimiento del Alma Intelectual y Emocional",
+      "line2": "Procesamiento Mental de Todas las Experiencias Anteriores",
+      "line3": "Búsqueda de Conocimiento",
+      "line4": "Organización y Estructuración del Conocimiento: 'Pienso'"
+    },
+    "6": {
+      "line1": "SOL - Nacimiento del Alma de la Conciencia",
+      "line2": "Tiempo Oscuro de Soledad",
+      "line3": "Búsqueda de Acción y Responsabilidad",
+      "line4": "Descubrimiento del Yo: 'Quiero actuar'"
+    },
+    "7": {
+      "line1": "MARTE - Nacimiento del Yo Espiritual",
+      "line2": "La Verdad se Convierte en el Ideal",
+      "line3": "Juicio: Acción Consciente",
+      "line4": "Comienza el Trabajo Verdadero para la Comunidad"
+    },
+    "8": {
+      "line1": "JÚPITER - Nacimiento del Espíritu de Vida",
+      "line2": "Fase Creativa",
+      "line3": "Belleza en el Arte de Vivir: Otros se Inspiran",
+      "line4": ""
+    },
+    "9": {
+      "line1": "SATURNO - Nacimiento del Humano Espiritual",
+      "line2": "Amor como Fuerza de Conocimiento - Comunidad en el Espíritu",
+      "line3": "Reverencia - Valores Morales y Religiosos se Practican",
+      "line4": ""
+    },
+    "10": {
+      "line1": "URANO - Perfección del Espíritu",
+      "line2": "Procesamiento del Pasado y Nuevos Comienzos",
+      "line3": "Preparo el Terreno para Mis Años Creativos",
+      "line4": ""
+    },
+    "11": {
+      "line1": "NEPTUNO - Perfección del Espíritu",
+      "line2": "Un Niño de los Dioses. Los Años Puramente Creativos",
+      "line3": "Quiero Ofrecer Mi Habilidad al Mundo",
+      "line4": ""
+    },
+    "12": {
+      "line1": "PLUTÓN - Perfección del Espíritu",
+      "line2": "",
+      "line3": "",
+      "line4": ""
+    },
+    "lebensplan": "Plan de Vida",
+    "jahrsiebt": "Década",
+    "bottomTextLeft": "Tormentas de Vida",
+    "bottomTextCenter": "Islas de Vida",
+    "copyright": "Copyright Heartthink @2024"
   }
 }

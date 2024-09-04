@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 interface AuthFormProps {
   isRegistering: boolean;
@@ -20,7 +21,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
   isRegistering, email, password, firstName, lastName, birthDate, setEmail, setPassword, setFirstName, setLastName, setBirthDate, handleAction, toggleAuthMode, loading
 }) => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 w-screen">
+      <header className="fixed top-0 right-0 z-30 flex justify-end items-center w-full border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4 space-x-4">
+        <Link href={"/"} className="mr-auto font-bold text-xl text-orange-500">Heartthink</Link>
+
+      </header>
       <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center">
           {isRegistering ? 'Register' : 'Sign In'}
@@ -82,6 +87,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
         >
           {isRegistering ? 'Already have an account? Sign In' : 'Need an account? Register'}
         </button>
+        <div className="bg-orange-200 rounded-xl p-4">
+          <p className="py-2 text-orange-700">alternatively use this credentials:</p>
+          <p>email: test@test.test</p>
+          <p>password: testtest</p>
+        </div>
       </div>
     </div>
   );
