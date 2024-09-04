@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthForm from '@/components/AuthForm';
+import Profile from '@/components/Profile';
+import Dashboard from './Dashboard';
 
 const Auth = () => {
-  const { user, loading, handleSignIn, handleRegister, handleLogout } = useAuth();
+  const { user, loading, handleSignIn, handleRegister } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -27,41 +29,20 @@ const Auth = () => {
     }
   };
 
-  if (!user) {
+  // Render nothing while loading the authentication state
+  if (loading) {
+    return null;
+  }
+
+  // Show the dashboard for logged-in users
+  if (user) {
     return (
-      <AuthForm
-        isRegistering={isRegistering}
-        email={email}
-        password={password}
-        firstName={firstName}
-        lastName={lastName}
-        birthDate={birthDate}
-        setEmail={setEmail}
-        setPassword={setPassword}
-        setFirstName={setFirstName}
-        setLastName={setLastName}
-        setBirthDate={setBirthDate}
-        handleAction={handleAction}
-        toggleAuthMode={toggleAuthMode}
-        loading={loading}
-      />
+      <Dashboard />
     );
   }
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 w-screen">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-sm text-center">
-        <h2 className="text-2xl font-bold mb-4">Welcome, {user.email}</h2>
-        <p>You are logged in, feel free to browse the protected pages!</p>
-        <button
-          onClick={handleLogout}
-          className="w-full p-3 mt-4 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Log Out
-        </button>
-      </div>
-    </div>
-  );
+  // Unauthenticated users will be redirected to /welcome by middleware
+  return null;
 };
 
 export default Auth;

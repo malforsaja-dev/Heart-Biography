@@ -4,23 +4,15 @@ import type { NextRequest } from 'next/server';
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get('sb-access-token')?.value || '';
 
-  const protectedRoutes = ['/lebensplan', '/seiten-page', '/print'];
-  const isProtectedRoute = protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route));
-
-  // If the route is protected and there is no token, redirect to home
-  if (isProtectedRoute && !token) {
-    return NextResponse.redirect(new URL('/', req.url));
+  // If the user is not logged in and they visit '/', redirect them to the welcome page
+  if (!token && req.nextUrl.pathname === '/') {
+    return NextResponse.redirect(new URL('/welcome', req.url));
   }
 
-  // Redirect logged-in users accessing the root or authenticate page to the dashboard
-  if ((req.nextUrl.pathname === '/' || req.nextUrl.pathname === '/authenticate') && token) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  }
-
+  // If the user is logged in and visits '/', allow access (dashboard will be loaded on client side)
   return NextResponse.next();
 }
 
-// Specify which routes the middleware should protect
 export const config = {
-  matcher: [ '/lebensplan/:path*', '/seiten-page/:path*', '/print/:path*'],
+  matcher: ['/'],
 };

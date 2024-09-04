@@ -1,65 +1,97 @@
-
-"use client"
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
 import cookie from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const handleAuthStateChange = async () => {
+    const fetchUser = async () => {
+      setLoading(true);  // Start loading
+  
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error) {
-          if (error.name === 'AuthSessionMissingError') {
-            // No active session
-            return;
-          } else {
-            console.error('Error checking user:', error);
-          }
+          console.error('Error fetching user:', error);
           return;
         }
-
+  
         if (user) {
-          setUser(user);
-        }
-
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-          if (event === 'SIGNED_IN' && session) {
-            cookie.set('sb-access-token', session.access_token, { expires: 7 });
-            setUser(session.user);
+          // Fetch profile data
+          const { data: profile, error: profileError } = await supabase
+            .from('lpwelle')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          
+          if (profileError) {
+            console.error('Error fetching profile data:', profileError);
+          } else {
+            setUser({ ...user, ...profile });
           }
-        });
-
-        return () => {
-          authListener?.subscription.unsubscribe();
-        };
+        }
+      } catch (error) {
+        console.error('Error in fetchUser:', error);
       } finally {
-        setLoading(false);
+        setLoading(false);  // End loading only after everything is fetched
       }
     };
-
-    handleAuthStateChange();
+  
+    fetchUser();
   }, []);
 
+  const handleSave = async (data: { firstName: string; lastName: string; birthDate: string }) => {
+    try {
+      const { error } = await supabase
+        .from('lpwelle')
+        .update({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          birth_date: data.birthDate,
+        })
+        .eq('id', user?.id);
+  
+      if (error) {
+        console.error('Error updating profile:', error);
+      } else {
+        setUser({ ...user, ...data });
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
   const handleSignIn = async (email: string, password: string) => {
-    setLoading(true);
+    setLoading(true);  // Start loading when sign-in begins
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         console.error('Error signing in:', error);
       } else {
-        const { user } = data;
-        if (user) {
-          cookie.set('sb-access-token', data.session.access_token, { expires: 7 });
-          setUser(user);
+        const session = data.session;
+        if (session) {
+          cookie.set('sb-access-token', session.access_token, { expires: 7 });
+  
+          // Fetch the user's profile from the database before rendering anything else
+          const { data: profile, error: profileError } = await supabase
+            .from('lpwelle')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+  
+          if (profileError) {
+            console.error('Error fetching profile data:', profileError);
+          } else {
+            // Set the user data with full profile and render Profile/Dashboard only when data is ready
+            setUser({ ...session.user, ...profile });
+          }
         }
       }
     } finally {
-      setLoading(false);
+      setLoading(false);  // Stop loading once the data is ready
     }
   };
 
@@ -124,11 +156,12 @@ export const useAuth = () => {
       } else {
         setUser(null);
         cookie.remove('sb-access-token');
+        router.push('/');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  return { user, loading, handleSignIn, handleRegister, handleLogout };
+  return { user, loading, handleSignIn, handleRegister, handleLogout, handleSave };
 };

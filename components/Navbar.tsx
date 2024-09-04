@@ -88,20 +88,13 @@ const Navbar: React.FC = () => {
               <span>🅰️</span>
               {isHovered && <span className="ml-2">{texts.navbar?.about || 'About'}</span>}
             </Link>
-            <button 
-              onClick={handleLogout} 
-              className="text-red-600 hover:text-red-400 flex items-center button-3d mt-4"
-            >
-              <span>🚪</span>
-              {isHovered && <span className="ml-2">Logout</span>}
-            </button>
           </nav>
         </div>
       </div>
 
       <div className="fixed top-0 right-0 z-20 flex justify-end items-center w-full border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4 space-x-4">
         <div className="relative" ref={dropdownRef}>
-          <button onClick={toggleDropdown} className="hover:text-blue-400 flex items-center button-3d">
+          <button onClick={toggleDropdown} className="hover:bg-orange-300 flex items-center px-3 bg-orange-200 button-3d">
             <span>🚩</span>
             {isDropdownOpen && (
               <div className="absolute top-10 right-0 bg-orange-200 text-black rounded shadow-md py-2">
@@ -120,13 +113,13 @@ const Navbar: React.FC = () => {
         </div>
 
         {initials && (
-          <button className="hover:text-blue-400 button-3d">
-            <span className="bg-blue-200 rounded-full px-2 py-1">{initials}</span>
-          </button>
+          <Link href={"/authenticate"} className="hover:bg-blue-400 bg-blue-200 button-3d">
+            <span className=" rounded-full px-2 py-1">{initials}</span>
+          </Link>
         )}
 
-        <button className="hover:text-blue-400 button-3d">
-          <span>⚙️</span>
+        <button onClick={handleLogout} className="hover:bg-red-600 button-3d px-2 py-1 bg-red-400">
+          <span>Log out</span>
         </button>
       </div>
     </div>
