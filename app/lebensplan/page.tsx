@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import MainDiagramContent from '@/components/MainDiagramContent';
 import DiagramBackgroundSVG from '@/data/DiagramBackgroundSVG';
 import { supabase } from '@/utils/supabase/client';
+import AuthLayout from '@/components/AuthLayout';
 
 const LpWelle = () => {
   const [diagramIndex, setDiagramIndex] = useState(0);
@@ -54,6 +55,7 @@ const LpWelle = () => {
   const currentPageTexts = texts?.[diagramIndex + 1];
 
   return (
+    <AuthLayout>
     <div className="relative w-full h-full flex flex-col">
       <div className="flex justify-center items-center py-2 z-10 relative bg-gray-100">
         {Array.from({ length: maxDiagrams }).map((_, index) => (
@@ -91,15 +93,16 @@ const LpWelle = () => {
       <DiagramBackgroundSVG />
 
       <div className="relative flex justify-between items-start bg-gray-200 pt-2 pb-24 px-8 mt-auto">
-  <p className="text-left">{texts?.bottomTextLeft}</p>
-  <p className="text-center">{texts?.bottomTextCenter}</p>
-  <p></p>
-  
-  <p className="absolute bottom-48 right-0 mb-2 mr-2 text-sm -rotate-90 transform origin-bottom-right">
-    {texts?.copyright}
-  </p>
-</div>
+        <p className="text-left">{texts?.bottomTextLeft}</p>
+        <p className="text-center">{texts?.bottomTextCenter}</p>
+        <p></p>
+        
+        <p className="absolute bottom-48 right-0 mb-2 mr-2 text-sm -rotate-90 transform origin-bottom-right">
+          {texts?.copyright}
+        </p>
+      </div>
     </div>
+    </AuthLayout>
   );
 };
 

@@ -1,11 +1,12 @@
+import AuthLayout from "@/components/AuthLayout";
 
 const About = () => {
 
   return (
-    <div className='bg-gray-100 h-screen w-screen'>
+    <AuthLayout>
       <p>About Page</p>
       <p className='text-center'>About Page</p>
-    </div>
+    </AuthLayout>
   );
 };
 

@@ -15,11 +15,11 @@ export const useAuth = () => {
       // Only fetch user if they are on a protected route (not '/authenticate' or '/welcome')
       const unprotectedPaths = ['/welcome', '/authenticate'];
       if (unprotectedPaths.includes(pathname)) {
-        setLoading(false); // We are not fetching the user on public routes
+        setLoading(false);
         return;
       }
 
-      setLoading(true);  // Start loading
+      setLoading(true);
 
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
@@ -29,7 +29,6 @@ export const useAuth = () => {
         }
 
         if (user) {
-          // Fetch profile data
           const { data: profile, error: profileError } = await supabase
             .from('lpwelle')
             .select('*')
@@ -45,7 +44,7 @@ export const useAuth = () => {
       } catch (error) {
         console.error('Error in fetchUser:', error);
       } finally {
-        setLoading(false);  // End loading only after everything is fetched
+        setLoading(false);
       }
     };
 
@@ -74,7 +73,7 @@ export const useAuth = () => {
   };
 
   const handleSignIn = async (email: string, password: string) => {
-    setLoading(true);  // Start loading when sign-in begins
+    setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
@@ -84,7 +83,6 @@ export const useAuth = () => {
         if (session) {
           cookie.set('sb-access-token', session.access_token, { expires: 7 });
   
-          // Fetch the user's profile from the database before rendering anything else
           const { data: profile, error: profileError } = await supabase
             .from('lpwelle')
             .select('*')
@@ -94,13 +92,13 @@ export const useAuth = () => {
           if (profileError) {
             console.error('Error fetching profile data:', profileError);
           } else {
-            // Set the user data with full profile and render Profile/Dashboard only when data is ready
             setUser({ ...session.user, ...profile });
           }
+          router.push('/');
         }
       }
     } finally {
-      setLoading(false);  // Stop loading once the data is ready
+      setLoading(false);
     }
   };
 
@@ -149,6 +147,7 @@ export const useAuth = () => {
           } else {
             console.error('Session not found after signup');
           }
+          router.push('/');
         }
       }
     } finally {
@@ -164,8 +163,8 @@ export const useAuth = () => {
         console.error('Error logging out:', error);
       } else {
         setUser(null);
+        router.push('/welcome');
         cookie.remove('sb-access-token');
-        router.push('/');
       }
     } finally {
       setLoading(false);

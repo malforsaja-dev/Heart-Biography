@@ -3,9 +3,7 @@ import React from 'react'
 
 const Authenticate = () => {
   return (
-    <div className='w-full'>
       <Auth />
-    </div>
   )
 }
 

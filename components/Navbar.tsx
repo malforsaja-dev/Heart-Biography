@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/context/LanguageContext';
 import useClickOutside from '@/hooks/useClickOutside';
+import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/utils/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {initials && (
-          <Link href={"/authenticate"} className="hover:bg-blue-400 bg-blue-200 button-3d">
+          <Link href={"/profile"} className="hover:bg-blue-400 bg-blue-200 button-3d">
             <span className=" rounded-full px-2 py-1">{initials}</span>
           </Link>
         )}

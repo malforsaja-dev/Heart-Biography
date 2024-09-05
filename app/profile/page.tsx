@@ -1,5 +1,6 @@
 "use client";
 
+import AuthLayout from "@/components/AuthLayout";
 import { useState } from "react";
 
 interface ProfileProps {
@@ -29,6 +30,7 @@ const Profile: React.FC<ProfileProps> = ({ firstName, lastName, birthDate, email
   };
 
   return (
+    <AuthLayout>
     <div className="flex items-center justify-center h-screen bg-gray-100 ">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Edit Your Profile</h2>
@@ -105,6 +107,7 @@ const Profile: React.FC<ProfileProps> = ({ firstName, lastName, birthDate, email
         </div>
       </div>
     </div>
+    </AuthLayout>
   );
 };
 
