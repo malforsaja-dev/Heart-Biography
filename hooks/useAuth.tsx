@@ -1,24 +1,33 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
 import cookie from 'js-cookie';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const pathname = usePathname();
+
 
   useEffect(() => {
     const fetchUser = async () => {
+      // Only fetch user if they are on a protected route (not '/authenticate' or '/welcome')
+      const unprotectedPaths = ['/welcome', '/authenticate'];
+      if (unprotectedPaths.includes(pathname)) {
+        setLoading(false); // We are not fetching the user on public routes
+        return;
+      }
+
       setLoading(true);  // Start loading
-  
+
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error) {
           console.error('Error fetching user:', error);
           return;
         }
-  
+
         if (user) {
           // Fetch profile data
           const { data: profile, error: profileError } = await supabase
@@ -39,9 +48,9 @@ export const useAuth = () => {
         setLoading(false);  // End loading only after everything is fetched
       }
     };
-  
+
     fetchUser();
-  }, []);
+  }, [pathname]);
 
   const handleSave = async (data: { firstName: string; lastName: string; birthDate: string }) => {
     try {
