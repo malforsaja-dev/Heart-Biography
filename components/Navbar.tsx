@@ -4,34 +4,24 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import useClickOutside from '@/hooks/useClickOutside';
 import { useLanguage } from '@/context/LanguageContext';
-import { supabase } from '@/utils/supabase/client';
+import { useUser } from "@/context/UserContext";
 import { useAuth } from '@/hooks/useAuth';
 
 const Navbar: React.FC = () => {
+  const { user } = useUser();
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { texts, changeLanguage } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [initials, setInitials] = useState<string | null>(null);
-  const { handleLogout } = useAuth();
+  const { handleLogout, loading } = useAuth();
+
 
   useEffect(() => {
-    const getUserData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: userDetails, error } = await supabase
-          .from('lpwelle')
-          .select('first_name, last_name')
-          .eq('id', user.id)
-          .single();
-  
-        if (!error && userDetails) {
-          setInitials(`${userDetails.first_name[0]}${userDetails.last_name[0]}`);
-        }
-      }
-    };
-    getUserData();
-  }, []);
+    if (user) {
+      setInitials(`${user.first_name?.[0]}${user.last_name?.[0]}`);
+    }
+  }, [user]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -118,8 +108,8 @@ const Navbar: React.FC = () => {
           </Link>
         )}
 
-        <button onClick={handleLogout} className="hover:bg-red-600 button-3d px-2 py-1 bg-red-400">
-          <span>Log out</span>
+        <button onClick={handleLogout} disabled={loading} className="hover:bg-red-600 button-3d px-2 py-1 bg-red-400 disabled:bg-red-200">
+          {loading ? 'Logging' : 'Log out'}
         </button>
       </div>
     </div>

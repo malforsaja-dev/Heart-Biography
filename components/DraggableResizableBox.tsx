@@ -9,20 +9,22 @@ interface DraggableResizableBoxProps {
   content: string | React.ReactNode;
   defaultWidth: string;
   defaultHeight: string;
+  initialPosition: { x: number; y: number };
   onRemove: (id: number) => void;
+  onPositionChange: (id: number, position: { x: number; y: number }) => void;
+  onSizeChange: (id: number, size: { width: number; height: number }) => void;
+  type?: string; // New prop to differentiate between text and image elements
 }
 
-const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, content, defaultWidth, defaultHeight, onRemove }) => {
-  const initialPosition = { x: 100, y: 100 };
-  const initialSize = { width: parseInt(defaultWidth), height: parseInt(defaultHeight) };
-
+const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ 
+  id, content, defaultWidth, defaultHeight, initialPosition, onRemove, onPositionChange, onSizeChange, type 
+}) => {
   const { position, startDragging } = useDrag(initialPosition);
-  const { size, startResizing } = useResize(initialSize, position);
+  const { size, startResizing } = useResize({ width: parseInt(defaultWidth), height: parseInt(defaultHeight) }, position);
 
   const { text, isEditing, toggleEditMode, renderEditor } = useEditableText({
-    initialText: typeof content === 'string' ? content : '',
-    onSave: async (newText: string) => {
-    },
+    initialText: type === 'text' ? content as string : '',
+    onSave: async (newText: string) => {},
   });
 
   const handleTextClick = (e: React.MouseEvent) => {
@@ -44,26 +46,31 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
       onMouseDown={!isEditing ? startDragging : undefined}
     >
       <div className="w-full h-full flex justify-center items-center relative">
-        {React.isValidElement(content) && content.type === Image ? (
+        {type === 'image' ? (
           <Image
-            src={(content.props as any).src}
-            alt={(content.props as any).alt}
-            fill
-            sizes="(max-width: 768px) 100vw, 300px"
+            src={content as string} // Use content as the src for the Image component
+            alt="Image"
+            width={size.width}
+            height={size.height}
             style={{ objectFit: 'contain' }}
           />
         ) : (
+          // If it's a text element, render it normally
           isEditing ? renderEditor() : (
             <div onMouseDown={handleTextClick} className="whitespace-pre-wrap">{text}</div>
           )
         )}
       </div>
+
+      {/* Remove Button */}
       <div
         className="absolute top-0 right-0 w-5 h-5 bg-red-700 text-white flex justify-center items-center text-xs cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity"
         onClick={() => onRemove(id)}
       >
         ✕
       </div>
+
+      {/* Resize Corner */}
       <div
         className="absolute bottom-0 right-0 w-5 h-5 bg-blue-700 cursor-se-resize z-10 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity"
         onMouseDown={(e) => {
@@ -71,7 +78,9 @@ const DraggableResizableBox: React.FC<DraggableResizableBoxProps> = ({ id, conte
           startResizing(e, 'bottom-right');
         }}
       />
-      {typeof content === 'string' && (
+
+      {/* Edit Button for Text */}
+      {type === 'text' && (
         <div
           className="absolute bottom-0 left-0 w-5 h-5 bg-yellow-500 text-white flex justify-center items-center text-xs cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity"
           onClick={(e) => {
