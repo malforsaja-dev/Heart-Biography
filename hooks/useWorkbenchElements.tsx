@@ -24,7 +24,7 @@ export const useWorkbenchElements = () => {
 
     const fetchData = async () => {
       const { data, error } = await supabase
-        .from('seiten_page')
+        .from('fotobook')
         .select('*')
         .eq('user_id', user.id);
 
@@ -53,7 +53,7 @@ export const useWorkbenchElements = () => {
       },
     };
 
-    const { error } = await supabase.from('seiten_page').upsert([dataToSave]);
+    const { error } = await supabase.from('fotobook').upsert([dataToSave]);
     if (error) {
       console.error('Error saving elements:', error);
     }

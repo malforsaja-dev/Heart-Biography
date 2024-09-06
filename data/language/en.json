@@ -2,7 +2,7 @@
   "navbar": {
     "home": "HeartThink",
     "lpWelle": "Lp Wave",
-    "pages": "Pages",
+    "fotobook": "Photobook",
     "print": "Print",
     "about": "About"
   },
@@ -11,7 +11,7 @@
     "german": "German",
     "spanish": "Spanish"
   },
-  "pages": {
+  "fotobook": {
     "addText": "Add Text",
     "addImage": "Add Photo",
     "flipPage": "Flip Page"

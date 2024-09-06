@@ -29,10 +29,10 @@ const WorkBench = () => {
     <>
       <div className="py-5 text-center">
         <button onClick={addTextElement} className="bg-blue-500 text-white px-4 py-2 mr-2">
-          {texts.pages?.addText}
+          {texts.fotobook?.addText}
         </button>
         <button onClick={flipPage} className="bg-yellow-500 text-white px-4 py-2">
-          {texts.pages?.flipPage}
+          {texts.fotobook?.flipPage}
         </button>
         <button onClick={saveToDatabase} className="bg-green-500 text-white px-4 py-2 mr-2">
           Save Page

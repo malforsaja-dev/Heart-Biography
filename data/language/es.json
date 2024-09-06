@@ -2,7 +2,7 @@
   "navbar": {
     "home": "HeartThink",
     "lpWelle": "Ola Lp",
-    "pages": "Páginas",
+    "fotobook": "Fotolibro",
     "print": "Imprimir",
     "about": "Acerca de"
   },
@@ -11,7 +11,7 @@
     "german": "Alemán",
     "spanish": "Español"
   },
-  "pages": {
+  "fotobook": {
     "addText": "Añadir Texto",
     "addImage": "Añadir Foto",
     "flipPage": "Pasar Página"
