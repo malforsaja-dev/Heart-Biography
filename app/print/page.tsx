@@ -1,11 +1,11 @@
-import React from 'react'
+import AuthLayout from "@/components/AuthLayout";
 
 const Print = () => {
   return (
-    <div className='bg-gray-100 h-screen w-screen'>
-      <p>Print Page</p>
-      <p className='text-center'>Print Page</p>
-    </div>
+    <AuthLayout>
+        <p>Print Page</p>
+        <p className='text-center'>Print Page</p>
+    </AuthLayout>
   )
 }
 

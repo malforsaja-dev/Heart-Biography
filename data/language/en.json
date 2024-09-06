@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "home": "Home",
+    "home": "HeartThink",
     "lpWelle": "Lp Wave",
     "pages": "Pages",
     "print": "Print",
@@ -11,12 +11,88 @@
     "german": "German",
     "spanish": "Spanish"
   },
-    "lpwelle":{
-      "line": "line"
+  "pages": {
+    "addText": "Add Text",
+    "addImage": "Add Photo",
+    "flipPage": "Flip Page"
   },
-    "pages":{
-      "addText": "Add Text",
-      "addImage": "Add Image",
-      "flipPage": "Flip Page"
+  "lpwelle": {
+    "1": {
+      "line1": "MOON - Birth of the Physical Body",
+      "line2": "Age of Imitation - Reflection of the Environment",
+      "line3": "Reverence - Reception of Moral-Religious Values",
+      "line4": "Family: 'I feel loved, people are good'"
+    },
+    "2": {
+      "line1": "MERCURY - Birth of the Etheric Body",
+      "line2": "Age of Identification - Time of Natural Authority",
+      "line3": "Joy of Life and Vital Forces",
+      "line4": "Trust as a Force: 'I believe'"
+    },
+    "3": {
+      "line1": "VENUS - Birth of the Sentient Body",
+      "line2": "Independence of Inner Life Consolidates",
+      "line3": "Puberty - Personal Rebellion",
+      "line4": "'I judge independently'"
+    },
+    "4": {
+      "line1": "SUN - Birth of the Sentient Soul",
+      "line2": "Teaching and Wandering Years",
+      "line3": "Search for Personal Experience",
+      "line4": "Discovery of the World: 'I experience'"
+    },
+    "5": {
+      "line1": "SUN - Birth of the Intellectual and Emotional Soul",
+      "line2": "Mental Processing of All Previous Experiences",
+      "line3": "Search for Knowledge",
+      "line4": "Organizing and Structuring Knowledge: 'I think'"
+    },
+    "6": {
+      "line1": "SUN - Birth of the Consciousness Soul",
+      "line2": "Dark Time of Solitude",
+      "line3": "Search for Action and Responsibility",
+      "line4": "Discovery of the Self: 'I want to act'"
+    },
+    "7": {
+      "line1": "MARS - Birth of the Spiritual Self",
+      "line2": "Truth Becomes the Ideal",
+      "line3": "Judgment: Knowing Action",
+      "line4": "True Work for the Community Begins"
+    },
+    "8": {
+      "line1": "JUPITER - Birth of the Spirit of Life",
+      "line2": "Creative Phase",
+      "line3": "Beauty in the Art of Living: Others are Inspired",
+      "line4": ""
+    },
+    "9": {
+      "line1": "SATURN - Birth of the Spiritual Human",
+      "line2": "Love as a Force of Knowledge - Community in Spirit",
+      "line3": "Reverence - Moral-Religious Values are Practiced",
+      "line4": ""
+    },
+    "10": {
+      "line1": "URANUS - Perfection of the Spirit",
+      "line2": "Processing the Past and New Beginnings",
+      "line3": "I Prepare the Ground for My Creative Years",
+      "line4": ""
+    },
+    "11": {
+      "line1": "NEPTUNE - Perfection of the Spirit",
+      "line2": "A Child of the Gods. The Purely Creative Years",
+      "line3": "I Want to Offer My Skill to the World",
+      "line4": ""
+    },
+    "12": {
+      "line1": "PLUTO - Perfection of the Spirit",
+      "line2": "",
+      "line3": "",
+      "line4": ""
+    },
+    "lebensplan": "Life Plan",
+    "jahrsiebt": "Decade",
+    "bottomTextLeft": "Life Storms",
+    "bottomTextCenter": "Life Islands",
+    "copyright": "Copyright HeartThink @2024"
   }
 }

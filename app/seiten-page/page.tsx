@@ -1,13 +1,13 @@
-import UploadImage from '@/components/UploadImage'
+
+import AuthLayout from '@/components/AuthLayout'
 import WorkBench from '@/components/WorkBench'
 
 const Seiten = () => {
 
   return (
-    <div className='bg-gray-100'>
-      {/* <UploadImage /> */}
+    <AuthLayout>
       <WorkBench />
-    </div>
+    </AuthLayout>
   )
 }
 

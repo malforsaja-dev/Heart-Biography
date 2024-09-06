@@ -1,10 +1,9 @@
-// components/UploadImage.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
 
-export default function UploadImage() {
+export default function UploadImage({ onUploadSuccess }: { onUploadSuccess: (url: string) => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [user, setUser] = useState<any>(null);
 
@@ -23,9 +22,10 @@ export default function UploadImage() {
       return;
     }
 
+    const filePath = `${user.id}/${file.name}`;
     const { error } = await supabase.storage
       .from('seiten-images')
-      .upload(`${user.id}/${file.name}`, file, {
+      .upload(filePath, file, {
         cacheControl: '3600',
         upsert: false,
         metadata: {
@@ -33,8 +33,12 @@ export default function UploadImage() {
         },
       });
 
-    if (error) console.error('Error uploading image:', error);
-    else console.log('Image uploaded successfully!');
+    if (error) {
+      console.error('Error uploading image:', error);
+    } else {
+      const { data } = supabase.storage.from('seiten-images').getPublicUrl(filePath);
+      onUploadSuccess(data.publicUrl);  // Correctly access the publicUrl
+    }
   }
 
   return (

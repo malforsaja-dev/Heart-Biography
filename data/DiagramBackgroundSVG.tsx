@@ -3,7 +3,7 @@ const DiagramBackgroundSVG: React.FC = () => (
     className="absolute inset-0 w-full h-full opacity-30"
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 -308 3000 1710"
+    viewBox="0 -400 3000 2085"
     preserveAspectRatio="none"
   >
     <g

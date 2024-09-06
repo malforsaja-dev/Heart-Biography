@@ -1,17 +1,15 @@
 
 "use client"
 
-import { useState } from 'react';
-import AuthLayout from '@/components/AuthLayout';
 import { FotobuchContent } from '@/components/DashboardContent/FotobuchContent';
 import { LpWelleContent } from '@/components/DashboardContent/LpWelleContent';
 import { PrintContent } from '@/components/DashboardContent/PrintContent';
+import { useState } from 'react';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('LpWelle');
 
   return (
-    <AuthLayout>
     <main className="bg-gray-100 min-h-screen pb-20">
       <section className="pt-24 px-8 mx-auto">
         <div className="flex items-center space-x-8 mb-8">
@@ -75,6 +73,5 @@ export default function Dashboard() {
         
       </section>
     </main>
-    </AuthLayout>
   );
 }
