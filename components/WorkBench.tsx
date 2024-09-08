@@ -1,99 +1,69 @@
 "use client";
 
-import A4Template from '@/components/A4Template';
-import DraggableResizableBox from '@/components/DraggableResizableBox';
-import UploadImage from '@/components/UploadImage';
-import { useLanguage } from '@/context/LanguageContext';
+import Buttons from '@/components/fotobook/Buttons';
+import Pagination from '@/components/fotobook/Pagination';
+import Paper from '@/components/fotobook/Paper';
 import { useWorkbenchElements } from '@/hooks/useWorkbenchElements';
+import useDiagramDates from '@/hooks/useDiagramDates';
+import { useState } from 'react';
 
 const WorkBench = () => {
-  const { texts } = useLanguage();
+  const [currentPage, setCurrentPage] = useState(0);
+  const { dates } = useDiagramDates((currentPage - 4) / 2);
+  const startDate = dates[0];
+  const endDate = dates[dates.length - 1];
+
   const {
     elementsFront,
     elementsBack,
     isFrontSide,
+    setIsFrontSide,
     addTextElement,
     addImageElement,
-    updateElementPosition,
-    updateElementSize,
+    updateElement,
     removeElement,
     saveToDatabase,
     flipPage,
   } = useWorkbenchElements();
 
-  const handleUploadSuccess = (url: string) => {
-    addImageElement(url); // Add the image element correctly
+  const maxPapers = 24;
+
+  const handlePaperNavigation = (index: number) => {
+    if (index === 0) {
+      setCurrentPage(0);
+    } else if (index === 1) {
+      setCurrentPage(2);
+    } else {
+      setCurrentPage((index - 1) * 2 + 2); // Other papers
+    }
+    setIsFrontSide(true); // Always show front side first when navigating
   };
 
   return (
-    <>
-      <div className="py-5 text-center">
-        <button onClick={addTextElement} className="bg-blue-500 text-white px-4 py-2 mr-2">
-          {texts.fotobook?.addText}
-        </button>
-        <button onClick={flipPage} className="bg-yellow-500 text-white px-4 py-2">
-          {texts.fotobook?.flipPage}
-        </button>
-        <button onClick={saveToDatabase} className="bg-green-500 text-white px-4 py-2 mr-2">
-          Save Page
-        </button>
-        <UploadImage onUploadSuccess={handleUploadSuccess} />
-      </div>
+    <div className='pb-20'>
+      <Buttons
+        currentPage={currentPage}
+        addTextElement={addTextElement}
+        flipPage={flipPage}
+        saveToDatabase={saveToDatabase}
+        addImageElement={addImageElement}
+      />
 
-      <div className="relative w-[210mm] h-[297mm] mx-auto" style={{ perspective: '1000px' }}>
-        <div
-          className={`relative w-full h-full transition-transform duration-700`}
-          style={{
-            transform: isFrontSide ? 'rotateY(0deg)' : 'rotateY(180deg)',
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          <div className="absolute w-full h-full top-0 left-0" style={{ backfaceVisibility: 'hidden' }}>
-            <A4Template>
-              {elementsFront.map((element) => (
-                <DraggableResizableBox
-                  key={element.id}
-                  id={element.id}
-                  content={element.content}
-                  defaultWidth={element.defaultWidth}
-                  defaultHeight={element.defaultHeight}
-                  initialPosition={{ x: element.x, y: element.y }}
-                  onRemove={removeElement}
-                  onPositionChange={updateElementPosition}
-                  onSizeChange={updateElementSize}
-                  type={element.type} // Ensure type is passed correctly
-                />
-              ))}
-            </A4Template>
-          </div>
-          <div
-            className="absolute w-full h-full top-0 left-0"
-            style={{
-              transform: 'rotateY(180deg)',
-              backfaceVisibility: 'hidden',
-            }}
-          >
-            <A4Template>
-              {elementsBack.map((element) => (
-                <DraggableResizableBox
-                  key={element.id}
-                  id={element.id}
-                  content={element.content}
-                  defaultWidth={element.defaultWidth}
-                  defaultHeight={element.defaultHeight}
-                  initialPosition={{ x: element.x, y: element.y }}
-                  onRemove={removeElement}
-                  onPositionChange={updateElementPosition}
-                  onSizeChange={updateElementSize}
-                  type={element.type}
-                />
-              ))}
-            </A4Template>
-          </div>
-        </div>
+      <Pagination maxPapers={maxPapers} currentPage={currentPage} handlePaperNavigation={handlePaperNavigation} />
+
+      <div className="relative w-[210mm] h-[297mm] mx-auto pb-20" style={{ perspective: '1000px' }}>
+        <Paper
+          currentPage={currentPage}
+          isFrontSide={isFrontSide}
+          startDate={startDate}
+          endDate={endDate}
+          elementsFront={elementsFront}
+          elementsBack={elementsBack}
+          updateElement={updateElement}
+          removeElement={removeElement}
+        />
       </div>
-      <div className="h-20"></div>
-    </>
+    </div>
   );
 };
 

@@ -11,3 +11,17 @@
     @apply shadow-3d-pressed transform translate-y-1;
   }
 }
+
+.a4-container {
+  width: 794px;
+  height: 1123px;
+}
+
+/* Print-specific dimensions */
+@media print {
+  .a4-container {
+    width: 210mm;
+    height: 297mm;
+    page-break-after: always;
+  }
+}

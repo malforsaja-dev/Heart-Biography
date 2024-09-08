@@ -6,7 +6,7 @@ const Fotobook = () => {
 
   return (
     <AuthLayout>
-      <WorkBench />
+        <WorkBench />
     </AuthLayout>
   )
 }

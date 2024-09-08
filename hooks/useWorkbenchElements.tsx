@@ -9,15 +9,16 @@ type ElementData = {
   defaultHeight: string;
   x: number;
   y: number;
-  type?: string;
+  type: 'text' | 'image';
   src?: string;
+  pageNumber: number;
 };
 
 export const useWorkbenchElements = () => {
   const [elementsFront, setElementsFront] = useState<ElementData[]>([]);
   const [elementsBack, setElementsBack] = useState<ElementData[]>([]);
   const [isFrontSide, setIsFrontSide] = useState(true);
-  const { user } = useUser(); // Get user from context
+  const { user } = useUser();
 
   useEffect(() => {
     if (!user) return;
@@ -59,7 +60,7 @@ export const useWorkbenchElements = () => {
     }
   };
 
-  const addTextElement = () => {
+  const addTextElement = (currentPage: number) => {
     const newElement: ElementData = {
       id: Date.now(),
       content: 'New Text',
@@ -68,7 +69,9 @@ export const useWorkbenchElements = () => {
       x: 100,
       y: 100,
       type: 'text',
+      pageNumber: currentPage,
     };
+  
     if (isFrontSide) {
       setElementsFront((prevElements) => [...prevElements, newElement]);
     } else {
@@ -76,7 +79,8 @@ export const useWorkbenchElements = () => {
     }
   };
 
-  const addImageElement = (url: string) => {
+
+  const addImageElement = (url: string, currentPage: number) => {
     const newElement: ElementData = {
       id: Date.now(),
       content: url,
@@ -86,6 +90,7 @@ export const useWorkbenchElements = () => {
       y: 100,
       type: 'image',
       src: url,
+      pageNumber: currentPage,
     };
     if (isFrontSide) {
       setElementsFront((prevElements) => [...prevElements, newElement]);
@@ -94,35 +99,19 @@ export const useWorkbenchElements = () => {
     }
   };
 
-  const updateElementPosition = (id: number, position: { x: number; y: number }) => {
+  const updateElement = (id: number, data: { x?: number; y?: number; width?: number; height?: number }) => {
+    const updateFunc = (elements: ElementData[], setElements: React.Dispatch<React.SetStateAction<ElementData[]>>) => {
+      setElements((prevElements) =>
+        prevElements.map((element) =>
+          element.id === id ? { ...element, ...data } : element
+        )
+      );
+    };
+  
     if (isFrontSide) {
-      setElementsFront((prevElements) =>
-        prevElements.map((element) =>
-          element.id === id ? { ...element, x: position.x, y: position.y } : element
-        )
-      );
+      updateFunc(elementsFront, setElementsFront);
     } else {
-      setElementsBack((prevElements) =>
-        prevElements.map((element) =>
-          element.id === id ? { ...element, x: position.x, y: position.y } : element
-        )
-      );
-    }
-  };
-
-  const updateElementSize = (id: number, size: { width: number; height: number }) => {
-    if (isFrontSide) {
-      setElementsFront((prevElements) =>
-        prevElements.map((element) =>
-          element.id === id ? { ...element, defaultWidth: `${size.width}px`, defaultHeight: `${size.height}px` } : element
-        )
-      );
-    } else {
-      setElementsBack((prevElements) =>
-        prevElements.map((element) =>
-          element.id === id ? { ...element, defaultWidth: `${size.width}px`, defaultHeight: `${size.height}px` } : element
-        )
-      );
+      updateFunc(elementsBack, setElementsBack);
     }
   };
 
@@ -132,7 +121,7 @@ export const useWorkbenchElements = () => {
       : elementsBack.find((el) => el.id === id);
 
     if (elementToRemove?.type === 'image' && elementToRemove?.src) {
-      const filePath = elementToRemove.src.split(`${user?.id}/`)[1]; // Extract filename
+      const filePath = elementToRemove.src.split(`${user?.id}/`)[1];
       const { error } = await supabase.storage.from('seiten-images').remove([`${user?.id}/${filePath}`]);
       if (error) {
         console.error('Error deleting image:', error);
@@ -146,18 +135,19 @@ export const useWorkbenchElements = () => {
     }
   };
 
-  const flipPage = () => {
-    setIsFrontSide((prev) => !prev);
+  const flipPage = (currentPage: number) => {
+    if (currentPage === 0) return;
+    setIsFrontSide((prev) => !prev); 
   };
 
   return {
     elementsFront,
     elementsBack,
     isFrontSide,
+    setIsFrontSide,
     addTextElement,
     addImageElement,
-    updateElementPosition,
-    updateElementSize,
+    updateElement,
     removeElement,
     saveToDatabase,
     flipPage,
