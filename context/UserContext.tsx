@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { supabase } from "@/utils/supabase/client";
 
 interface User {
@@ -71,34 +71,37 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
 
-  const handleSave = async (data: { firstName: string; lastName: string; birthDate: string }) => {
-    if (user) {
-      try {
-        const { error } = await supabase
-          .from("lpwelle")
-          .update({
-            first_name: data.firstName,
-            last_name: data.lastName,
-            birth_date: data.birthDate,
-          })
-          .eq("id", user.id);
+  const handleSave = useCallback(
+    async (data: { firstName: string; lastName: string; birthDate: string }) => {
+      if (user) {
+        try {
+          const { error } = await supabase
+            .from("lpwelle")
+            .update({
+              first_name: data.firstName,
+              last_name: data.lastName,
+              birth_date: data.birthDate,
+            })
+            .eq("id", user.id);
 
-        if (error) {
-          console.error("Error updating profile:", error);
-        } else {
-          const updatedUser = { ...user, first_name: data.firstName, last_name: data.lastName, birth_date: data.birthDate };
-          setUser(updatedUser);
-          localStorage.setItem("user", JSON.stringify(updatedUser)); 
+          if (error) {
+            console.error("Error updating profile:", error);
+          } else {
+            const updatedUser = { ...user, first_name: data.firstName, last_name: data.lastName, birth_date: data.birthDate };
+            setUser(updatedUser);
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+          }
+        } catch (error) {
+          console.error("Error saving data:", error);
         }
-      } catch (error) {
-        console.error("Error saving data:", error);
       }
-    }
-  };
+    },
+    [user]
+  );
 
   const memoizedValue = useMemo(
     () => ({ user, loading, error, setUser, handleSave }),
-    [user, loading, error]
+    [user, loading, error, handleSave]
   );
 
   return (

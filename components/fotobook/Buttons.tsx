@@ -1,4 +1,4 @@
-import UploadImage from '@/components/UploadImage';
+import UploadImage from '@/components/fotobook/UploadImage';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface ButtonsProps {

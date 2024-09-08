@@ -37,7 +37,7 @@ export default function UploadImage({ onUploadSuccess }: { onUploadSuccess: (url
       console.error('Error uploading image:', error);
     } else {
       const { data } = supabase.storage.from('seiten-images').getPublicUrl(filePath);
-      onUploadSuccess(data.publicUrl);  // Correctly access the publicUrl
+      onUploadSuccess(data.publicUrl);
     }
   }
 

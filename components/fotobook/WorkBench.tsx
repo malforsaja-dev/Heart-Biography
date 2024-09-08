@@ -38,13 +38,13 @@ const WorkBench = () => {
     } else if (index === 1) {
       setCurrentPage(2);
     } else {
-      setCurrentPage((index - 1) * 2 + 2); // Other papers
+      setCurrentPage((index - 1) * 2 + 2); // Other papers from 3. onwards
     }
-    setIsFrontSide(true); // Always show front side first when navigating
+    setIsFrontSide(true); // Always show front side first
   };
 
   return (
-    <>
+    <div className='pb-20'>
       <Buttons
         currentPage={currentPage}
         addTextElement={addTextElement}
@@ -67,7 +67,7 @@ const WorkBench = () => {
           removeElement={removeElement}
         />
       </div>
-    </>
+    </div>
   );
 };
 

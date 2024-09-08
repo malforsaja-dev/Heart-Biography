@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
 
 const calculateDates = (birthDate: string) => {
@@ -25,14 +25,14 @@ const calculateDates = (birthDate: string) => {
     endDate.setDate(day);
     dates.push(endDate.toLocaleDateString('de-DE'));
 
-    allDates.push(dates); // Push each diagram's dates into allDates
+    allDates.push(dates);
   }
 
   return allDates;
 };
 
 const useDiagramDates = () => {
-  const [allDates, setAllDates] = useState<string[][]>([]); // Store all dates for all diagrams
+  const [allDates, setAllDates] = useState<string[][]>([]);
   const [maxDiagrams, setMaxDiagrams] = useState<number>(0);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const useDiagramDates = () => {
           const maxDiagramsBasedOnAge = Math.min(Math.ceil(age / 7), 15);
           setMaxDiagrams(maxDiagramsBasedOnAge);
 
-          const calculatedDates = calculateDates(birthDate); // Preload all dates
+          const calculatedDates = calculateDates(birthDate);
           setAllDates(calculatedDates);
         }
       }
@@ -70,7 +70,6 @@ const useDiagramDates = () => {
     fetchBirthDate();
   }, []);
 
-  // This function will retrieve dates based on the diagram index
   const getDatesForDiagram = (diagramIndex: number) => {
     if (diagramIndex < 0 || diagramIndex >= allDates.length) return [];
     return allDates[diagramIndex];

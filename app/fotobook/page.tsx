@@ -1,6 +1,6 @@
 
 import AuthLayout from '@/components/AuthLayout'
-import WorkBench from '@/components/WorkBench'
+import WorkBench from '@/components/fotobook/WorkBench'
 
 const Fotobook = () => {
 
