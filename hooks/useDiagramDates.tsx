@@ -1,37 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/utils/supabase/client';
 
-const calculateDates = (birthDate: string, diagramIndex: number) => {
-  const startDate = new Date(birthDate);
-  startDate.setFullYear(startDate.getFullYear() + 7 * diagramIndex);
+const calculateDates = (birthDate: string) => {
+  const allDates = [];
+  
+  for (let diagramIndex = 0; diagramIndex < 15; diagramIndex++) {
+    const startDate = new Date(birthDate);
+    startDate.setFullYear(startDate.getFullYear() + 7 * diagramIndex);
 
-  const dates = [];
-  const day = startDate.getDate();
-  const month = startDate.getMonth();
+    const dates = [];
+    const day = startDate.getDate();
+    const month = startDate.getMonth();
 
-  for (let i = 0; i < 7; i++) {
-    const currentDate = new Date(startDate);
-    currentDate.setFullYear(currentDate.getFullYear() + i);
-    currentDate.setMonth(month);
-    currentDate.setDate(day + 1);
-    dates.push(currentDate.toLocaleDateString('de-DE'));
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setFullYear(currentDate.getFullYear() + i);
+      currentDate.setMonth(month);
+      currentDate.setDate(day + 1);
+      dates.push(currentDate.toLocaleDateString('de-DE'));
+    }
+
+    const endDate = new Date(startDate);
+    endDate.setFullYear(endDate.getFullYear() + 7);
+    endDate.setDate(day);
+    dates.push(endDate.toLocaleDateString('de-DE'));
+
+    allDates.push(dates); // Push each diagram's dates into allDates
   }
 
-  const endDate = new Date(startDate);
-  endDate.setFullYear(endDate.getFullYear() + 7);
-  endDate.setDate(day);
-  dates.push(endDate.toLocaleDateString('de-DE'));
-
-  return dates;
+  return allDates;
 };
 
-const useDiagramDates = (diagramIndex: number) => {
-  const [dates, setDates] = useState<string[]>([]);
+const useDiagramDates = () => {
+  const [allDates, setAllDates] = useState<string[][]>([]); // Store all dates for all diagrams
   const [maxDiagrams, setMaxDiagrams] = useState<number>(0);
 
   useEffect(() => {
     const fetchBirthDate = async () => {
-
       const { data: { user }, error: userError } = await supabase.auth.getUser();
 
       if (userError) {
@@ -56,16 +61,22 @@ const useDiagramDates = (diagramIndex: number) => {
           const maxDiagramsBasedOnAge = Math.min(Math.ceil(age / 7), 15);
           setMaxDiagrams(maxDiagramsBasedOnAge);
 
-          const calculatedDates = calculateDates(birthDate, diagramIndex);
-          setDates(calculatedDates);
+          const calculatedDates = calculateDates(birthDate); // Preload all dates
+          setAllDates(calculatedDates);
         }
       }
     };
 
     fetchBirthDate();
-  }, [diagramIndex]);
+  }, []);
 
-  return { dates, maxDiagrams };
+  // This function will retrieve dates based on the diagram index
+  const getDatesForDiagram = (diagramIndex: number) => {
+    if (diagramIndex < 0 || diagramIndex >= allDates.length) return [];
+    return allDates[diagramIndex];
+  };
+
+  return { getDatesForDiagram, maxDiagrams };
 };
 
 export default useDiagramDates;

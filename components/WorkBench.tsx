@@ -9,7 +9,11 @@ import { useState } from 'react';
 
 const WorkBench = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const { dates } = useDiagramDates((currentPage - 4) / 2);
+  const { getDatesForDiagram } = useDiagramDates();
+
+  const diagramIndex = (currentPage - 4) / 2;
+  const dates = getDatesForDiagram(diagramIndex);
+
   const startDate = dates[0];
   const endDate = dates[dates.length - 1];
 
@@ -40,7 +44,7 @@ const WorkBench = () => {
   };
 
   return (
-    <div className='pb-20'>
+    <>
       <Buttons
         currentPage={currentPage}
         addTextElement={addTextElement}
@@ -51,7 +55,7 @@ const WorkBench = () => {
 
       <Pagination maxPapers={maxPapers} currentPage={currentPage} handlePaperNavigation={handlePaperNavigation} />
 
-      <div className="relative w-[210mm] h-[297mm] mx-auto pb-20" style={{ perspective: '1000px' }}>
+      <div className="relative w-[210mm] h-[297mm] mx-auto" style={{ perspective: '1000px' }}>
         <Paper
           currentPage={currentPage}
           isFrontSide={isFrontSide}
@@ -63,7 +67,7 @@ const WorkBench = () => {
           removeElement={removeElement}
         />
       </div>
-    </div>
+    </>
   );
 };
 
