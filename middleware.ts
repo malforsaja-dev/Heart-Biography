@@ -25,5 +25,5 @@ export async function middleware(req: NextRequest) {
 
 // Middleware applies to all routes except /welcome and /authenticate
 export const config = {
-  matcher: ['/', '/lebensplan/:path*', '/print/:path*', '/seiten-page/:path*'],
+  matcher: ['/', '/lebensplan/:path*', '/print/:path*', '/fotobook/:path*'],
 };

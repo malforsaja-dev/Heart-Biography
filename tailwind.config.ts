@@ -17,6 +17,16 @@ const config: Config = {
         '3d': '4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.7)',
         '3d-pressed': 'inset 4px 4px 10px rgba(0, 0, 0, 0.2), inset -4px -4px 10px rgba(255, 255, 255, 0.7)',
       },
+      transform: ['hover', 'focus'],
+      keyframes: {
+        flip: {
+          '0%': { transform: 'rotateY(0)' },
+          '100%': { transform: 'rotateY(180deg)' },
+        },
+      },
+      animation: {
+        flip: 'flip 0.7s ease-in-out',
+      },
     },
   },
   plugins: [],

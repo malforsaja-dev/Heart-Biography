@@ -37,22 +37,22 @@ export default function UploadImage({ onUploadSuccess }: { onUploadSuccess: (url
       console.error('Error uploading image:', error);
     } else {
       const { data } = supabase.storage.from('seiten-images').getPublicUrl(filePath);
-      onUploadSuccess(data.publicUrl);  // Correctly access the publicUrl
+      onUploadSuccess(data.publicUrl);
     }
   }
 
   return (
-    <div className='flex flex-col max-w-md'>
-      <input 
-        type="file" 
-        onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} 
+    <div className="flex items-center">
+      <input
+        type="file"
+        onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
         disabled={!user}
-        className="mb-2 p-2 border rounded"
+        className="mr-2 p-1 border rounded text-sm"
+        style={{ width: '250px' }}
       />
-      <button onClick={handleUpload} className="p-2 bg-blue-500 text-white rounded" disabled={!user}>
-        Upload Image
+      <button onClick={handleUpload} className="p-1 bg-blue-500 text-white rounded text-sm" disabled={!user}>
+        Upload
       </button>
-      {!user && <p className="text-red-500">You need to be logged in to upload images.</p>}
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function AuthLayout({
         className="ml-16 mt-16 bg-gray-100"
         style={{
           minHeight: "calc(100vh - 4rem)",
-          width: "calc(100vw - 5.1rem)",
+          width: "calc(100vw - 5.2rem)",
         }}
       >
         {children}

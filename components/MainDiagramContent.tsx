@@ -72,14 +72,12 @@ const MainDiagramContent: React.FC<MainDiagramContentProps> = ({ texts = {}, dat
       <div className="absolute top-1/2 left-0 w-full h-1/4 bg-green-200 z-0"></div>
       <div className="absolute bottom-0 left-0 w-full h-1/4 bg-blue-200 z-0"></div>
 
-      {/* Render editable texts based on positions */}
       {textConfig.map(({ key, position }) => (
         <div className={position} key={key}>
           <EditableText keyName={key} text={texts[key]} userId={userId} diagramIndex={diagramIndex} />
         </div>
       ))}
 
-      {/* Render dates */}
       <div className="absolute left-[1%] bottom-[1%] w-[1%] h-[5%] flex flex-col justify-center z-20">
         <p className="text-center">{dates[0]}</p>
       </div>

@@ -10,7 +10,8 @@ import AuthLayout from '@/components/AuthLayout';
 
 const LpWelle = () => {
   const [diagramIndex, setDiagramIndex] = useState(0);
-  const { dates, maxDiagrams } = useDiagramDates(diagramIndex);
+  const { getDatesForDiagram, maxDiagrams } = useDiagramDates();
+  const dates = getDatesForDiagram(diagramIndex); 
   const { texts: languageTexts } = useLanguage();
   const { user } = useUser();
 

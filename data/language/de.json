@@ -2,7 +2,7 @@
   "navbar": {
     "home": "HeartThink",
     "lpWelle": "Lp Welle",
-    "pages": "Seiten",
+    "fotobook": "Fotobook",
     "print": "Print",
     "about": "About"
   },
@@ -11,10 +11,25 @@
     "german": "Deutsch",
     "spanish": "Spanisch"
   },
-  "pages":{
+  "fotobook":{
     "addText": "Text Hinzufügen",
     "addImage": "Foto Hinzufügen",
-    "flipPage": "Seite Blättern"
+    "flipPage": "Seite Blättern",
+    "jahrsiebt":"Jahrsiebt",
+    "planet":{
+      "1": "Mond • Physischer-Leib",
+      "2":"Merkur • Äther-Leib",
+      "3": "Venus • Empfindungs-Leib",
+      "4": "Sonne • Empfindungs-Seele",
+      "5": "Sonne • Verstandes-Gemüts-Seele",
+      "6": "Sonne • Bewußtseins-Seele",
+      "7": "Mars • Geist-Selbst",
+      "8": "Jupiter • Lebens-Geist",
+      "9": "Saturn • Geist-Mensch",
+      "10": "Uranus • Geist-Vervollkommnung",
+      "11": "Neptun • Geist-Vervollkommnung",
+      "12": "Pluto • Geist-Vervollkommnung"
+  }
   },
   "lpwelle": {
     "1": {

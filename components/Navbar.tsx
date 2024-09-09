@@ -64,11 +64,11 @@ const Navbar: React.FC = () => {
           <nav className="flex flex-col mt-20 space-y-20 ">
             <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/lebensplan">
               <span>📈</span>
-              {isHovered && <span className="ml-2">{texts.navbar?.lpWelle || 'Plan'}</span>}
+              {isHovered && <span className="ml-2">{texts.navbar?.lpWelle || 'Lp-Welle'}</span>}
             </Link>
-            <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/seiten-page">
+            <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/fotobook">
               <span>📝</span>
-              {isHovered && <span className="ml-2">{texts.navbar?.pages || 'Pages'}</span>}
+              {isHovered && <span className="ml-2">{texts.navbar?.fotobook || 'Fotobook'}</span>}
             </Link>
             <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/print">
               <span>🖨️</span>
