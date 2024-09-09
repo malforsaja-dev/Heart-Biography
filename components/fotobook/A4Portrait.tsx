@@ -1,7 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import { useUser } from '@/context/UserContext';
 
-interface A4TemplateProps {
+interface A4PortraitProps {
   children: React.ReactNode;
   pageNumber: number;
   showHeader: boolean;
@@ -26,7 +26,7 @@ const colors = [
 
 ];
 
-const A4TemplateProps: React.FC<A4TemplateProps> = ({ children, pageNumber, showHeader, startDate, endDate }) => {
+const A4Portrait: React.FC<A4PortraitProps> = ({ children, pageNumber, showHeader, startDate, endDate }) => {
   const { texts } = useLanguage();
   const { user } = useUser();
   
@@ -74,4 +74,4 @@ const A4TemplateProps: React.FC<A4TemplateProps> = ({ children, pageNumber, show
 };
 
 
-export default A4TemplateProps;
+export default A4Portrait;

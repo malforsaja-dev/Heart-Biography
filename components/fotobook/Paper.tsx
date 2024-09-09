@@ -1,4 +1,4 @@
-import A4Template from '@/components/fotobook/A4Template';
+import A4Portrait from '@/components/fotobook/A4Portrait';
 import DraggableResizableBox from '@/components/fotobook/DraggableResizableBox';
 
 interface PaperProps {
@@ -24,32 +24,32 @@ const Paper: React.FC<PaperProps> = ({
       }}
     >
       {currentPage === 0 && (
-        <A4Template pageNumber={1} showHeader={false}>
+        <A4Portrait pageNumber={1} showHeader={false}>
           <p>Mein Lebensplan</p>
           <p>HeartThink</p>
           <p>Beruf mensch</p>
-        </A4Template>
+        </A4Portrait>
       )}
 
       {currentPage === 2 && (
         <>
           <div className="absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(0deg)' }}>
-            <A4Template pageNumber={2} showHeader={false}>
+            <A4Portrait pageNumber={2} showHeader={false}>
               <p>HeartThink - Beruf Mensch</p>
               <p>(eine Serie von Büchern zur Selbst-Entwicklung)</p>
               <br />
               <p>Mein Lebensplan</p>
               <p>Sylvia Weyand</p>
               <p>unter Mitarbeit von Florin Lowndes</p>
-            </A4Template>
+            </A4Portrait>
           </div>
 
           <div className="absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-            <A4Template pageNumber={3} showHeader={false}>
+            <A4Portrait pageNumber={3} showHeader={false}>
               <p>INHALT</p>
               <p>Fotobuch ...................................... 6</p>
               <p>Lebensplan Wellen Biographie ... 40</p>
-            </A4Template>
+            </A4Portrait>
           </div>
         </>
       )}
@@ -57,7 +57,7 @@ const Paper: React.FC<PaperProps> = ({
       {currentPage >= 4 && (
         <>
           <div className="absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(0deg)' }}>
-            <A4Template pageNumber={currentPage} startDate={startDate} endDate={endDate} showHeader={true}>
+            <A4Portrait pageNumber={currentPage} startDate={startDate} endDate={endDate} showHeader={true}>
               {elementsFront.filter((element) => element.pageNumber === currentPage).map((element) => (
                 <DraggableResizableBox
                   key={element.id}
@@ -72,11 +72,11 @@ const Paper: React.FC<PaperProps> = ({
                   type={element.type}
                 />
               ))}
-            </A4Template>
+            </A4Portrait>
           </div>
 
           <div className="absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-            <A4Template pageNumber={currentPage + 1} startDate={startDate} endDate={endDate} showHeader={true}>
+            <A4Portrait pageNumber={currentPage + 1} startDate={startDate} endDate={endDate} showHeader={true}>
               {elementsBack.filter((element) => element.pageNumber === currentPage + 1).map((element) => (
                 <DraggableResizableBox
                   key={element.id}
@@ -91,7 +91,7 @@ const Paper: React.FC<PaperProps> = ({
                   type={element.type}
                 />
               ))}
-            </A4Template>
+            </A4Portrait>
           </div>
         </>
       )}
