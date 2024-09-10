@@ -17,11 +17,21 @@
   height: 1123px;
 }
 
+.a4-landscape-container {
+  @apply w-[90vw] h-auto aspect-[1.414/1];
+}
+
 /* Print-specific dimensions */
 @media print {
   .a4-container {
     width: 210mm;
     height: 297mm;
+    page-break-after: always;
+  }
+
+  .a4-landscape-container {
+    width: 297mm;
+    height: 210mm;
     page-break-after: always;
   }
 }

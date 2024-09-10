@@ -16,7 +16,6 @@ const EditableText: React.FC<{ keyName: string; text: string; userId: string; di
 }) => {
   const editableText = useEditableText({
     initialText: text || '',
-    maxLength: 300,
     onSave: (newText) => saveText(userId, diagramIndex, keyName, newText),
   });
 
