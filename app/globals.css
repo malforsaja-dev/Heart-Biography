@@ -18,7 +18,8 @@
 }
 
 .a4-landscape-container {
-  @apply w-[90vw] h-auto aspect-[1.414/1];
+  width: 1123px;
+  height: 794px;
 }
 
 /* Print-specific dimensions */

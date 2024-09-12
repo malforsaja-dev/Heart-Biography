@@ -6,7 +6,7 @@ interface A4LandscapeProps {
 
 const A4Landscape: React.FC<A4LandscapeProps> = ({ children }) => {
   return (
-    <div className="a4-landscape-container max-h-screen border border-gray-300 mx-auto bg-white relative">
+    <div className="a4-landscape-container mx-auto relative">
       {children}
     </div>
   );
