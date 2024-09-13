@@ -65,7 +65,7 @@ const LpWelleContent = () => {
         </button>
       </div>
 
-      <div className="flex justify-center items-center pt-20 py-2 z-0 relative bg-gray-100 mt-12">
+      <div className="flex justify-center w-full items-center pt-20 py-2 z-0 relative bg-gray-100 mt-12">
         {Array.from({ length: maxDiagrams }).map((_, index) => (
           <button
             key={index}
@@ -77,10 +77,10 @@ const LpWelleContent = () => {
       </div>
   
       <A4Landscape>
-        <div className="h-[8rem] bg-gray-300 flex justify-between items-center px-4 pb-4 z-10">
-          <div className="flex flex-col text-left">
-            <p className="text-lg font-bold">{languageTexts?.lpwelle?.lebensplan}  {user?.first_name} {user?.last_name }</p>
-            <p className="text-lg">{`${diagramIndex + 1}. ${languageTexts?.lpwelle?.jahrsiebt || ''}`}: {dates?.[0]} - {dates?.[7]}</p>
+        <div className="h-[10rem] bg-gray-300 flex justify-between items-start px-2 py-2 z-10">
+          <div className="flex flex-col">
+            <p className="text-lg">{languageTexts?.lpwelle?.lebensplan}  {user?.first_name} {user?.last_name }</p>
+            <p className="text-lg">{`${diagramIndex + 1}. ${languageTexts?.lpwelle?.jahrsiebt || ''}`}: {dates?.[0]?.date} - {dates?.[7]?.date}</p>
           </div>
           <div className="flex flex-col text-right">
             <p>{localDiagramTexts?.line1}</p>
@@ -127,7 +127,8 @@ const LpWelleContent = () => {
           <p className="text-left">{languageTexts?.lpwelle?.bottomTextLeft}</p>
           <p className="text-center">{languageTexts?.lpwelle?.bottomTextCenter}</p>
           <p></p>
-          <p className="absolute bottom-48 right-0 mb-2 mr-2 text-sm -rotate-90 transform origin-bottom-right">
+          {/* <p className="absolute bottom-48 right-0 mb-2 mr-2 text-sm -rotate-90 transform origin-bottom-right"> */}
+          <p className="absolute bottom-[84%] right-0 text-sm text-gray-600">
             {languageTexts?.lpwelle?.copyright}
           </p>
         </div>

@@ -14,8 +14,8 @@ const WorkBench = () => {
   const diagramIndex = (currentPage - 4) / 2;
   const dates = getDatesForDiagram(diagramIndex);
 
-  const startDate = dates[0];
-  const endDate = dates[dates.length - 1];
+  const startDate = dates[0]?.date.toString(); 
+  const endDate = dates[dates.length - 1]?.date.toString(); 
 
   const {
     elementsFront,

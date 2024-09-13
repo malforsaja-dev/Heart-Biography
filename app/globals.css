@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'florin';
+  src: url('/florin.otf') format('opentype');
+}
+
+.font-florin {
+  font-family: 'florin', sans-serif;
+}
+
 @layer components {
   .button-3d {
     @apply shadow-3d transition-transform ease-in-out duration-200 p-1 rounded-full;

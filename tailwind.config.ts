@@ -27,6 +27,9 @@ const config: Config = {
       animation: {
         flip: 'flip 0.7s ease-in-out',
       },
+      fontFamily: {
+        florinht3: ['florin', 'sans-serif'],
+      },
     },
   },
   plugins: [],
