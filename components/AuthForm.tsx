@@ -4,13 +4,11 @@ interface AuthFormProps {
   isRegistering: boolean;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  userName: string;
   birthDate: string;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  setFirstName: (firstName: string) => void;
-  setLastName: (lastName: string) => void;
+  setUserName: (userName: string) => void;
   setBirthDate: (birthDate: string) => void;
   handleAction: () => void;
   toggleAuthMode: () => void;
@@ -18,7 +16,7 @@ interface AuthFormProps {
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
-  isRegistering, email, password, firstName, lastName, birthDate, setEmail, setPassword, setFirstName, setLastName, setBirthDate, handleAction, toggleAuthMode, loading
+  isRegistering, email, password, userName, birthDate, setEmail, setPassword, setUserName, setBirthDate, handleAction, toggleAuthMode, loading
 }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 w-screen">
@@ -33,18 +31,10 @@ const AuthForm: React.FC<AuthFormProps> = ({
           <>
             <input
               type="text"
-              placeholder="First Name"
-              value={firstName}
+              placeholder="User Name"
+              value={userName}
               disabled={loading}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="mb-4 p-3 w-full border rounded"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              disabled={loading}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={(e) => setUserName(e.target.value)}
               className="mb-4 p-3 w-full border rounded"
             />
             <input

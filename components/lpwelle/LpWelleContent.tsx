@@ -79,7 +79,7 @@ const LpWelleContent = () => {
       <A4Landscape>
         <div className="h-[10rem] bg-gray-300 flex justify-between items-start px-2 py-2 z-10">
           <div className="flex flex-col">
-            <p className="text-lg">{languageTexts?.lpwelle?.lebensplan}  {user?.first_name} {user?.last_name }</p>
+            <p className="text-lg">{languageTexts?.lpwelle?.lebensplan}  {user?.user_name}</p>
             <p className="text-lg">{`${diagramIndex + 1}. ${languageTexts?.lpwelle?.jahrsiebt || ''}`}: {dates?.[0]?.date} - {dates?.[7]?.date}</p>
           </div>
           <div className="flex flex-col text-right">

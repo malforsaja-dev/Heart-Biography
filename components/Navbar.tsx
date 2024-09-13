@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import useClickOutside from '@/hooks/useClickOutside';
 import { useLanguage } from '@/context/LanguageContext';
@@ -13,15 +13,7 @@ const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { texts, changeLanguage } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [initials, setInitials] = useState<string | null>(null);
   const { handleLogout, loading } = useAuth();
-
-
-  useEffect(() => {
-    if (user) {
-      setInitials(`${user.first_name?.[0]}${user.last_name?.[0]}`);
-    }
-  }, [user]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -102,11 +94,9 @@ const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {initials && (
           <Link href={"/profile"} className="hover:bg-blue-400 bg-blue-200 button-3d">
-            <span className=" rounded-full px-2 py-1">{initials}</span>
+            <span className=" rounded-full px-2 py-1">{user?.user_name}</span>
           </Link>
-        )}
 
         <button onClick={handleLogout} disabled={loading} className="hover:bg-red-600 button-3d px-2 py-1 bg-red-400 disabled:bg-red-200">
           {loading ? 'Logging' : 'Log out'}

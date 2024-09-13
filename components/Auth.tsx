@@ -10,8 +10,7 @@ const Auth = () => {
   const { user, loading, handleSignIn, handleRegister } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [userName, setUserName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
@@ -21,7 +20,7 @@ const Auth = () => {
   const handleAction = async () => {
     try {
       if (isRegistering) {
-        await handleRegister(email, password, firstName, lastName, birthDate);
+        await handleRegister(email, password, userName, birthDate);
       } else {
         await handleSignIn(email, password);
       }
@@ -41,13 +40,11 @@ const Auth = () => {
       isRegistering={isRegistering}
       email={email}
       password={password}
-      firstName={firstName}
-      lastName={lastName}
+      userName={userName}
       birthDate={birthDate}
       setEmail={setEmail}
       setPassword={setPassword}
-      setFirstName={setFirstName}
-      setLastName={setLastName}
+      setUserName={setUserName}
       setBirthDate={setBirthDate}
       handleAction={handleAction}
       toggleAuthMode={toggleAuthMode}
