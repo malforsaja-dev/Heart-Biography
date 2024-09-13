@@ -3,16 +3,14 @@ import '@/app/lebensplan/style.css';
 
 interface UseEditableTextParams {
   initialText: string;
-  maxLength?: number;
   onSave: (text: string) => Promise<void>;
 }
 
-export const useEditableText = ({ initialText, maxLength = 300, onSave }: UseEditableTextParams) => {
+export const useEditableText = ({ initialText, onSave }: UseEditableTextParams) => {
   const [text, setText] = useState(initialText);
   const [isEditing, setIsEditing] = useState(false);
   const [tempText, setTempText] = useState(initialText);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setText(initialText);
@@ -37,9 +35,7 @@ export const useEditableText = ({ initialText, maxLength = 300, onSave }: UseEdi
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (!maxLength || e.target.value.length <= maxLength) {
-      setTempText(e.target.value);
-    }
+    setTempText(e.target.value);
   };
 
   useEffect(() => {
@@ -51,7 +47,7 @@ export const useEditableText = ({ initialText, maxLength = 300, onSave }: UseEdi
 
 
   const renderEditor = () => (
-    <div ref={containerRef} className="editable-text-container">
+    <div className="editable-text-container">
       <div className="editable-text-controls">
         <button className="confirm-btn" onClick={handleConfirmEdit}>
           ✅
@@ -59,11 +55,6 @@ export const useEditableText = ({ initialText, maxLength = 300, onSave }: UseEdi
         <button className="cancel-btn" onClick={handleCancelEdit}>
           ❌
         </button>
-        {maxLength && (
-          <div className="text-sm">
-            {tempText.length}/{maxLength}
-          </div>
-        )}
       </div>
       <textarea
         ref={textareaRef}

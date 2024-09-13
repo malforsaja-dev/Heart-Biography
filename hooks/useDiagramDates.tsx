@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
 
+interface DateWithAge {
+  date: string;
+  age: number;
+}
+
 const calculateDates = (birthDate: string) => {
   const allDates = [];
   
@@ -17,13 +22,15 @@ const calculateDates = (birthDate: string) => {
       currentDate.setFullYear(currentDate.getFullYear() + i);
       currentDate.setMonth(month);
       currentDate.setDate(day + 1);
-      dates.push(currentDate.toLocaleDateString('de-DE'));
+      const age = currentDate.getFullYear() - new Date(birthDate).getFullYear();
+      dates.push({ date: currentDate.toLocaleDateString('de-DE'), age });
     }
 
     const endDate = new Date(startDate);
     endDate.setFullYear(endDate.getFullYear() + 7);
     endDate.setDate(day);
-    dates.push(endDate.toLocaleDateString('de-DE'));
+    const ageAtEnd = endDate.getFullYear() - new Date(birthDate).getFullYear();
+    dates.push({ date: endDate.toLocaleDateString('de-DE'), age: ageAtEnd });
 
     allDates.push(dates);
   }
@@ -32,7 +39,7 @@ const calculateDates = (birthDate: string) => {
 };
 
 const useDiagramDates = () => {
-  const [allDates, setAllDates] = useState<string[][]>([]);
+  const [allDates, setAllDates] = useState<DateWithAge[][]>([]);
   const [maxDiagrams, setMaxDiagrams] = useState<number>(0);
 
   useEffect(() => {

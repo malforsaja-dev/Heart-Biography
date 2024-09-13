@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'florin';
+  src: url('/florin.otf') format('opentype');
+}
+
+.font-florin {
+  font-family: 'florin', sans-serif;
+}
+
 @layer components {
   .button-3d {
     @apply shadow-3d transition-transform ease-in-out duration-200 p-1 rounded-full;
@@ -17,11 +26,22 @@
   height: 1123px;
 }
 
+.a4-landscape-container {
+  width: 1123px;
+  height: 794px;
+}
+
 /* Print-specific dimensions */
 @media print {
   .a4-container {
     width: 210mm;
     height: 297mm;
+    page-break-after: always;
+  }
+
+  .a4-landscape-container {
+    width: 297mm;
+    height: 210mm;
     page-break-after: always;
   }
 }
