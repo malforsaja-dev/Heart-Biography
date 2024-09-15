@@ -1,11 +1,11 @@
 import AuthLayout from "@/components/AuthLayout";
+import ReactRND from "@/components/ReactRND";
 
 const About = () => {
 
   return (
     <AuthLayout>
-      <p>About Page</p>
-      <p className='text-center'>About Page</p>
+      <ReactRND />
     </AuthLayout>
   );
 };

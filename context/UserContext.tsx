@@ -6,8 +6,7 @@ import { supabase } from "@/utils/supabase/client";
 interface User {
   id: string;
   uuid: string;
-  first_name?: string;
-  last_name?: string;
+  user_name?: string;
   birth_date?: string;
   email: string;
   texts?: Record<string, any>;
@@ -19,7 +18,7 @@ interface UserContextProps {
   loading: boolean;
   error: string | null;
   setUser: (user: User | null) => void;
-  handleSave: (data: { firstName: string; lastName: string; birthDate: string }) => Promise<void>;
+  handleSave: (data: { userName: string; birthDate: string }) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -49,7 +48,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (user) {
       const { data: profile, error: profileError } = await supabase
         .from("lpwelle")
-        .select("birth_date, texts")
+        .select("user_name, birth_date, texts")
         .eq("id", user.id)
         .single();
   
@@ -60,6 +59,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           id: user.id,
           uuid: user.id,
           email: user.email || "",
+          user_name: profile.user_name,
           birth_date: profile.birth_date,
           texts: profile.texts,
           created_at: user.created_at
@@ -72,14 +72,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleSave = useCallback(
-    async (data: { firstName: string; lastName: string; birthDate: string }) => {
+    async (data: { userName: string; birthDate: string }) => {
       if (user) {
         try {
           const { error } = await supabase
             .from("lpwelle")
             .update({
-              first_name: data.firstName,
-              last_name: data.lastName,
+              user_name: data.userName,
               birth_date: data.birthDate,
             })
             .eq("id", user.id);
@@ -87,7 +86,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           if (error) {
             console.error("Error updating profile:", error);
           } else {
-            const updatedUser = { ...user, first_name: data.firstName, last_name: data.lastName, birth_date: data.birthDate };
+            const updatedUser = { ...user, user_name: data.userName, birth_date: data.birthDate };
             setUser(updatedUser);
             localStorage.setItem("user", JSON.stringify(updatedUser));
           }

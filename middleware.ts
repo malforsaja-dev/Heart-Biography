@@ -8,7 +8,9 @@ export async function middleware(req: NextRequest) {
   const publicRoutes = ['/welcome', '/authenticate'];
 
   // Check if the current route is public
-  const isPublicRoute = publicRoutes.some((route) => req.nextUrl.pathname.startsWith(route));
+  const isPublicRoute = publicRoutes.some((route) =>
+    req.nextUrl.pathname.startsWith(route)
+  );
 
   // If the user is not logged in and the route is not public, redirect to /welcome
   if (!token && !isPublicRoute) {
@@ -23,7 +25,6 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// Middleware applies to all routes except /welcome and /authenticate
 export const config = {
-  matcher: ['/', '/lebensplan/:path*', '/print/:path*', '/fotobook/:path*'],
+  matcher: ['/', '/about', '/lebensplan/:path*', '/print/:path*', '/fotobook/:path*'],
 };

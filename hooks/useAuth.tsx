@@ -43,8 +43,7 @@ export const useAuth = () => {
   const handleRegister = async (
     email: string,
     password: string,
-    firstName: string,
-    lastName: string,
+    userName: string,
     birthDate: string
   ) => {
     setLoading(true);
@@ -52,13 +51,6 @@ export const useAuth = () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            first_name: firstName,
-            last_name: lastName,
-            birth_date: birthDate,
-          },
-        },
       });
   
       if (error) {
@@ -66,16 +58,30 @@ export const useAuth = () => {
       } else {
         const user = data.user;
         if (user) {
-          setUser({
-            id: user.id,
-            uuid: user.id,
-            email: user.email || '',
-            first_name: firstName,
-            last_name: lastName,
-            birth_date: birthDate,
-            created_at: new Date().toISOString(),
-          });
-          router.push("/");
+          const { error: insertError } = await supabase
+            .from('lpwelle')
+            .insert({
+              id: user.id,
+              user_name: userName,
+              birth_date: birthDate,
+              email: user.email,
+              texts: {},
+              created_at: new Date().toISOString(),
+            });
+  
+          if (insertError) {
+            console.error("Error inserting into lpwelle:", insertError);
+          } else {
+            setUser({
+              id: user.id,
+              uuid: user.id,
+              email: user.email || '',
+              user_name: userName,
+              birth_date: birthDate,
+              created_at: new Date().toISOString(),
+            });
+            router.push("/");
+          }
         }
       }
     } catch (error) {
@@ -91,8 +97,10 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signOut();
       if (!error) {
         setUser(null);
+        cookie.remove("sb-access-token", { path: '/' });
         router.push("/welcome");
-        cookie.remove("sb-access-token");
+      } else {
+        console.error("Error logging out:", error);
       }
     } catch (error) {
       console.error("Error logging out:", error);

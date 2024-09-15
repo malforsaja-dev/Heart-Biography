@@ -34,7 +34,7 @@ const A4Portrait: React.FC<A4PortraitProps> = ({ children, pageNumber, showHeade
   const jahrsiebtIndex = Math.floor((pageNumber - 4) / 2) + 1; 
   const jahrsiebt = texts.fotobook?.jahrsiebt;
   const planet = texts.fotobook?.planet[jahrsiebtIndex];
-  const userName = `${user?.first_name} ${user?.last_name}`;
+  const userName = `${user?.user_name}`;
 
   let headerContent;
   
