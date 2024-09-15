@@ -18,7 +18,7 @@ export default function Dashboard() {
           </div>
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-2 text-orange-500">
-              How to Use HeartThink
+              Dashboard Component
             </h1>
             <p className="text-lg">
               Follow these instructions for the best experience using HeartThink.

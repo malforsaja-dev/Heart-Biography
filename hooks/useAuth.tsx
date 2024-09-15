@@ -97,8 +97,10 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signOut();
       if (!error) {
         setUser(null);
+        cookie.remove("sb-access-token", { path: '/' });
         router.push("/welcome");
-        cookie.remove("sb-access-token");
+      } else {
+        console.error("Error logging out:", error);
       }
     } catch (error) {
       console.error("Error logging out:", error);
