@@ -15,6 +15,21 @@ interface TextElement {
 
 type TextElements = Record<string, TextElement>;
 
+const colors = [
+  "#92d4ee",
+  "#b3e2a0", 
+  "#ec86b9",
+  "#f8d24a",
+  "#f8d24a",
+  "#f8d24a",
+  "#f3b5d4",
+  "#d1edc3",
+  "#bde5f5",
+  "#bde5f5",
+  "#d1edc3",
+  "#f3b5d4"
+];
+
 const LpWelleContent = () => {
   const [diagramIndex, setDiagramIndex] = useState(0);
   const { getDatesForDiagram, maxDiagrams } = useDiagramDates();
@@ -154,32 +169,32 @@ const LpWelleContent = () => {
             <p>{dates[7]?.age}. <span className="font-florinht3">9</span></p>
           </div>
   
-          <DiagramBackgroundSVG />
+          <DiagramBackgroundSVG color={colors[diagramIndex % colors.length]} />
         </div>
   
         {/* Date Position Section */}
-        <div className="absolute left-[1%] bottom-[1%] w-[1%] h-[5%] flex flex-col justify-center z-10">
+        <div className="absolute left-[1%] bottom-[17%] w-[1%] h-[5%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[0]?.date}</p>
         </div>
-        <div className="absolute left-[12%] bottom-[22%] w-[10%] h-[10%] flex flex-col justify-center z-10">
+        <div className="absolute left-[13%] bottom-[29.5%] w-[10%] h-[10%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[1]?.date}</p>
         </div>
-        <div className="absolute left-[17%] bottom-[47%] w-[10%] h-[10%] flex flex-col justify-center z-10">
+        <div className="absolute left-[17.5%] bottom-[45%] w-[10%] h-[10%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[2]?.date}</p>
         </div>
-        <div className="absolute left-[22%] top-[20%] w-[10%] h-[10%] flex justify-center z-10">
+        <div className="absolute left-[22%] top-[33%] w-[10%] h-[10%] flex justify-center z-10">
           <p className="text-center">{dates[3]?.date}</p>
         </div>
-        <div className="absolute right-[21%] top-[25%] w-[10%] h-[10%] flex justify-center z-10">
+        <div className="absolute right-[22%] top-[35.5%] w-[10%] h-[10%] flex justify-center z-10">
           <p className="text-center">{dates[4]?.date}</p>
         </div>
-        <div className="absolute right-[17%] bottom-[42%] w-[10%] h-[10%] flex flex-col justify-center z-10">
+        <div className="absolute right-[17.5%] bottom-[42.5%] w-[10%] h-[10%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[5]?.date}</p>
         </div>
         <div className="absolute right-[12%] bottom-[17%] w-[10%] h-[10%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[6]?.date}</p>
         </div>
-        <div className="absolute right-0 bottom-[1%] w-[10%] h-[5%] flex flex-col justify-center z-10">
+        <div className="absolute -right-5 bottom-[17%] w-[10%] h-[5%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[7]?.date}</p>
         </div>
   

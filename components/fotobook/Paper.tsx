@@ -57,7 +57,7 @@ const Paper: React.FC<PaperProps> = ({
       {currentPage >= 4 && (
         <>
           <div className="absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(0deg)' }}>
-            <A4Portrait pageNumber={currentPage} startDate={startDate} endDate={endDate} showHeader={true}>
+            <A4Portrait pageNumber={currentPage} startDate={startDate} endDate={endDate} showHeader={true} isFrontSide={true}>
               {elementsFront.filter((element) => element.pageNumber === currentPage).map((element) => (
                 <DraggableResizableBox
                   key={element.id}
@@ -76,7 +76,7 @@ const Paper: React.FC<PaperProps> = ({
           </div>
 
           <div className="absolute w-full h-full" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-            <A4Portrait pageNumber={currentPage + 1} startDate={startDate} endDate={endDate} showHeader={true}>
+            <A4Portrait pageNumber={currentPage + 1} startDate={startDate} endDate={endDate} showHeader={true} isFrontSide={false}>
               {elementsBack.filter((element) => element.pageNumber === currentPage + 1).map((element) => (
                 <DraggableResizableBox
                   key={element.id}

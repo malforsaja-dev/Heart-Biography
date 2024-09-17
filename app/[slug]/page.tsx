@@ -1,5 +1,6 @@
 // app/[slug]/page.tsx
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 export default async function RegistrationPage({ params }: { params: { slug: string } }) {
@@ -21,6 +22,10 @@ export default async function RegistrationPage({ params }: { params: { slug: str
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <header className="fixed top-0 left-0 w-full z-30 flex justify-between items-center border-b-4 border-orange-200 bg-orange-100 text-black h-16 px-4">
+        <Link href={"/"} className="font-bold text-xl text-orange-500">HeartThink</Link>
+        <Link href={"/authenticate"} className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600">Let&apos;s get started</Link>
+      </header>
       <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <input
