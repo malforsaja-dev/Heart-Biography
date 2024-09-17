@@ -1,4 +1,8 @@
-const DiagramBackgroundSVG: React.FC = () => (
+interface DiagramBackgroundSVGProps {
+  color: string;
+}
+
+const DiagramBackgroundSVG: React.FC<DiagramBackgroundSVGProps> = ({ color }) => (
   <svg
     className="absolute inset-0 w-full h-full opacity-80"
     version="1.0"
@@ -8,7 +12,7 @@ const DiagramBackgroundSVG: React.FC = () => (
   >
     <g
       transform="translate(0.000000,1460.000000) scale(1.000000,-1.000000)"
-      fill="#0077b6"
+      fill={color}
       stroke="none"
     >
       <path d="M1311 1445 c-190 -42 -347 -173 -453 -381 -44 -87 -61 -132 -128
