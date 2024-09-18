@@ -191,7 +191,7 @@ const LpWelleContent = () => {
         <div className="absolute right-[17.5%] bottom-[42.5%] w-[10%] h-[10%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[5]?.date}</p>
         </div>
-        <div className="absolute right-[12%] bottom-[17%] w-[10%] h-[10%] flex flex-col justify-center z-10">
+        <div className="absolute right-[12%] bottom-[27%] w-[10%] h-[10%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[6]?.date}</p>
         </div>
         <div className="absolute -right-5 bottom-[17%] w-[10%] h-[5%] flex flex-col justify-center z-10">
