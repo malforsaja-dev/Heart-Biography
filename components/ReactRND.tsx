@@ -6,10 +6,13 @@ import { Rnd } from 'react-rnd';
 interface TextObject {
   id: number;
   text: string;
+  originalText: string;
   isEditing: boolean;
   isDropdownOpen: boolean;
   width: number;
   height: number;
+  x: number;
+  y: number;
 }
 
 const TestRnd = () => {
@@ -23,10 +26,13 @@ const TestRnd = () => {
       {
         id: nextId,
         text: 'New Text',
+        originalText: 'New Text',
         isEditing: false,
         isDropdownOpen: false,
         width: 200,
         height: 100,
+        x: 50,
+        y: 50,
       },
     ]);
     setNextId(nextId + 1);
@@ -47,7 +53,9 @@ const TestRnd = () => {
   const toggleEditMode = (id: number) => {
     setTextObjects((objs) =>
       objs.map((obj) =>
-        obj.id === id ? { ...obj, isEditing: !obj.isEditing, isDropdownOpen: false } : obj
+        obj.id === id
+          ? { ...obj, isEditing: !obj.isEditing, isDropdownOpen: false, originalText: obj.text }
+          : obj
       )
     );
   };
@@ -86,7 +94,16 @@ const TestRnd = () => {
           <Rnd
             key={obj.id}
             size={{ width: obj.width, height: obj.height }}
-            position={{ x: 50, y: 50 }}
+            position={{ x: obj.x, y: obj.y }}
+            onDragStop={(e, d) => {
+              setTextObjects((objs) =>
+                objs.map((o) =>
+                  o.id === obj.id
+                    ? { ...o, x: d.x, y: d.y }
+                    : o
+                )
+              );
+            }}
             onResizeStop={(e, direction, ref, delta, position) => {
               const newWidth = ref.offsetWidth;
               const newHeight = ref.offsetHeight;
@@ -163,7 +180,13 @@ const TestRnd = () => {
                       ✅
                     </button>
                     <button
-                      onClick={() => toggleEditMode(obj.id)}
+                      onClick={() => setTextObjects((objs) =>
+                        objs.map((o) =>
+                          o.id === obj.id
+                            ? { ...o, text: o.originalText, isEditing: false }
+                            : o
+                        )
+                      )}
                     >
                       ❌
                     </button>
