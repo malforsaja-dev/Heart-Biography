@@ -1,13 +1,14 @@
+
+"use client"
+
 import AuthLayout from "@/components/AuthLayout";
-import InsertText from "@/components/insertText/InsertText";
-import ReactRND from "@/components/ReactRND";
+import InteractiveComponent from "@/components/insertText/Interact";
 
 const About = () => {
 
   return (
     <AuthLayout>
-      {/* <ReactRND /> */}
-      <InsertText />
+      <InteractiveComponent />
     </AuthLayout>
   );
 };
