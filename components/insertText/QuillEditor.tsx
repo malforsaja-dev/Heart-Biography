@@ -6,9 +6,10 @@ interface QuillEditorProps {
   content: string;
   id: number;
   onContentChange: (content: string, id: number) => void;
+  toolbarId: string; // Pass toolbar ID as a prop
 }
 
-const QuillEditor = ({ content, id, onContentChange }: QuillEditorProps) => {
+const QuillEditor = ({ content, id, onContentChange, toolbarId }: QuillEditorProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
 
@@ -17,14 +18,7 @@ const QuillEditor = ({ content, id, onContentChange }: QuillEditorProps) => {
       const quill = new Quill(editorRef.current, {
         theme: 'snow',
         modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            [{ align: [] }],
-            [{ color: [] }, { background: [] }],
-            [{ size: ['small', false, 'large', 'huge'] }],
-            ['clean'],
-          ],
+          toolbar: `#${toolbarId}`, // Link to external toolbar by ID
         },
       });
 
@@ -43,9 +37,9 @@ const QuillEditor = ({ content, id, onContentChange }: QuillEditorProps) => {
         quill.setSelection(selection); // Restore selection
       }
     }
-  }, [content, id, onContentChange]);
+  }, [content, id, onContentChange, toolbarId]);
 
-  return <div ref={editorRef} style={{ height: '100%' }} />;
+  return <div ref={editorRef} className="h-full w-full" />;
 };
 
 export default QuillEditor;

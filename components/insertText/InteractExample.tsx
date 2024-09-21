@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import interact from 'interactjs';
+import InteractiveElement from './InteractiveElement';
 
 type ElementProps = {
   id: number;
@@ -7,12 +8,30 @@ type ElementProps = {
   y: number;
   rotation: number;
   isDropdownOpen: boolean;
+  isEditing: boolean;
+  content: string;
 };
 
 const InteractExample: React.FC = () => {
   const [elements, setElements] = useState<ElementProps[]>([
-    { id: 1, x: 0, y: 0, rotation: 0, isDropdownOpen: false },
-    { id: 2, x: 250, y: 250, rotation: 0, isDropdownOpen: false },
+    {
+      id: 1,
+      x: 0,
+      y: 0,
+      rotation: 0,
+      isDropdownOpen: false,
+      isEditing: false,
+      content: '<p>Element 1 Content</p>',
+    },
+    {
+      id: 2,
+      x: 250,
+      y: 250,
+      rotation: 0,
+      isDropdownOpen: false,
+      isEditing: false,
+      content: '<p>Element 2 Content</p>',
+    },
   ]);
   const [nextId, setNextId] = useState(3);
 
@@ -21,8 +40,11 @@ const InteractExample: React.FC = () => {
       const target = document.getElementById(`element-${element.id}`);
       if (!target) return;
 
-      interact(target)
+      const interactable = interact(target);
+
+      interactable
         .draggable({
+          enabled: !element.isEditing, // Disable drag when editing
           listeners: {
             move(event) {
               const x = (parseFloat(target.getAttribute('data-x') || '0') || 0) + event.dx;
@@ -39,6 +61,7 @@ const InteractExample: React.FC = () => {
           inertia: true,
         })
         .resizable({
+          enabled: !element.isEditing, // Disable resize when editing
           edges: { left: true, right: true, bottom: true, top: true },
           listeners: {
             move(event) {
@@ -91,7 +114,10 @@ const InteractExample: React.FC = () => {
   }, [elements]);
 
   const handleAddElement = () => {
-    setElements([...elements, { id: nextId, x: 0, y: 0, rotation: 0, isDropdownOpen: false }]);
+    setElements([
+      ...elements,
+      { id: nextId, x: 0, y: 0, rotation: 0, isDropdownOpen: false, isEditing: false, content: `<p>Element ${nextId} Content</p>` },
+    ]);
     setNextId(nextId + 1);
   };
 
@@ -107,49 +133,35 @@ const InteractExample: React.FC = () => {
     );
   };
 
+  const toggleEdit = (id: number) => {
+    setElements((prevElements) =>
+      prevElements.map((el) => (el.id === id ? { ...el, isEditing: !el.isEditing, isDropdownOpen: false } : el))
+    );
+  };
+
+  const handleContentChange = (content: string, id: number) => {
+    setElements((prevElements) =>
+      prevElements.map((el) => (el.id === id ? { ...el, content } : el))
+    );
+  };
+
   return (
     <div className="relative w-[90vw] h-[90vh] bg-gray-100">
       {elements.map((element) => (
-        <div
+        <InteractiveElement
           key={element.id}
-          id={`element-${element.id}`}
-          className="absolute bg-blue-300 border-2 border-blue-500 flex items-center justify-center p-4 cursor-move"
-          style={{
-            width: '200px',
-            height: '200px',
-            transform: `translate(${element.x}px, ${element.y}px) rotate(${element.rotation}deg)`,
-          }}
-          data-x={element.x}
-          data-y={element.y}
-          data-rotation={element.rotation}
-        >
-          <div className="relative w-full h-full">
-            {/* Three-dot menu */}
-            <div className="absolute top-1 right-1">
-              <div className="dropdown relative">
-                <button
-                  className="text-gray-700 hover:text-gray-900"
-                  onClick={() => toggleDropdown(element.id)}
-                >
-                  &#x22EE; {/* Vertical three dots icon */}
-                </button>
-                <div
-                  className={`${
-                    element.isDropdownOpen ? 'block' : 'hidden'
-                  } absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg z-10`}
-                >
-                  <button
-                    className="block px-4 py-2 text-red-600 hover:bg-red-100 w-full text-left"
-                    onClick={() => handleDeleteElement(element.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="text-center text-gray-700">Element {element.id}</div>
-          </div>
-        </div>
+          id={element.id}
+          x={element.x}
+          y={element.y}
+          rotation={element.rotation}
+          content={element.content}
+          onContentChange={handleContentChange}
+          onDelete={handleDeleteElement}
+          onEdit={toggleEdit}
+          // isEditing={element.isEditing}
+          toggleDropdown={() => toggleDropdown(element.id)}
+          isDropdownOpen={element.isDropdownOpen}
+        />
       ))}
 
       {/* Add Element Button */}
