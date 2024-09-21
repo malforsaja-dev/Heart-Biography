@@ -24,6 +24,7 @@ const useInsertText = ({ id, initialContent, onContentChange, onEdit }: UseInser
   useEffect(() => {
     const interactable = interact(`#element-${id}`);
 
+    // Enable/Disable draggable and resizable based on edit mode
     interactable.draggable({
       enabled: !isEditMode,
       listeners: {

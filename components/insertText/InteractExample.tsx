@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import interact from 'interactjs';
-import InteractiveElement from './InteractiveElement';
+import InteractiveElement from '@/components/insertText/InteractiveElement';
 
 type ElementProps = {
   id: number;
