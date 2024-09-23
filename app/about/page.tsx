@@ -2,13 +2,13 @@
 "use client"
 
 import AuthLayout from "@/components/AuthLayout";
-import InteractiveComponent from "@/components/insertText/InteractExample";
+import InteractExample from "@/components/insertText/InteractExample";
 
 const About = () => {
 
   return (
     <AuthLayout>
-      <InteractiveComponent />
+        <InteractExample />
     </AuthLayout>
   );
 };

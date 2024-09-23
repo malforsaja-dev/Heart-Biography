@@ -1,45 +1,71 @@
-import React, { useEffect, useRef } from 'react';
-import Quill from 'quill';
-import 'quill/dist/quill.snow.css'; // Use Snow theme CSS
+import React, { useEffect, useState } from 'react';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+
+const modules = {
+  toolbar: [
+    [{ 'font': [] }, { 'size': [] }],
+    [{ 'align': [] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    [{ 'color': [] }, { 'background': [] }],
+    ['link', 'image'],
+    ['clean']
+  ],
+};
+
+const formats = [
+  'font', 'size',
+  'bold', 'italic', 'underline', 'strike',
+  'align',
+  'list',
+  'color', 'background',
+  'link', 'image'
+];
 
 interface QuillEditorProps {
-  content: string;
-  id: number;
-  onContentChange: (content: string, id: number) => void;
-  toolbarId: string; // Pass toolbar ID as a prop
+  value: string;
+  onChange: (value: string) => void;
+  isEditMode?: boolean;
+  placeholder?: string;
 }
 
-const QuillEditor = ({ content, id, onContentChange, toolbarId }: QuillEditorProps) => {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const quillRef = useRef<Quill | null>(null);
+const QuillEditor: React.FC<QuillEditorProps> = ({
+  value,
+  onChange,
+  isEditMode = true,
+  placeholder = "Start typing..."
+}) => {
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (editorRef.current && !quillRef.current) {
-      const quill = new Quill(editorRef.current, {
-        theme: 'snow',
-        modules: {
-          toolbar: `#${toolbarId}`, // Link to external toolbar by ID
-        },
-      });
+    setIsClient(true);
+  }, []);
 
-      quillRef.current = quill;
-      quill.clipboard.dangerouslyPasteHTML(content);
+  if (!isClient) {
+    return <div>Loading...</div>;
+  }
 
-      quill.on('text-change', () => {
-        onContentChange(quill.root.innerHTML, id);
-      });
-    } else if (quillRef.current && content !== quillRef.current.root.innerHTML) {
-      // Update content without re-initializing
-      const quill = quillRef.current;
-      const selection = quill.getSelection(); // Save selection
-      quill.clipboard.dangerouslyPasteHTML(content);
-      if (selection) {
-        quill.setSelection(selection); // Restore selection
-      }
-    }
-  }, [content, id, onContentChange, toolbarId]);
-
-  return <div ref={editorRef} className="h-full w-full" />;
+  return (
+    <div style={{ margin: '20px', border: '1px solid #ccc', borderRadius: '4px' }}>
+      {isEditMode ? (
+        <ReactQuill
+          value={value}
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+          theme="snow"
+          placeholder={placeholder}
+        />
+      ) : (
+        <div
+          className="ql-editor"
+          style={{ minHeight: '100px', padding: '10px', backgroundColor: '#f9f9f9' }}
+          dangerouslySetInnerHTML={{ __html: value }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default QuillEditor;
