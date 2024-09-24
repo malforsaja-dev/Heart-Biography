@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import interact from 'interactjs';
 import DropdownMenu from './DropdownMenu';
 import StyleBox from './StyleBox';
@@ -34,6 +34,10 @@ const InsertText: React.FC<InsertTextProps> = ({
   const [isBgTransparent, setIsBgTransparent] = useState(false);
   const [isBorderTransparent, setIsBorderTransparent] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Track edit mode
+  const [width, setWidth] = useState<number>(256); // Initial width
+  const [height, setHeight] = useState<number>(256); // Initial height
+  
   const elementRef = useRef<HTMLDivElement>(null);
   const interactableRef = useRef<any>(null);
 
@@ -42,10 +46,13 @@ const InsertText: React.FC<InsertTextProps> = ({
       elementRef.current.setAttribute('data-x', x.toString());
       elementRef.current.setAttribute('data-y', y.toString());
       elementRef.current.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+      elementRef.current.style.width = `${width}px`;
+      elementRef.current.style.height = `${height}px`;
     }
-  }, [x, y, rotation, id]);
+  }, [x, y, rotation, id, width, height]);
 
   useEffect(() => {
+    // Re-initialize interact.js only if not already initialized
     if (elementRef.current && !interactableRef.current) {
       interactableRef.current = interact(elementRef.current)
         .draggable({
@@ -75,13 +82,21 @@ const InsertText: React.FC<InsertTextProps> = ({
           listeners: {
             move(event) {
               const target = event.target;
+              const newWidth = event.rect.width;
+              const newHeight = event.rect.height;
               const x = (parseFloat(target.getAttribute('data-x') || '0') || 0) + event.deltaRect.left;
               const y = (parseFloat(target.getAttribute('data-y') || '0') || 0) + event.deltaRect.top;
-              target.style.width = `${event.rect.width}px`;
-              target.style.height = `${event.rect.height}px`;
+
+              // Update styles
+              target.style.width = `${newWidth}px`;
+              target.style.height = `${newHeight}px`;
               target.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
               target.setAttribute('data-x', x.toString());
               target.setAttribute('data-y', y.toString());
+
+              // Update state with new width and height
+              setWidth(newWidth);
+              setHeight(newHeight);
             },
             end(event) {
               const target = event.target;
@@ -100,21 +115,33 @@ const InsertText: React.FC<InsertTextProps> = ({
 
     return () => {
       if (interactableRef.current) {
-        interactableRef.current.unset();
+        interactableRef.current.unset(); // Clean up interact.js instance on unmount
         interactableRef.current = null;
       }
     };
   }, [rotation, id, onPositionChange]);
 
   useEffect(() => {
+    // Enable or disable interact.js based on editing mode
     if (interactableRef.current) {
-      const shouldEnable = activeModal === 'none';
-      interactableRef.current.draggable({ enabled: shouldEnable });
-      interactableRef.current.resizable({ enabled: shouldEnable });
+      interactableRef.current.draggable({ enabled: !isEditing });
+      interactableRef.current.resizable({ enabled: !isEditing });
     }
-  }, [activeModal]);
+  }, [isEditing]);
+
+  // This useEffect ensures interact.js state is retained during content change
+  useEffect(() => {
+    if (interactableRef.current) {
+      // Re-enable interact.js after content changes
+      interactableRef.current.draggable({ enabled: !isEditing });
+      interactableRef.current.resizable({ enabled: !isEditing });
+    }
+  }, [content, isEditing]); // Listen to content changes but retain interact state
 
   const toggleModal = (modalType: 'style' | 'text' | 'rotate') => {
+    if (modalType === 'text') {
+      setIsEditing(!isEditing); // Toggle edit mode
+    }
     setActiveModal(activeModal === modalType ? 'none' : modalType);
     setIsDropdownOpen(false);
   };
@@ -139,15 +166,23 @@ const InsertText: React.FC<InsertTextProps> = ({
         borderColor: isBorderTransparent ? 'transparent' : borderColor,
         borderWidth: `${borderSize}px`,
         zIndex: id,
+        width: `${width}px`, // Maintain the element's current width
+        height: `${height}px`, // Maintain the element's current height
+        cursor: isEditing ? 'text' : 'move', // Use 'move' cursor for drag
+        userSelect: isEditing ? 'text' : 'unset',
       }}
       data-x={x}
       data-y={y}
+      key={`${id}-${width}-${height}`} // Re-render based on size and content changes
     >
-      {/* Display content with Quill formatting */}
-      <div
-        className="w-full h-full overflow-auto"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      {/* Display content with Quill formatting only if not editing */}
+      {!isEditing && (
+        <div
+          className="w-full h-full overflow-auto ql-editor"
+          style={{ pointerEvents: isEditing ? 'auto' : 'none' }}
+          dangerouslySetInnerHTML={{ __html: content }} // ql-editor class for default Quill styling
+        />
+      )}
 
       {/* Dropdown Button */}
       <div className="absolute top-1 right-1">
@@ -163,6 +198,7 @@ const InsertText: React.FC<InsertTextProps> = ({
           />
         )}
       </div>
+
 
       {/* Conditional Modals */}
       {activeModal === 'style' && (
@@ -185,7 +221,10 @@ const InsertText: React.FC<InsertTextProps> = ({
           id={id}
           content={content}
           onContentChange={onContentChange}
-          onClose={() => setActiveModal('none')}
+          onClose={() => {
+            setActiveModal('none');
+            setIsEditing(false); // Exit edit mode on close
+          }}
         />
       )}
       {activeModal === 'rotate' && (

@@ -7,24 +7,24 @@ interface TextEditorProps {
   id: number;
   onContentChange: (content: string, id: number) => void;
   onClose: () => void;
+  onCancel?: () => void; // Make onCancel optional
 }
 
-const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, onClose }) => {
+const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, onClose, onCancel }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
+  const initialContentRef = useRef<string>(content); // Store initial content to handle cancellation
 
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
       const quill = new Quill(editorRef.current, {
         theme: 'snow',
         modules: {
-          toolbar: `#quill-toolbar-${id}`,
+          toolbar: `#quill-toolbar-${id}`, // Custom toolbar targeting by ID
         },
       });
-
       quillRef.current = quill;
       quill.clipboard.dangerouslyPasteHTML(content);
-
       quill.on('text-change', () => {
         onContentChange(quill.root.innerHTML, id);
       });
@@ -38,12 +38,24 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
     }
   }, [content, id, onContentChange]);
 
+  // Handle cancel action
+  const handleCancel = () => {
+    if (quillRef.current) {
+      quillRef.current.clipboard.dangerouslyPasteHTML(initialContentRef.current);
+    }
+    if (onCancel) {
+      onCancel(); // Call onCancel only if defined
+    } else {
+      onClose(); // Fallback to onClose if onCancel is not provided
+    }
+  };
+
   return (
     <div className="absolute top-0 left-0 w-full h-full z-10 flex flex-col items-center">
       {/* Toolbar */}
       <div
         id={`quill-toolbar-${id}`}
-        className="w-80 bg-gray-100 border-b flex justify-start items-center z-20"
+        className="w-96 bg-gray-100 border-b flex justify-start items-center z-20"
       >
         <button className="ql-bold px-2 py-1 mx-1">B</button>
         <button className="ql-italic px-2 py-1 mx-1">I</button>
@@ -57,6 +69,9 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
         <select className="ql-align mx-1"></select>
         <select className="ql-color mx-1"></select>
         <select className="ql-background mx-1"></select>
+        {/* Adding List Buttons */}
+        <button className="ql-list" value="ordered">Ordered</button>
+        <button className="ql-list" value="bullet">Bullet</button>
       </div>
 
       {/* Editor */}
@@ -67,7 +82,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
       {/* Action Buttons */}
       <div className="flex justify-center space-x-2 mb-2">
         <button onClick={onClose}>✅</button>
-        <button onClick={onClose}>❌</button>
+        <button onClick={handleCancel}>❌</button> {/* Use handleCancel for cancellation */}
       </div>
     </div>
   );
