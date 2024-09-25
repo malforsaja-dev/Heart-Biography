@@ -1,45 +1,22 @@
+// this is an example how to use the InsertText component with the useInsertText hook
+// you have to put the imports, call the props, call the component
+// and add a button with addElement
+
 
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import InsertText from '@/components/insertText/InsertText';
+import { useInsertText } from '@/hooks/useInsertText';
 
 const InteractExample: React.FC = () => {
-  // State for managing elements directly in the component
-  const [elements, setElements] = useState<{ id: number; x: number; y: number; rotation: number; content: string }[]>([]);
-  const [nextId, setNextId] = useState(1);
-
-  // Add a new element directly in the component
-  const addElement = () => {
-    const newElement = {
-      id: nextId,
-      x: nextId * 10, // Example initial x position
-      y: nextId * 10, // Example initial y position
-      rotation: 0,
-      content: `<p>Element ${nextId} Content</p>`,
-    };
-    setElements((prevElements) => [...prevElements, newElement]);
-    setNextId((prevId) => prevId + 1);
-  };
-
-  // Update an existing element's content
-  const updateElement = (id: number, updatedContent: string) => {
-    setElements((prevElements) =>
-      prevElements.map((el) => (el.id === id ? { ...el, content: updatedContent } : el))
-    );
-  };
-
-  // Update an existing element's position or rotation
-  const updateElementPosition = (id: number, x: number, y: number, rotation: number) => {
-    setElements((prevElements) =>
-      prevElements.map((el) => (el.id === id ? { ...el, x, y, rotation } : el))
-    );
-  };
-
-  // Delete an element directly in the component
-  const deleteElement = (id: number) => {
-    setElements((prevElements) => prevElements.filter((el) => el.id !== id));
-  };
+  const {
+    elements,
+    addElement,
+    updateElement,
+    updateElementPosition,
+    deleteElement,
+  } = useInsertText();
 
   return (
     <div className="relative w-[90vw] h-[90vh] bg-gray-100">

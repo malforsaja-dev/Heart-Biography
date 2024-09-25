@@ -7,20 +7,20 @@ interface TextEditorProps {
   id: number;
   onContentChange: (content: string, id: number) => void;
   onClose: () => void;
-  onCancel?: () => void; // Make onCancel optional
+  onCancel?: () => void;
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, onClose, onCancel }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
-  const initialContentRef = useRef<string>(content); // Store initial content to handle cancellation
+  const initialContentRef = useRef<string>(content);
 
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
       const quill = new Quill(editorRef.current, {
         theme: 'snow',
         modules: {
-          toolbar: `#quill-toolbar-${id}`, // Custom toolbar targeting by ID
+          toolbar: `#quill-toolbar-${id}`,
         },
       });
       quillRef.current = quill;
@@ -38,15 +38,14 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
     }
   }, [content, id, onContentChange]);
 
-  // Handle cancel action
   const handleCancel = () => {
     if (quillRef.current) {
       quillRef.current.clipboard.dangerouslyPasteHTML(initialContentRef.current);
     }
     if (onCancel) {
-      onCancel(); // Call onCancel only if defined
+      onCancel();
     } else {
-      onClose(); // Fallback to onClose if onCancel is not provided
+      onClose();
     }
   };
 
@@ -69,7 +68,6 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
         <select className="ql-align mx-1"></select>
         <select className="ql-color mx-1"></select>
         <select className="ql-background mx-1"></select>
-        {/* Adding List Buttons */}
         <button className="ql-list" value="ordered">Ordered</button>
         <button className="ql-list" value="bullet">Bullet</button>
       </div>
@@ -82,7 +80,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
       {/* Action Buttons */}
       <div className="flex justify-center space-x-2 mb-2">
         <button onClick={onClose}>✅</button>
-        <button onClick={handleCancel}>❌</button> {/* Use handleCancel for cancellation */}
+        <button onClick={handleCancel}>❌</button>
       </div>
     </div>
   );
