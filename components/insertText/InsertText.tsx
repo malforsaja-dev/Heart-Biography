@@ -1,0 +1,175 @@
+import React from 'react';
+import { useInteractText } from '@/hooks/useInteractText';
+import DropdownMenu from './DropdownMenu';
+import StyleBox from './StyleBox';
+import dynamic from 'next/dynamic';
+
+const TextEditor = dynamic(() => import('./TextEditor'), { ssr: false });
+
+interface InsertTextProps {
+  id: number;
+  x: number;
+  y: number;
+  rotation: number;
+  content: string;
+  onContentChange: (content: string, id: number) => void;
+  onPositionChange: (id: number, x: number, y: number, rotation: number) => void;
+  onDelete: (id: number) => void;
+  className?: string;
+}
+
+const InsertText: React.FC<InsertTextProps> = ({
+  id,
+  x,
+  y,
+  rotation,
+  content,
+  onContentChange,
+  onPositionChange,
+  onDelete,
+  className,
+}) => {
+  const {
+    elementRef,
+    isEditing,
+    isRotating,
+    activeModal,
+    toggleModal,
+    handleRotationChange,
+    modalPosition,
+    dropdownPosition,
+    isDropdownOpen,
+    setIsDropdownOpen,
+    backgroundColor,
+    borderColor,
+    borderSize,
+    isBgTransparent,
+    isBorderTransparent,
+    setBackgroundColor,
+    setBorderColor,
+    setBorderSize,
+    setIsBgTransparent,
+    setIsBorderTransparent,
+  } = useInteractText({
+    id,
+    x,
+    y,
+    rotation,
+    onPositionChange,
+  });
+
+  return (
+    <div className="relative">
+      <div
+        ref={elementRef}
+        className={`absolute w-64 h-64 p-4 rounded-md border ${className}`}
+        style={{
+          left: `${x}px`,
+          top: `${y}px`,
+          backgroundColor: isBgTransparent ? 'transparent' : backgroundColor,
+          borderColor: isBorderTransparent ? 'transparent' : borderColor,
+          borderWidth: `${borderSize}px`,
+          zIndex: id,
+          width: `256px`, // Use state values here if needed
+          height: `256px`,
+          cursor: isEditing ? 'text' : 'move',
+          userSelect: isEditing ? 'text' : 'none',
+          transform: `rotate(${rotation}deg)`,
+        }}
+        data-x={x}
+        data-y={y}
+      >
+        {!isEditing && (
+          <div
+            className="w-full h-full overflow-auto ql-editor"
+            style={{ pointerEvents: isEditing ? 'auto' : 'none' }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )}
+
+        <div className="absolute top-1 right-1 z-10">
+          <button className="bg-gray-300 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            &#x22EE;
+          </button>
+        </div>
+
+        {activeModal === 'style' && (
+          <StyleBox
+            backgroundColor={backgroundColor}
+            borderColor={borderColor}
+            borderSize={borderSize}
+            isBgTransparent={isBgTransparent}
+            isBorderTransparent={isBorderTransparent}
+            onBgColorChange={setBackgroundColor}
+            onBorderColorChange={setBorderColor}
+            onBorderSizeChange={setBorderSize}
+            onBgTransparencyToggle={() => setIsBgTransparent(!isBgTransparent)}
+            onBorderTransparencyToggle={() => setIsBorderTransparent(!isBorderTransparent)}
+            onClose={() => toggleModal('style')}
+          />
+        )}
+
+        {activeModal === 'text' && (
+          <TextEditor
+            id={id}
+            content={content}
+            onContentChange={onContentChange}
+            onClose={() => {
+              toggleModal('text');
+            }}
+          />
+        )}
+      </div>
+
+      {isDropdownOpen && (
+        <div
+          className="absolute bg-white border border-gray-300 shadow-md rounded-lg z-10"
+          style={{
+            left: `${dropdownPosition.left + 230}px`,
+            top: `${dropdownPosition.top + 10}px`,
+            transform: 'none',
+          }}
+        >
+          <DropdownMenu
+            onEditText={() => toggleModal('text')}
+            onEditStyle={() => toggleModal('style')}
+            onRotate={() => toggleModal('rotate')}
+            onDelete={() => onDelete(id)}
+          />
+        </div>
+      )}
+
+      {activeModal === 'rotate' && (
+        <div
+          className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80"
+          style={{
+            left: `${modalPosition.left}px`,
+            top: `${modalPosition.top}px`,
+            transform: 'none',
+          }}
+        >
+          <h3 className="text-lg font-bold mb-4 text-center">Rotate Box</h3>
+          <div className="flex items-center justify-between">
+            <label className="font-semibold">Rotation (°):</label>
+            <input
+              type="number"
+              value={rotation}
+              onChange={(e) => handleRotationChange(Number(e.target.value))}
+              className="border p-1 w-16"
+            />
+          </div>
+          <div className="flex justify-end mt-4">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => toggleModal('rotate')}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default InsertText;

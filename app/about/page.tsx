@@ -1,11 +1,12 @@
 import AuthLayout from "@/components/AuthLayout";
-import ReactRND from "@/components/ReactRND";
+import InteractExample from "@/components/insertText/InteractExample";
+
 
 const About = () => {
 
   return (
     <AuthLayout>
-      <ReactRND />
+      <InteractExample />
     </AuthLayout>
   );
 };
