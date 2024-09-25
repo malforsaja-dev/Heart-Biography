@@ -51,7 +51,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full z-10 flex flex-col items-center">
+    <div className="absolute -top-6 left-0 w-full h-full z-10 flex flex-col items-center">
       {/* Toolbar */}
       <div
         id={`quill-toolbar-${id}`}

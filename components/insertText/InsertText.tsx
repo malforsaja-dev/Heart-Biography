@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import interact from 'interactjs';
 import DropdownMenu from './DropdownMenu';
 import StyleBox from './StyleBox';
-import TextEditor from './TextEditor'; // Import TextEditor component
+import dynamic from 'next/dynamic';
+
+const TextEditor = dynamic(() => import('./TextEditor'), { ssr: false });
 
 interface InsertTextProps {
   id: number;
@@ -35,40 +37,41 @@ const InsertText: React.FC<InsertTextProps> = ({
   const [isBorderTransparent, setIsBorderTransparent] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
+  const [isRotating, setIsRotating] = useState(false); // Track rotation mode
   const [width, setWidth] = useState<number>(256); // Initial width
   const [height, setHeight] = useState<number>(256); // Initial height
-  
+  const [modalPosition, setModalPosition] = useState<{ left: number; top: number }>({ left: x + 100, top: y });
+  const [dropdownPosition, setDropdownPosition] = useState<{ left: number; top: number }>({ left: x, top: y });
+
   const elementRef = useRef<HTMLDivElement>(null);
   const interactableRef = useRef<any>(null);
 
   useEffect(() => {
-    if (elementRef.current) {
-      elementRef.current.setAttribute('data-x', x.toString());
-      elementRef.current.setAttribute('data-y', y.toString());
-      elementRef.current.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
-      elementRef.current.style.width = `${width}px`;
-      elementRef.current.style.height = `${height}px`;
-    }
-  }, [x, y, rotation, id, width, height]);
-
-  useEffect(() => {
-    // Re-initialize interact.js only if not already initialized
     if (elementRef.current && !interactableRef.current) {
       interactableRef.current = interact(elementRef.current)
         .draggable({
           inertia: true,
           listeners: {
             move(event) {
+              if (isRotating) return; // Disable drag if rotating
               const target = event.target;
               const startX = parseFloat(target.getAttribute('data-x') || '0');
               const startY = parseFloat(target.getAttribute('data-y') || '0');
               const newX = startX + event.dx;
               const newY = startY + event.dy;
-              target.style.transform = `translate(${newX}px, ${newY}px) rotate(${rotation}deg)`;
+  
+              target.style.left = `${newX}px`;
+              target.style.top = `${newY}px`;
+  
               target.setAttribute('data-x', newX.toString());
               target.setAttribute('data-y', newY.toString());
+
+              // Update modal and dropdown positions
+              setModalPosition({ left: newX + 50, top: newY }); // Offset the modal position from element
+              setDropdownPosition({ left: newX, top: newY });
             },
             end(event) {
+              if (isRotating) return; // No action if rotating
               const target = event.target;
               const newX = parseFloat(target.getAttribute('data-x') || '0');
               const newY = parseFloat(target.getAttribute('data-y') || '0');
@@ -78,27 +81,40 @@ const InsertText: React.FC<InsertTextProps> = ({
         })
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          inertia: true,
           listeners: {
             move(event) {
+              if (isRotating) return; // Disable resize if rotating
               const target = event.target;
               const newWidth = event.rect.width;
               const newHeight = event.rect.height;
-              const x = (parseFloat(target.getAttribute('data-x') || '0') || 0) + event.deltaRect.left;
-              const y = (parseFloat(target.getAttribute('data-y') || '0') || 0) + event.deltaRect.top;
 
-              // Update styles
+              let newLeft = parseFloat(target.getAttribute('data-x') || '0');
+              let newTop = parseFloat(target.getAttribute('data-y') || '0');
+
+              if (event.edges.left) {
+                newLeft += event.deltaRect.left;
+              }
+              if (event.edges.top) {
+                newTop += event.deltaRect.top;
+              }
+
               target.style.width = `${newWidth}px`;
               target.style.height = `${newHeight}px`;
-              target.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
-              target.setAttribute('data-x', x.toString());
-              target.setAttribute('data-y', y.toString());
+              target.style.left = `${newLeft}px`;
+              target.style.top = `${newTop}px`;
 
-              // Update state with new width and height
+              target.setAttribute('data-x', newLeft.toString());
+              target.setAttribute('data-y', newTop.toString());
+
               setWidth(newWidth);
               setHeight(newHeight);
+
+              // Update modal and dropdown positions
+              setModalPosition({ left: newLeft + 50, top: newTop });
+              setDropdownPosition({ left: newLeft, top: newTop });
             },
             end(event) {
+              if (isRotating) return; // No action if rotating
               const target = event.target;
               const newX = parseFloat(target.getAttribute('data-x') || '0');
               const newY = parseFloat(target.getAttribute('data-y') || '0');
@@ -119,28 +135,21 @@ const InsertText: React.FC<InsertTextProps> = ({
         interactableRef.current = null;
       }
     };
-  }, [rotation, id, onPositionChange]);
+  }, [rotation, id, onPositionChange, isRotating]);
 
   useEffect(() => {
-    // Enable or disable interact.js based on editing mode
     if (interactableRef.current) {
-      interactableRef.current.draggable({ enabled: !isEditing });
-      interactableRef.current.resizable({ enabled: !isEditing });
+      interactableRef.current.draggable({ enabled: !isEditing && !isRotating });
+      interactableRef.current.resizable({ enabled: !isEditing && !isRotating });
     }
-  }, [isEditing]);
-
-  // This useEffect ensures interact.js state is retained during content change
-  useEffect(() => {
-    if (interactableRef.current) {
-      // Re-enable interact.js after content changes
-      interactableRef.current.draggable({ enabled: !isEditing });
-      interactableRef.current.resizable({ enabled: !isEditing });
-    }
-  }, [content, isEditing]); // Listen to content changes but retain interact state
+  }, [isEditing, isRotating]);
 
   const toggleModal = (modalType: 'style' | 'text' | 'rotate') => {
     if (modalType === 'text') {
       setIsEditing(!isEditing); // Toggle edit mode
+    }
+    if (modalType === 'rotate') {
+      setIsRotating(!isRotating); // Toggle rotation mode
     }
     setActiveModal(activeModal === modalType ? 'none' : modalType);
     setIsDropdownOpen(false);
@@ -149,86 +158,104 @@ const InsertText: React.FC<InsertTextProps> = ({
   const handleRotationChange = (newRotation: number) => {
     const target = elementRef.current;
     if (target) {
-      const x = parseFloat(target.getAttribute('data-x') || '0') || 0;
-      const y = parseFloat(target.getAttribute('data-y') || '0') || 0;
-      target.style.transform = `translate(${x}px, ${y}px) rotate(${newRotation}deg)`;
+      // Apply rotation transform
+      target.style.transform = `rotate(${newRotation}deg)`;
+      onPositionChange(id, parseFloat(target.getAttribute('data-x') || '0'), parseFloat(target.getAttribute('data-y') || '0'), newRotation);
     }
-    onPositionChange(id, x, y, newRotation);
   };
 
   return (
-    <div
-      ref={elementRef}
-      className={`absolute w-64 h-64 p-4 rounded-md border ${className}`}
-      style={{
-        transform: `translate(${x}px, ${y}px) rotate(${rotation}deg)`,
-        backgroundColor: isBgTransparent ? 'transparent' : backgroundColor,
-        borderColor: isBorderTransparent ? 'transparent' : borderColor,
-        borderWidth: `${borderSize}px`,
-        zIndex: id,
-        width: `${width}px`, // Maintain the element's current width
-        height: `${height}px`, // Maintain the element's current height
-        cursor: isEditing ? 'text' : 'move', // Use 'move' cursor for drag
-        userSelect: isEditing ? 'text' : 'unset',
-      }}
-      data-x={x}
-      data-y={y}
-      key={`${id}-${width}-${height}`} // Re-render based on size and content changes
-    >
-      {/* Display content with Quill formatting only if not editing */}
-      {!isEditing && (
-        <div
-          className="w-full h-full overflow-auto ql-editor"
-          style={{ pointerEvents: isEditing ? 'auto' : 'none' }}
-          dangerouslySetInnerHTML={{ __html: content }} // ql-editor class for default Quill styling
-        />
-      )}
+    <div className="relative"> {/* Parent container */}
+      <div
+        ref={elementRef}
+        className={`absolute w-64 h-64 p-4 rounded-md border ${className}`}
+        style={{
+          left: `${x}px`,
+          top: `${y}px`,
+          backgroundColor: isBgTransparent ? 'transparent' : backgroundColor,
+          borderColor: isBorderTransparent ? 'transparent' : borderColor,
+          borderWidth: `${borderSize}px`,
+          zIndex: id,
+          width: `${width}px`,
+          height: `${height}px`,
+          cursor: isEditing ? 'text' : 'move',
+          userSelect: isEditing ? 'text' : 'unset',
+          transform: `rotate(${rotation}deg)`, // Apply rotation directly in style
+        }}
+        data-x={x}
+        data-y={y}
+      >
+        {!isEditing && (
+          <div
+            className="w-full h-full overflow-auto ql-editor"
+            style={{ pointerEvents: isEditing ? 'auto' : 'none' }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )}
 
-      {/* Dropdown Button */}
-      <div className="absolute top-1 right-1">
-        <button className="bg-gray-300 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          &#x22EE;
-        </button>
-        {isDropdownOpen && (
+        {/* Empty placeholder for dropdown positioning */}
+        <div className="absolute top-1 right-1 z-10">
+          <button className="bg-gray-300 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            &#x22EE;
+          </button>
+        </div>
+
+        {activeModal === 'style' && (
+          <StyleBox
+            backgroundColor={backgroundColor}
+            borderColor={borderColor}
+            borderSize={borderSize}
+            isBgTransparent={isBgTransparent}
+            isBorderTransparent={isBorderTransparent}
+            onBgColorChange={setBackgroundColor}
+            onBorderColorChange={setBorderColor}
+            onBorderSizeChange={setBorderSize}
+            onBgTransparencyToggle={() => setIsBgTransparent(!isBgTransparent)}
+            onBorderTransparencyToggle={() => setIsBorderTransparent(!isBorderTransparent)}
+            onClose={() => setActiveModal('none')}
+          />
+        )}
+        {activeModal === 'text' && (
+          <TextEditor
+            id={id}
+            content={content}
+            onContentChange={onContentChange}
+            onClose={() => {
+              setActiveModal('none');
+              setIsEditing(false); // Exit edit mode on close
+            }}
+          />
+        )}
+      </div>
+
+      {/* Fixed-position dropdown outside the element's rotation */}
+      {isDropdownOpen && (
+        <div
+          className="absolute bg-white border border-gray-300 shadow-md rounded-lg z-10"
+          style={{
+            left: `${dropdownPosition.left + 230}px`, // Offset the dropdown position from element
+            top: `${dropdownPosition.top + 10}px`, // Align it vertically with the element
+            transform: 'none', // Ensure no transformation is applied
+          }}
+        >
           <DropdownMenu
             onEditText={() => toggleModal('text')}
             onEditStyle={() => toggleModal('style')}
             onRotate={() => toggleModal('rotate')}
             onDelete={() => onDelete(id)}
           />
-        )}
-      </div>
-
-
-      {/* Conditional Modals */}
-      {activeModal === 'style' && (
-        <StyleBox
-          backgroundColor={backgroundColor}
-          borderColor={borderColor}
-          borderSize={borderSize}
-          isBgTransparent={isBgTransparent}
-          isBorderTransparent={isBorderTransparent}
-          onBgColorChange={setBackgroundColor}
-          onBorderColorChange={setBorderColor}
-          onBorderSizeChange={setBorderSize}
-          onBgTransparencyToggle={() => setIsBgTransparent(!isBgTransparent)}
-          onBorderTransparencyToggle={() => setIsBorderTransparent(!isBorderTransparent)}
-          onClose={() => setActiveModal('none')}
-        />
+        </div>
       )}
-      {activeModal === 'text' && (
-        <TextEditor
-          id={id}
-          content={content}
-          onContentChange={onContentChange}
-          onClose={() => {
-            setActiveModal('none');
-            setIsEditing(false); // Exit edit mode on close
-          }}
-        />
-      )}
+
       {activeModal === 'rotate' && (
-        <div className="absolute bottom-[-120px] left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80">
+        <div
+          className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80"
+          style={{
+            left: `${modalPosition.left}px`,
+            top: `${modalPosition.top}px`,
+            transform: 'none',
+          }}
+        >
           <h3 className="text-lg font-bold mb-4 text-center">Rotate Box</h3>
           <div className="flex items-center justify-between">
             <label className="font-semibold">Rotation (°):</label>
