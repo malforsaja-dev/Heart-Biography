@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import DraggableTextBox from '@/components/lpwelle/DraggableTextBox';
+import InsertText from '@/components/insertText/InsertText';
+import { useInsertText } from '@/hooks/useInsertText';
 import { fetchText, saveText, deleteText } from '@/utils/useSupabase';
 import useDiagramDates from '@/hooks/useDiagramDates';
 import { useLanguage } from '@/context/LanguageContext';
@@ -7,88 +8,88 @@ import { useUser } from '@/context/UserContext';
 import A4Landscape from '../A4Landscape';
 import DiagramBackgroundSVG from '@/data/DiagramBackgroundSVG';
 
-interface TextElement {
-  content: string;
-  position: { x: number; y: number };
-  size: { width: string; height: string };
-}
-
-type TextElements = Record<string, TextElement>;
-
 const colors = [
-  "#92d4ee",
-  "#b3e2a0", 
-  "#ec86b9",
-  "#f8d24a",
-  "#f8d24a",
-  "#f8d24a",
-  "#f3b5d4",
-  "#d1edc3",
-  "#bde5f5",
-  "#bde5f5",
-  "#d1edc3",
-  "#f3b5d4"
+  "#92d4ee", "#b3e2a0", "#ec86b9", "#f8d24a", "#f8d24a",
+  "#f8d24a", "#f3b5d4", "#d1edc3", "#bde5f5", "#bde5f5",
+  "#d1edc3", "#f3b5d4"
 ];
 
 const LpWelleContent = () => {
+  const { elements, addElement, updateElement, updateElementPosition, deleteElement, setElements } = useInsertText();
   const [diagramIndex, setDiagramIndex] = useState(0);
   const { getDatesForDiagram, maxDiagrams } = useDiagramDates();
   const dates = getDatesForDiagram(diagramIndex);
   const { texts: languageTexts } = useLanguage();
   const { user } = useUser();
 
-  const diagramKey = `${diagramIndex + 1}`;
-  const [textElements, setTextElements] = useState<TextElements>({});
-
   useEffect(() => {
     const loadTexts = async () => {
       if (user?.id) {
         const texts = await fetchText(user.id);
         const currentDiagramTexts = texts[`diagram${diagramIndex + 1}`];
-        
+  
         if (currentDiagramTexts) {
-          setTextElements(currentDiagramTexts);
+          const formattedElements = Object.keys(currentDiagramTexts).map((key, index) => ({
+            id: index + 1,
+            x: currentDiagramTexts[key].position.x,
+            y: currentDiagramTexts[key].position.y,
+            rotation: currentDiagramTexts[key].rotation || 0,
+            size: currentDiagramTexts[key].size || { width: '200px', height: '70px' },
+            content: currentDiagramTexts[key].content,
+          }));
+          setElements(formattedElements);
         } else {
-          setTextElements({});
+          setElements([]);
         }
       }
     };
   
     loadTexts();
-  }, [user, diagramKey, diagramIndex]);
-
-  const handleSave = async (keyName: string, newContent: string, newPosition: { x: number; y: number }, newSize: { width: string; height: string }) => {
-    await saveText(user?.id || '', diagramIndex, keyName, newContent, newPosition, newSize);
+  }, [user?.id, diagramIndex, setElements]); 
   
-    setTextElements((prev) => ({
-      ...prev,
-      [keyName]: {
-        content: newContent,
-        position: newPosition,
-        size: newSize,
-      },
-    }));
-  };
 
-  const handleSaveAll = () => {
-    Object.keys(textElements).forEach((key) => {
-      const { content, position, size } = textElements[key];
-      handleSave(key, content, position, size);
-    });
+  const handleSave = async (id: number, newContent: string, newSize?: { width: string, height: string }) => {
+    console.log('handleSave called for id:', id, ' with content:', newContent, ' and size:', newSize);
+  
+    const element = elements.find(el => el.id === id);
+    if (!element) return;
+  
+    const { x, y, rotation } = element;
+    const size = newSize ?? element.size;
+    const keyName = `text${id}`;
+  
+    console.log('Saving element:', { id, newContent, x, y, rotation, size });
+  
+    await saveText(user?.id || '', diagramIndex, keyName, newContent, { x, y }, size);
+    updateElement(id, newContent, size);
+  };
+  
+  
+  const handleSaveAll = async () => {
+    for (const element of elements) {
+      const keyName = `text${element.id}`;
+      await saveText(
+        user?.id || '', 
+        diagramIndex, 
+        keyName, 
+        element.content, 
+        { x: element.x, y: element.y }, 
+        { width: '200px', height: '150px' }
+      );
+    }
   };
 
   const addNewTextElement = () => {
-    const newId = `text${Date.now()}`;
     const newElement = {
+      id: elements.length + 1,
+      x: 250,
+      y: 250,
+      rotation: 0,
       content: 'New Text',
-      position: { x: 250, y: 250 },
-      size: { width: '200px', height: '70px' },
+      size: { width: '200px', height: '70px' }
     };
-    setTextElements((prev) => ({
-      ...prev,
-      [newId]: newElement,
-    }));
-    handleSave(newId, newElement.content, newElement.position, newElement.size);
+    addElement();
+    handleSave(newElement.id, newElement.content, newElement.size);
   };
 
   return (
@@ -101,7 +102,7 @@ const LpWelleContent = () => {
           Add Text
         </button>
       </div>
-  
+
       <div className="flex justify-center w-full items-center pt-20 py-2 z-0 relative bg-gray-100 mt-12">
         {Array.from({ length: maxDiagrams }).map((_, index) => (
           <button
@@ -112,7 +113,7 @@ const LpWelleContent = () => {
           />
         ))}
       </div>
-  
+
       <A4Landscape>
         {/* Header Section */}
         <div className="h-[10rem] bg-gray-300 flex justify-between items-start px-2 py-2 z-10">
@@ -121,35 +122,33 @@ const LpWelleContent = () => {
             <p className="text-lg">{`${diagramIndex + 1}. ${languageTexts?.lpwelle?.jahrsiebt || ''}`}: {dates?.[0]?.date} - {dates?.[7]?.date}</p>
           </div>
           <div className="flex flex-col text-right">
-            <p>{languageTexts?.lpwelle?.[diagramKey]?.line1}</p>
-            <p>{languageTexts?.lpwelle?.[diagramKey]?.line2}</p>
-            <p>{languageTexts?.lpwelle?.[diagramKey]?.line3}</p>
-            <p>{languageTexts?.lpwelle?.[diagramKey]?.line4}</p>
+            <p>{languageTexts?.lpwelle?.[`${diagramIndex + 1}`]?.line1}</p>
+            <p>{languageTexts?.lpwelle?.[`${diagramIndex + 1}`]?.line2}</p>
+            <p>{languageTexts?.lpwelle?.[`${diagramIndex + 1}`]?.line3}</p>
+            <p>{languageTexts?.lpwelle?.[`${diagramIndex + 1}`]?.line4}</p>
           </div>
         </div>
-  
-        {/* Text Elements Section */}
-        {Object.keys(textElements).map((key) => {
-          const { content, position, size } = textElements[key];
-          return (
-            <DraggableTextBox
-              key={key}
-              id={parseInt(key.replace('text', ''))}
-              content={content}
-              defaultWidth={size.width}
-              defaultHeight={size.height}
-              initialPosition={position}
-              onRemove={() => {
-                const updatedElements = { ...textElements };
-                delete updatedElements[key];
-                setTextElements(updatedElements);
-                deleteText(user?.id || '', diagramIndex, key);
-              }}
-              onSave={(newContent, newPosition, newSize) => handleSave(key, newContent, newPosition, newSize)}
-            />
-          );
-        })}
-  
+
+        {/* InsertText Elements Section */}
+        {elements.map((element) => (
+          <InsertText
+            key={element.id}
+            id={element.id}
+            x={element.x}
+            y={element.y}
+            rotation={element.rotation}
+            size={element.size}
+            content={element.content}
+            onContentChange={(id, content) => handleSave(id, content, element.size)} // Pass size if needed
+            onPositionChange={(id, x, y, rotation) => updateElementPosition(id, x, y, rotation)}
+            onDelete={(id: number) => {
+              deleteElement(id);
+              deleteText(user?.id || '', diagramIndex, `text${id}`);
+            }}
+            className="box-shadow"
+          />
+        ))}
+
         {/* Diagram Content Section */}
         <div className="relative h-[62%]">
           <div className="absolute top-0 w-full h-1/4 bg-yellow-200 flex items-center justify-between px-4 z-0">
@@ -168,10 +167,9 @@ const LpWelleContent = () => {
             <p><span className="font-florinht3">1</span> {dates[1]?.age}.</p>
             <p>{dates[7]?.age}. <span className="font-florinht3">9</span></p>
           </div>
-  
           <DiagramBackgroundSVG color={colors[diagramIndex % colors.length]} />
         </div>
-  
+
         {/* Date Position Section */}
         <div className="absolute left-[1%] bottom-[17%] w-[1%] h-[5%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[0]?.date}</p>
@@ -197,7 +195,7 @@ const LpWelleContent = () => {
         <div className="absolute -right-5 bottom-[17%] w-[10%] h-[5%] flex flex-col justify-center z-10">
           <p className="text-center">{dates[7]?.date}</p>
         </div>
-  
+
         {/* Footer Section */}
         <div className="relative flex justify-between items-start bg-gray-200 pt-2 pb-24 px-8 mt-auto">
           <p>{languageTexts?.lpwelle?.bottomTextLeft}</p>
@@ -210,7 +208,6 @@ const LpWelleContent = () => {
       </A4Landscape>
     </div>
   );
-  
 };
 
 export default LpWelleContent;

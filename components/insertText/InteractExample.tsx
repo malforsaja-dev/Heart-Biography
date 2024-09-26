@@ -2,7 +2,6 @@
 // you have to put the imports, call the props, call the component
 // and add a button with addElement
 
-
 "use client"
 
 import React from 'react';
@@ -28,8 +27,9 @@ const InteractExample: React.FC = () => {
           x={element.x}
           y={element.y}
           rotation={element.rotation}
+          size={element.size}
           content={element.content}
-          onContentChange={(content) => updateElement(element.id, content)}
+          onContentChange={(id, content) => updateElement(id, content)}
           onPositionChange={(id, x, y, rotation) => updateElementPosition(id, x, y, rotation)}
           onDelete={() => deleteElement(element.id)}
         />
@@ -38,7 +38,7 @@ const InteractExample: React.FC = () => {
       {/* Button to add new element */}
       <button
         className="absolute bottom-4 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-        onClick={addElement}
+        onClick={() => addElement()} // Wrap in arrow function
       >
         Add Element
       </button>

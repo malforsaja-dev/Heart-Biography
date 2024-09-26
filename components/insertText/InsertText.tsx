@@ -11,8 +11,9 @@ interface InsertTextProps {
   x: number;
   y: number;
   rotation: number;
+  size: { width: string; height: string };
   content: string;
-  onContentChange: (content: string, id: number) => void;
+  onContentChange: (id: number, content: string) => void;
   onPositionChange: (id: number, x: number, y: number, rotation: number) => void;
   onDelete: (id: number) => void;
   className?: string;
@@ -23,6 +24,7 @@ const InsertText: React.FC<InsertTextProps> = ({
   x,
   y,
   rotation,
+  size,
   content,
   onContentChange,
   onPositionChange,
@@ -32,7 +34,6 @@ const InsertText: React.FC<InsertTextProps> = ({
   const {
     elementRef,
     isEditing,
-    isRotating,
     activeModal,
     toggleModal,
     handleRotationChange,
@@ -59,7 +60,7 @@ const InsertText: React.FC<InsertTextProps> = ({
   });
 
   return (
-    <div className="relative">
+    <div className="relative z-20">
       <div
         ref={elementRef}
         className={`absolute w-64 h-64 p-4 rounded-md border ${className}`}
@@ -70,8 +71,8 @@ const InsertText: React.FC<InsertTextProps> = ({
           borderColor: isBorderTransparent ? 'transparent' : borderColor,
           borderWidth: `${borderSize}px`,
           zIndex: id,
-          width: `256px`,
-          height: `256px`,
+          width: size.width,
+          height: size.height,
           cursor: isEditing ? 'text' : 'move',
           userSelect: isEditing ? 'text' : 'none',
           transform: `rotate(${rotation}deg)`,
@@ -113,7 +114,10 @@ const InsertText: React.FC<InsertTextProps> = ({
           <TextEditor
             id={id}
             content={content}
-            onContentChange={onContentChange}
+            onContentChange={(newContent, id) => {
+              console.log('onContentChange triggered for id:', id, ' with content:', newContent);
+              onContentChange(id, newContent);
+            }}
             onClose={() => {
               toggleModal('text');
             }}
