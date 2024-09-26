@@ -3,9 +3,9 @@
 
 import { useState } from 'react';
 import AuthLayout from '@/components/AuthLayout';
-import { FotobuchContent } from '@/components/DashboardContent/FotobuchContent';
-import { LpWelleContent } from '@/components/DashboardContent/LpWelleContent';
-import { PrintContent } from '@/components/DashboardContent/PrintContent';
+import { FotobuchContent } from '@/components/Dashboard/FotobuchContent';
+import { LpWelleContent } from '@/components/Dashboard/LpWelleContent';
+import { PrintContent } from '@/components/Dashboard/PrintContent';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('LpWelle');

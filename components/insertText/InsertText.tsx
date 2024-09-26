@@ -70,7 +70,7 @@ const InsertText: React.FC<InsertTextProps> = ({
           borderColor: isBorderTransparent ? 'transparent' : borderColor,
           borderWidth: `${borderSize}px`,
           zIndex: id,
-          width: `256px`, // Use state values here if needed
+          width: `256px`,
           height: `256px`,
           cursor: isEditing ? 'text' : 'move',
           userSelect: isEditing ? 'text' : 'none',

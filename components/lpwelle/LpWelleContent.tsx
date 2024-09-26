@@ -4,7 +4,7 @@ import { fetchText, saveText, deleteText } from '@/utils/useSupabase';
 import useDiagramDates from '@/hooks/useDiagramDates';
 import { useLanguage } from '@/context/LanguageContext';
 import { useUser } from '@/context/UserContext';
-import A4Landscape from './A4Landscape';
+import A4Landscape from '../A4Landscape';
 import DiagramBackgroundSVG from '@/data/DiagramBackgroundSVG';
 
 interface TextElement {

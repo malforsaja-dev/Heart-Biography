@@ -1,4 +1,4 @@
-import A4Portrait from '@/components/fotobook/A4Portrait';
+import A4Portrait from '@/components/A4Portrait';
 import DraggableResizableBox from '@/components/fotobook/DraggableResizableBox';
 
 interface PaperProps {
