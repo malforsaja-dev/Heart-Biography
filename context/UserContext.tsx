@@ -47,7 +47,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
     if (user) {
       const { data: profile, error: profileError } = await supabase
-        .from("lpwelle")
+        .from("user_data")
         .select("user_name, birth_date, texts")
         .eq("id", user.id)
         .single();
@@ -76,7 +76,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (user) {
         try {
           const { error } = await supabase
-            .from("lpwelle")
+            .from("user_data")
             .update({
               user_name: data.userName,
               birth_date: data.birthDate,

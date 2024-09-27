@@ -1,7 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+// Import a unique ID generator
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Element {
-  id: number;
+  id: string;
   x: number;
   y: number;
   rotation: number;
@@ -16,60 +18,71 @@ export interface Element {
   };
 }
 
+const defaultElementStructure = {
+  x: 250,
+  y: 250,
+  rotation: 0,
+  content: 'New Text',
+  size: { width: '200px', height: '100px' },
+  style: {
+    backgroundColor: '#ffffff',
+    borderColor: '#000000',
+    borderSize: 2,
+    isBgTransparent: true,
+    isBorderTransparent: false,
+  },
+};
+
 export const useInsertText = () => {
   const [elements, setElements] = useState<Element[]>([]);
-  const [nextId, setNextId] = useState(1);
 
+  // Function to add a new element
   const addElement = () => {
     const newElement: Element = {
-      id: nextId,
-      x: nextId * 10,
-      y: nextId * 10,
-      rotation: 0,
-      content: `<p>Element ${nextId} Content</p>`,
-      size: { width: '250px', height: '150px' },
-      style: {
-        backgroundColor: '#63b3ed',
-        borderColor: '#4299e1',
-        borderSize: 2,
-        isBgTransparent: false,
-        isBorderTransparent: false,
-      }
+      ...defaultElementStructure,
+      id: uuidv4(), // Generate unique ID for each new element
     };
+
     setElements((prevElements) => [...prevElements, newElement]);
-    setNextId((prevId) => prevId + 1);
   };
 
-  const updateElement = (id: number, updatedContent: string, newSize?: { width: string; height: string }, rotation?: number) => {
-    setElements((prevElements) =>
-      prevElements.map((el) =>
+  // Function to update an existing element by id
+  const updateElement = (id: string, updatedContent: string, newSize?: { width: string; height: string }, rotation?: number) => {
+    console.log('updateElement called with:', { id, updatedContent, newSize, rotation });
+    setElements((prevElements) => {
+      return prevElements.map((el) => 
         el.id === id ? { ...el, content: updatedContent, size: newSize ?? el.size, rotation: rotation ?? el.rotation } : el
-      )
-    );
+      );
+    });
+    console.log('Elements state after updateElement:', elements); // Check the state after update
   };
+  
 
-  const updateElementPosition = (id: number, x: number, y: number, rotation: number) => {
+  // Function to update the position of an element by id
+  const updateElementPosition = (id: string, x: number, y: number, rotation: number) => {
     setElements((prevElements) =>
       prevElements.map((el) => (el.id === id ? { ...el, x, y, rotation } : el))
     );
   };
 
-  const updateElementStyle = useCallback((id: number, newStyle: any) => {
-    setElements((prevElements) =>
-      prevElements.map((el) =>
-        el.id === id ? { ...el, style: { ...el.style, ...newStyle } } : el
-      )
-    );
-  }, []);
+  // Function to update the style of an element by id
+  const updateElementStyle = useCallback((id: string, newStyle: any) => {
+    setElements((prevElements) => {
+      const updatedElements = prevElements.map((el) =>
+        el.id === id ? { ...el, size: { width: `${newStyle.width}px`, height: `${newStyle.height}px` }, style: { ...el.style, ...newStyle } } : el
+      );
+      console.log('Updated Elements in useInsertText after style change:', updatedElements);
+      return updatedElements;
+    });
+  }, [setElements]);
+  
 
-    // Reset elements for a new diagram
-    const resetElements = () => {
-      setElements([]);
-      setNextId(1);
-    };
+  useEffect(() => {
+    console.log('Elements state updated:', elements);
+  }, [elements]);
 
-  // Delete the element
-  const deleteElement = (id: number) => {
+  // Function to delete an element by id
+  const deleteElement = (id: string) => {
     setElements((prevElements) => prevElements.filter((el) => el.id !== id));
   };
 
@@ -80,7 +93,6 @@ export const useInsertText = () => {
     updateElement,
     updateElementPosition,
     updateElementStyle,
-    resetElements,
     deleteElement,
   };
 };

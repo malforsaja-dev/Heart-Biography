@@ -4,8 +4,8 @@ import 'quill/dist/quill.snow.css';
 
 interface TextEditorProps {
   content: string;
-  id: number;
-  onContentChange: (content: string, id: number) => void;
+  id: string;
+  onContentChange: (content: string, id: string) => void;
   onClose: () => void;
   onCancel?: () => void;
 }

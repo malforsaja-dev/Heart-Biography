@@ -2,11 +2,12 @@ import { useInteractText } from '@/hooks/useInteractText';
 import DropdownMenu from './DropdownMenu';
 import StyleBox from './StyleBox';
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 
 const TextEditor = dynamic(() => import('./TextEditor'), { ssr: false });
 
 interface InsertTextProps {
-  id: number;
+  id: string;
   x: number;
   y: number;
   rotation: number;
@@ -17,10 +18,10 @@ interface InsertTextProps {
   borderSize: number;
   isBgTransparent: boolean;
   isBorderTransparent: boolean;
-  onContentChange: (id: number, content: string) => void;
-  onPositionChange: (id: number, x: number, y: number, rotation: number) => void;
-  onStyleChange: (id: number, newStyle: any) => void;
-  onDelete: (id: number) => void;
+  onContentChange: (id: string, content: string) => void;
+  onPositionChange: (id: string, x: number, y: number, rotation: number) => void;
+  onStyleChange: (id: string, newStyle: any) => void;
+  onDelete: (id: string) => void;
   className?: string;
 }
 
@@ -71,11 +72,25 @@ const InsertText: React.FC<InsertTextProps> = ({
     onStyleChange,
   });
 
+  useEffect(() => {
+    console.log('InsertText component rendered with props:', {
+      id,
+      size,
+      content,
+      x,
+      y,
+      backgroundColor,
+      borderColor,
+      borderSize,
+    });
+  }, [id, size, content, x, y, backgroundColor, borderColor, borderSize]);
+  
+
   return (
     <div className="relative z-20">
       <div
         ref={elementRef}
-        className={`absolute w-64 h-64 p-4 rounded-md border ${className}`}
+        className={`absolute w-64 h-64 p-4 rounded-md border ${className} group`}
         style={{
           left: `${x}px`,
           top: `${y}px`,
@@ -100,8 +115,8 @@ const InsertText: React.FC<InsertTextProps> = ({
           />
         )}
 
-        <div className="absolute top-1 right-1 z-10">
-          <button className="bg-gray-300 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        <div className="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <button className="bg-amber-300 border-2 border-red-500 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
             &#x22EE;
           </button>
         </div>

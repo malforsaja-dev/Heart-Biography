@@ -20,7 +20,7 @@ export const useAuth = () => {
         if (session) {
           cookie.set("sb-access-token", session.access_token, { expires: 7 });
           const { data: profile, error: profileError } = await supabase
-            .from("lpwelle")
+            .from("user_data")
             .select("*")
             .eq("id", session.user.id)
             .single();

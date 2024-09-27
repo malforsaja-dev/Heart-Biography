@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
-import InsertText from '@/components/insertText/InsertText';
+import { useState, useEffect, useMemo } from 'react';
+import { useUserData } from '@/context/UserDataContext';
+import { useUser } from '@/context/UserContext';
 import { useInsertText } from '@/hooks/useInsertText';
-import { fetchText, saveText, deleteText } from '@/utils/useSupabase';
+import { savePageData, deleteText } from '@/utils/useSupabase';
+import InsertText from '@/components/insertText/InsertText';
+import A4Landscape from '../A4Landscape';
 import useDiagramDates from '@/hooks/useDiagramDates';
 import { useLanguage } from '@/context/LanguageContext';
-import { useUser } from '@/context/UserContext';
-import A4Landscape from '../A4Landscape';
 import DiagramBackgroundSVG from '@/data/DiagramBackgroundSVG';
 
 const colors = [
@@ -15,102 +16,77 @@ const colors = [
 ];
 
 const LpWelleContent = () => {
-  const { elements, addElement, updateElement, updateElementPosition, updateElementStyle, deleteElement, setElements, resetElements } = useInsertText();
+  const { data, updatePageData } = useUserData();
+  const { elements, setElements, addElement, updateElement, updateElementPosition, updateElementStyle, deleteElement } = useInsertText();
   const [diagramIndex, setDiagramIndex] = useState(0);
   const { getDatesForDiagram, maxDiagrams } = useDiagramDates();
   const dates = getDatesForDiagram(diagramIndex);
   const { texts: languageTexts } = useLanguage();
   const { user } = useUser();
 
-  // Load texts from the database on user or diagram index change
+  // Memoized LpWelleData to avoid unnecessary renders
+  const LpWelleData = useMemo(() => data.LpWelle || {}, [data.LpWelle]);
+
   useEffect(() => {
-    const loadTexts = async () => {
-      if (user?.id) {
-        const texts = await fetchText(user.id);
-        const currentDiagramTexts = texts[`diagram${diagramIndex + 1}`];
-
-        resetElements();
-
-        if (currentDiagramTexts) {
-          const formattedElements = Object.keys(currentDiagramTexts).map((key, index) => ({
-            id: index + 1,
-            x: currentDiagramTexts[key].position.x,
-            y: currentDiagramTexts[key].position.y,
-            rotation: currentDiagramTexts[key].rotation || 0,
-            size: currentDiagramTexts[key].size || { width: '200px', height: '70px' },
-            content: currentDiagramTexts[key].content,
-            style: {
-              backgroundColor: currentDiagramTexts[key].backgroundColor || '#ffffff',
-              borderColor: currentDiagramTexts[key].borderColor || '#000000',
-              borderSize: currentDiagramTexts[key].borderSize || 1,
-              isBgTransparent: currentDiagramTexts[key].isBgTransparent || false,
-              isBorderTransparent: currentDiagramTexts[key].isBorderTransparent || false,
-            }
-          }));
-          setElements(formattedElements);
-        }
-      }
-    };
-  
-    loadTexts();
-  }, [user?.id, diagramIndex, setElements, resetElements]); 
-
-  // Save the element to the database
-  const handleSave = async (id: number, newContent: string, newSize?: { width: string, height: string }) => {
-    const element = elements.find(el => el.id === id);
-    if (!element) return;
-
-    const { x, y, rotation, style } = element;
-    const size = newSize ?? element.size;
-    const keyName = `text${id}`;
-
-    await saveText(user?.id || '', diagramIndex, keyName, newContent, { x, y }, size, { ...style, rotation }); // Pass rotation in style
-    updateElement(id, newContent, size);
-  };
-
-  // Save all elements (if needed)
-  const handleSaveAll = async () => {
-    for (const element of elements) {
-      const keyName = `text${element.id}`;
-      await saveText(
-        user?.id || '', 
-        diagramIndex, 
-        keyName, 
-        element.content, 
-        { x: element.x, y: element.y }, 
-        element.size,
-        { ...element.style, rotation: element.rotation } // Pass rotation in style
-      );
+    const currentDiagram = `diagram${diagramIndex + 1}`;
+    console.log('Fetching Elements for Diagram:', currentDiagram, 'Data:', LpWelleData[currentDiagram]);
+    if (LpWelleData[currentDiagram]) {
+      setElements(LpWelleData[currentDiagram]);
+    } else {
+      setElements([]);
     }
+  }, [LpWelleData, diagramIndex, setElements]);
+  
+
+  useEffect(() => {
+    console.log('Updated Elements in InsertText component:', elements);
+  }, [elements]);
+
+  // Save element changes to context and database
+  const handleSave = async (id: string, newContent: string, newSize?: { width: string; height: string }) => {
+    console.log('handleSave called with:', { id, newContent, newSize });
+    const element = elements.find(el => el.id === id);
+    if (!element) {
+      console.log('Element not found for id:', id);
+      return;
+    }
+  
+    const size = newSize ?? element.size;
+    console.log('Updating element size in handleSave:', size);
+  
+    // Update element in state with new content and size
+    updateElement(id, newContent, size);
+  
+    // Ensure state update propagates correctly
+    const updatedElements = elements.map(el =>
+      el.id === id ? { ...el, content: newContent, size, style: { ...el.style } } : el
+    );
+    console.log('Updated Elements before saving to context in handleSave:', updatedElements);
+  
+    // Update the context state and save to database
+    updatePageData('LpWelle', { ...LpWelleData, [`diagram${diagramIndex + 1}`]: updatedElements });
+    console.log('Updated LpWelleData in context in handleSave:', { ...LpWelleData, [`diagram${diagramIndex + 1}`]: updatedElements });
+  
+    // Save to Supabase
+    await savePageData(user?.id || '', 'LpWelle', { ...LpWelleData, [`diagram${diagramIndex + 1}`]: updatedElements });
+    console.log('Data saved to Supabase in handleSave');
   };
+  
+  
 
   // Add a new text element
   const addNewTextElement = () => {
-    const newElement = {
-      id: elements.length + 1,
-      x: 250,
-      y: 250,
-      rotation: 0,
-      content: 'New Text',
-      size: { width: '200px', height: '70px' },
-      style: {
-        backgroundColor: '#ffffff',
-        borderColor: '#000000',
-        borderSize: 1,
-        isBgTransparent: false,
-        isBorderTransparent: false,
-      }
-    };
     addElement();
-    handleSave(newElement.id, newElement.content, newElement.size);
+    console.log('After Adding Element:', elements);
   };
+
+  console.log('Elements:', elements, Array.isArray(elements));
+
+  
 
   return (
     <div className="relative w-full h-auto block">
       <div className="absolute top-4 right-20 z-10 flex space-x-4">
-        <button className="bg-green-500 text-white py-2 px-4 rounded" onClick={handleSaveAll}>
-          Save Changes
-        </button>
         <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={addNewTextElement}>
           Add Text
         </button>
@@ -143,29 +119,39 @@ const LpWelleContent = () => {
         </div>
 
         {/* InsertText Elements Section */}
-        {elements.map((element) => (
+        {Array.isArray(elements) && elements.map((element) => (
           <InsertText
-            key={element.id}
-            id={element.id}
-            x={element.x}
-            y={element.y}
-            rotation={element.rotation}
-            size={element.size}
-            content={element.content}
-            backgroundColor={element.style.backgroundColor} // Add style props
-            borderColor={element.style.borderColor}
-            borderSize={element.style.borderSize}
-            isBgTransparent={element.style.isBgTransparent}
-            isBorderTransparent={element.style.isBorderTransparent}
-            onContentChange={(id, content) => handleSave(id, content, element.size)}
-            onPositionChange={(id, x, y, rotation) => updateElementPosition(id, x, y, rotation)}
-            onStyleChange={(id, newStyle) => updateElementStyle(id, newStyle)} // Handle style changes
-            onDelete={(id: number) => {
-              deleteElement(id);
-              deleteText(user?.id || '', diagramIndex, `text${id}`);
-            }}
-            className="box-shadow"
-          />
+  key={element.id}
+  id={element.id}
+  x={element.x}
+  y={element.y}
+  rotation={element.rotation}
+  size={element.size}
+  content={element.content}
+  backgroundColor={element.style.backgroundColor}
+  borderColor={element.style.borderColor}
+  borderSize={element.style.borderSize}
+  isBgTransparent={element.style.isBgTransparent}
+  isBorderTransparent={element.style.isBorderTransparent}
+  onContentChange={(id, content) => {
+    console.log('onContentChange called with:', id, content);
+    handleSave(id, content, element.size);
+  }}
+  onPositionChange={(id, x, y, rotation) => {
+    console.log('onPositionChange called with:', id, x, y, rotation);
+    updateElementPosition(id, x, y, rotation);
+  }}
+  onStyleChange={(id, newStyle) => {
+    console.log('onStyleChange called with:', id, newStyle);
+    updateElementStyle(id, newStyle);
+  }}
+  onDelete={(id: string) => {
+    console.log('onDelete called with:', id);
+    deleteElement(id);
+    deleteText(user?.id || '', 'LpWelle', diagramIndex, `text${id}`);
+  }}
+  className="box-shadow"
+/>
         ))}
 
         {/* Diagram Content Section */}

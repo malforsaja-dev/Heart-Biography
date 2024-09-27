@@ -2,7 +2,7 @@ import AuthLayout from "@/components/AuthLayout";
 import InteractExample from "@/components/insertText/InteractExample";
 
 
-const About = () => {
+const Workbench = () => {
 
   return (
     <AuthLayout>
@@ -11,4 +11,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Workbench;
