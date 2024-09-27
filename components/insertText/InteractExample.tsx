@@ -1,6 +1,3 @@
-// this is an example how to use the InsertText component with the useInsertText hook
-// you have to put the imports, call the props, call the component
-// and add a button with addElement
 
 "use client"
 
@@ -14,12 +11,13 @@ const InteractExample: React.FC = () => {
     addElement,
     updateElement,
     updateElementPosition,
+    updateElementStyle,
     deleteElement,
   } = useInsertText();
 
   return (
     <div className="relative w-[90vw] h-[90vh] bg-gray-100">
-      {/* Render each element */}
+
       {elements.map((element) => (
         <InsertText
           key={element.id}
@@ -29,8 +27,14 @@ const InteractExample: React.FC = () => {
           rotation={element.rotation}
           size={element.size}
           content={element.content}
+          backgroundColor={element.style.backgroundColor}
+          borderColor={element.style.borderColor}
+          borderSize={element.style.borderSize}
+          isBgTransparent={element.style.isBgTransparent}
+          isBorderTransparent={element.style.isBorderTransparent}
           onContentChange={(id, content) => updateElement(id, content)}
           onPositionChange={(id, x, y, rotation) => updateElementPosition(id, x, y, rotation)}
+          onStyleChange={(id, newStyle) => updateElementStyle(id, newStyle)}
           onDelete={() => deleteElement(element.id)}
         />
       ))}
@@ -38,7 +42,7 @@ const InteractExample: React.FC = () => {
       {/* Button to add new element */}
       <button
         className="absolute bottom-4 left-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-        onClick={() => addElement()} // Wrap in arrow function
+        onClick={addElement}
       >
         Add Element
       </button>

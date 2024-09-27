@@ -6,7 +6,13 @@ interface UseInteractTextProps {
   x: number;
   y: number;
   rotation: number;
+  backgroundColor: string;
+  borderColor: string;
+  borderSize: number;
+  isBgTransparent: boolean;
+  isBorderTransparent: boolean;
   onPositionChange: (id: number, x: number, y: number, rotation: number) => void;
+  onStyleChange: (id: number, newStyle: any) => void;
 }
 
 export const useInteractText = ({
@@ -14,7 +20,13 @@ export const useInteractText = ({
   x,
   y,
   rotation,
+  backgroundColor: initialBgColor,
+  borderColor: initialBorderColor,
+  borderSize: initialBorderSize,
+  isBgTransparent: initialBgTransparent,
+  isBorderTransparent: initialBorderTransparent,
   onPositionChange,
+  onStyleChange,
 }: UseInteractTextProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const interactableRef = useRef<any>(null);
@@ -26,11 +38,23 @@ export const useInteractText = ({
   const [dropdownPosition, setDropdownPosition] = useState<{ left: number; top: number }>({ left: x, top: y });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const [backgroundColor, setBackgroundColor] = useState('#63b3ed');
-  const [borderColor, setBorderColor] = useState('#4299e1');
-  const [borderSize, setBorderSize] = useState(2);
-  const [isBgTransparent, setIsBgTransparent] = useState(false);
-  const [isBorderTransparent, setIsBorderTransparent] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState(initialBgColor);
+  const [borderColor, setBorderColor] = useState(initialBorderColor);
+  const [borderSize, setBorderSize] = useState(initialBorderSize);
+  const [isBgTransparent, setIsBgTransparent] = useState(initialBgTransparent);
+  const [isBorderTransparent, setIsBorderTransparent] = useState(initialBorderTransparent);
+
+  useEffect(() => {
+    onStyleChange(id, {
+      backgroundColor,
+      borderColor,
+      borderSize,
+      isBgTransparent,
+      isBorderTransparent,
+      rotation,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [backgroundColor, borderColor, borderSize, isBgTransparent, isBorderTransparent, rotation]);
 
   useEffect(() => {
     if (elementRef.current && !interactableRef.current) {
@@ -72,7 +96,7 @@ export const useInteractText = ({
               const target = event.target as HTMLDivElement;
               const newWidth = event.rect.width;
               const newHeight = event.rect.height;
-            
+
               let newLeft = parseFloat(target.getAttribute('data-x') || '0');
               let newTop = parseFloat(target.getAttribute('data-y') || '0');
 
@@ -84,15 +108,15 @@ export const useInteractText = ({
                   newTop += event.deltaRect.top;
                 }
               }
-            
+
               target.style.width = `${newWidth}px`;
               target.style.height = `${newHeight}px`;
               target.style.left = `${newLeft}px`;
               target.style.top = `${newTop}px`;
-            
+
               target.setAttribute('data-x', newLeft.toString());
               target.setAttribute('data-y', newTop.toString());
-            
+
               setModalPosition({ left: newLeft + 50, top: newTop });
               setDropdownPosition({ left: newLeft, top: newTop });
             },
@@ -129,10 +153,10 @@ export const useInteractText = ({
 
   const toggleModal = (modalType: 'style' | 'text' | 'rotate') => {
     if (modalType === 'text') {
-      setIsEditing(!isEditing); 
+      setIsEditing(!isEditing);
     }
     if (modalType === 'rotate') {
-      setIsRotating(!isRotating); 
+      setIsRotating(!isRotating);
     }
     setActiveModal(activeModal === modalType ? 'none' : modalType);
     setIsDropdownOpen(false);

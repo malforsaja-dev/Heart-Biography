@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export interface Element {
   id: number;
@@ -7,6 +7,13 @@ export interface Element {
   rotation: number;
   content: string;
   size: { width: string; height: string };
+  style: {
+    backgroundColor: string;
+    borderColor: string;
+    borderSize: number;
+    isBgTransparent: boolean;
+    isBorderTransparent: boolean;
+  };
 }
 
 export const useInsertText = () => {
@@ -14,13 +21,20 @@ export const useInsertText = () => {
   const [nextId, setNextId] = useState(1);
 
   const addElement = () => {
-    const newElement = {
+    const newElement: Element = {
       id: nextId,
       x: nextId * 10,
       y: nextId * 10,
       rotation: 0,
       content: `<p>Element ${nextId} Content</p>`,
-      size: { width: '250px', height: '150px' }
+      size: { width: '250px', height: '150px' },
+      style: {
+        backgroundColor: '#63b3ed',
+        borderColor: '#4299e1',
+        borderSize: 2,
+        isBgTransparent: false,
+        isBorderTransparent: false,
+      }
     };
     setElements((prevElements) => [...prevElements, newElement]);
     setNextId((prevId) => prevId + 1);
@@ -40,6 +54,21 @@ export const useInsertText = () => {
     );
   };
 
+  const updateElementStyle = useCallback((id: number, newStyle: any) => {
+    setElements((prevElements) =>
+      prevElements.map((el) =>
+        el.id === id ? { ...el, style: { ...el.style, ...newStyle } } : el
+      )
+    );
+  }, []);
+
+    // Reset elements for a new diagram
+    const resetElements = () => {
+      setElements([]);
+      setNextId(1);
+    };
+
+  // Delete the element
   const deleteElement = (id: number) => {
     setElements((prevElements) => prevElements.filter((el) => el.id !== id));
   };
@@ -50,6 +79,8 @@ export const useInsertText = () => {
     addElement,
     updateElement,
     updateElementPosition,
+    updateElementStyle,
+    resetElements,
     deleteElement,
   };
 };

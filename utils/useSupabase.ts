@@ -13,7 +13,7 @@ export const fetchText = async (userId: string) => {
     return null;
   }
 
-  return data?.texts || {}; // Ensure it returns an object, even if no texts
+  return data?.texts || {};
 };
 
 // Save or update text in the database
@@ -23,7 +23,15 @@ export const saveText = async (
   textField: string,
   newText: string,
   newPosition: { x: number; y: number },
-  newSize: { width: string; height: string }
+  newSize: { width: string; height: string },
+  newStyling: {
+    backgroundColor: string;
+    borderColor: string;
+    borderSize: number;
+    isBgTransparent: boolean;
+    isBorderTransparent: boolean;
+    rotation: number;
+  }
 ) => {
   const { data, error } = await supabase
     .from('lpwelle')
@@ -36,7 +44,7 @@ export const saveText = async (
     return;
   }
 
-  const existingTexts = data?.texts || {}; // Safely check for existing texts
+  const existingTexts = data?.texts || {};
 
   const updatedTexts = {
     ...existingTexts,
@@ -46,6 +54,7 @@ export const saveText = async (
         content: newText,
         position: newPosition,
         size: newSize,
+        ...newStyling,
       },
     },
   };

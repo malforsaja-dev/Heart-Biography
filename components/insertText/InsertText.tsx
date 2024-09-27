@@ -1,4 +1,3 @@
-import React from 'react';
 import { useInteractText } from '@/hooks/useInteractText';
 import DropdownMenu from './DropdownMenu';
 import StyleBox from './StyleBox';
@@ -13,8 +12,14 @@ interface InsertTextProps {
   rotation: number;
   size: { width: string; height: string };
   content: string;
+  backgroundColor: string;
+  borderColor: string;
+  borderSize: number;
+  isBgTransparent: boolean;
+  isBorderTransparent: boolean;
   onContentChange: (id: number, content: string) => void;
   onPositionChange: (id: number, x: number, y: number, rotation: number) => void;
+  onStyleChange: (id: number, newStyle: any) => void;
   onDelete: (id: number) => void;
   className?: string;
 }
@@ -26,8 +31,14 @@ const InsertText: React.FC<InsertTextProps> = ({
   rotation,
   size,
   content,
+  backgroundColor,
+  borderColor,
+  borderSize,
+  isBgTransparent,
+  isBorderTransparent,
   onContentChange,
   onPositionChange,
+  onStyleChange,
   onDelete,
   className,
 }) => {
@@ -41,11 +52,6 @@ const InsertText: React.FC<InsertTextProps> = ({
     dropdownPosition,
     isDropdownOpen,
     setIsDropdownOpen,
-    backgroundColor,
-    borderColor,
-    borderSize,
-    isBgTransparent,
-    isBorderTransparent,
     setBackgroundColor,
     setBorderColor,
     setBorderSize,
@@ -56,7 +62,13 @@ const InsertText: React.FC<InsertTextProps> = ({
     x,
     y,
     rotation,
+    backgroundColor,
+    borderColor,
+    borderSize,
+    isBgTransparent,
+    isBorderTransparent,
     onPositionChange,
+    onStyleChange,
   });
 
   return (
