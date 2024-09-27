@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
 interface TextEditorProps {
   content: string;
-  id: number;
-  onContentChange: (content: string, id: number) => void;
+  id: string;
+  onContentChange: (content: string, id: string) => void;
   onClose: () => void;
   onCancel?: () => void;
 }
@@ -14,6 +14,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
   const editorRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
   const initialContentRef = useRef<string>(content);
+  const [localContent, setLocalContent] = useState(content);
 
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
@@ -26,7 +27,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
       quillRef.current = quill;
       quill.clipboard.dangerouslyPasteHTML(content);
       quill.on('text-change', () => {
-        onContentChange(quill.root.innerHTML, id);
+        setLocalContent(quill.root.innerHTML);
       });
     } else if (quillRef.current && content !== quillRef.current.root.innerHTML) {
       const quill = quillRef.current;
@@ -36,7 +37,14 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
         quill.setSelection(selection);
       }
     }
-  }, [content, id, onContentChange]);
+  }, [content, id]);
+
+  const handleAccept = () => {
+    if (quillRef.current) {
+      onContentChange(localContent, id);
+    }
+    onClose();
+  };
 
   const handleCancel = () => {
     if (quillRef.current) {
@@ -79,7 +87,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
 
       {/* Action Buttons */}
       <div className="flex justify-center space-x-2 mb-2">
-        <button onClick={onClose}>✅</button>
+        <button onClick={handleAccept}>✅</button>
         <button onClick={handleCancel}>❌</button>
       </div>
     </div>

@@ -1,94 +1,99 @@
+// utils/useSupabase.ts
 import { supabase } from '@/utils/supabase/client';
 
-// Fetch text data from the database
-export const fetchText = async (userId: string) => {
+// Define a type for the possible columns
+type UserColumn = 'LpWelle' | 'Fotobook' | 'WorkBench';
+
+// Fetch all user data including all columns
+export const fetchUserData = async (userId: string) => {
   const { data, error } = await supabase
-    .from('lpwelle')
-    .select('texts')
+    .from('user_data')
+    .select('*')
     .eq('id', userId)
     .single();
 
   if (error) {
-    console.error('Error fetching texts:', error);
+    console.error('Error fetching user data:', error);
     return null;
   }
 
-  return data?.texts || {}; // Ensure it returns an object, even if no texts
+  return data;
 };
 
-// Save or update text in the database
-export const saveText = async (
+// Fetch specific page data for the user
+export const fetchText = async (userId: string, column: 'LpWelle' | 'Fotobook' | 'WorkBench') => {
+  const { data, error } = await supabase
+    .from('user_data')
+    .select(column)
+    .eq('id', userId)
+    .single();
+
+  if (error) {
+    console.error(`Error fetching data for ${column}:`, error);
+    return null;
+  }
+
+  // Ensure the column data is available in the returned data object
+  if (data && data[column as keyof typeof data]) {
+    return data[column as keyof typeof data] as Record<string, any>;
+  } else {
+    return {};
+  }
+};
+
+// Save data for a specific page and diagram
+export const savePageData = async (
   userId: string,
+  column: 'LpWelle' | 'Fotobook' | 'WorkBench',
+  pageData: any
+) => {
+  console.log('Attempting to save pageData to Supabase:', pageData);
+  const { error } = await supabase
+    .from('user_data')
+    .update({ [column]: pageData })
+    .eq('id', userId);
+
+  if (error) {
+    console.error(`Error saving data for ${column}:`, error);
+  } else {
+    console.log('Data saved successfully for column:', column);
+  }
+};
+
+
+// Delete a specific text entry from the page data
+export const deleteText = async (
+  userId: string,
+  column: 'LpWelle' | 'Fotobook' | 'WorkBench',
   diagramIndex: number,
-  textField: string,
-  newText: string,
-  newPosition: { x: number; y: number },
-  newSize: { width: string; height: string }
+  textKey: string
 ) => {
   const { data, error } = await supabase
-    .from('lpwelle')
-    .select('texts')
+    .from('user_data')
+    .select(column)
     .eq('id', userId)
     .single();
 
   if (error) {
-    console.error('Error fetching texts:', error);
+    console.error(`Error fetching data for deletion in ${column}:`, error);
     return;
   }
 
-  const existingTexts = data?.texts || {}; // Safely check for existing texts
-
-  const updatedTexts = {
-    ...existingTexts,
-    [`diagram${diagramIndex + 1}`]: {
-      ...existingTexts[`diagram${diagramIndex + 1}`],
-      [textField]: {
-        content: newText,
-        position: newPosition,
-        size: newSize,
-      },
-    },
-  };
-
-  const { error: updateError } = await supabase
-    .from('lpwelle')
-    .update({ texts: updatedTexts })
-    .eq('id', userId);
-
-  if (updateError) {
-    console.error('Error updating texts:', updateError);
-  }
-};
-
-// Delete text from the database
-export const deleteText = async (userId: string, diagramIndex: number, textField: string) => {
-  const { data, error } = await supabase
-    .from('lpwelle')
-    .select('texts')
-    .eq('id', userId)
-    .single();
-
-  if (error) {
-    console.error('Error fetching texts:', error);
+  // Type guard to check that column exists in the data
+  if (!data || !data[column as keyof typeof data]) {
+    console.error(`Column ${column} not found in data.`);
     return;
   }
 
-  const existingDiagram = data?.texts?.[`diagram${diagramIndex + 1}`] || {};
+  // Get the current data and remove the specific text entry
+  const currentData = data[column as keyof typeof data] as Record<string, any>;
+  const currentDiagram = currentData[`diagram${diagramIndex + 1}`];
 
-  // Delete the specific text field from the diagram
-  delete existingDiagram[textField];
+  if (currentDiagram) {
+    delete currentDiagram[textKey];
+    currentData[`diagram${diagramIndex + 1}`] = currentDiagram;
 
-  const updatedTexts = {
-    ...data.texts,
-    [`diagram${diagramIndex + 1}`]: existingDiagram,
-  };
-
-  const { error: updateError } = await supabase
-    .from('lpwelle')
-    .update({ texts: updatedTexts })
-    .eq('id', userId);
-
-  if (updateError) {
-    console.error('Error deleting text:', updateError);
+    // Save the updated data
+    await savePageData(userId, column, currentData);
   }
 };

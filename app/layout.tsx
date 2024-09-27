@@ -3,6 +3,7 @@ import "./globals.css";
 import { Metadata } from "next";
 import { UserProvider } from "@/context/UserContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { UserDataProvider } from "@/context/UserDataContext";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <UserProvider>
-            {children}
+            <UserDataProvider>
+              {children}
+            </UserDataProvider>
           </UserProvider>
         </LanguageProvider>
       </body>

@@ -53,7 +53,7 @@ const useDiagramDates = () => {
 
       if (user) {
         const { data, error } = await supabase
-          .from('lpwelle')
+          .from('user_data')
           .select('birth_date')
           .eq('id', user.id)
           .single();

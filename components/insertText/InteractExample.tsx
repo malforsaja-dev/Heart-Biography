@@ -1,7 +1,3 @@
-// this is an example how to use the InsertText component with the useInsertText hook
-// you have to put the imports, call the props, call the component
-// and add a button with addElement
-
 
 "use client"
 
@@ -15,12 +11,13 @@ const InteractExample: React.FC = () => {
     addElement,
     updateElement,
     updateElementPosition,
+    updateElementStyle,
     deleteElement,
   } = useInsertText();
 
   return (
     <div className="relative w-[90vw] h-[90vh] bg-gray-100">
-      {/* Render each element */}
+
       {elements.map((element) => (
         <InsertText
           key={element.id}
@@ -28,9 +25,16 @@ const InteractExample: React.FC = () => {
           x={element.x}
           y={element.y}
           rotation={element.rotation}
+          size={element.size}
           content={element.content}
-          onContentChange={(content) => updateElement(element.id, content)}
+          backgroundColor={element.style.backgroundColor}
+          borderColor={element.style.borderColor}
+          borderSize={element.style.borderSize}
+          isBgTransparent={element.style.isBgTransparent}
+          isBorderTransparent={element.style.isBorderTransparent}
+          onContentChange={(id, content) => updateElement(id, content)}
           onPositionChange={(id, x, y, rotation) => updateElementPosition(id, x, y, rotation)}
+          onStyleChange={(id, newStyle) => updateElementStyle(id, newStyle)}
           onDelete={() => deleteElement(element.id)}
         />
       ))}

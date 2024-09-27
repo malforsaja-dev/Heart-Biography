@@ -66,9 +66,9 @@ const Navbar: React.FC = () => {
               <span>🖨️</span>
               {isHovered && <span className="ml-2">{texts.navbar?.print || 'Print'}</span>}
             </Link>
-            <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/about">
+            <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/workbench">
               <span>🅰️</span>
-              {isHovered && <span className="ml-2">{texts.navbar?.about || 'About'}</span>}
+              {isHovered && <span className="ml-2">{texts.navbar?.workbench || 'Workbench'}</span>}
             </Link>
           </nav>
         </div>

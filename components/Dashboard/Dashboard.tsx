@@ -1,9 +1,9 @@
 
 "use client"
 
-import { FotobuchContent } from '@/components/DashboardContent/FotobuchContent';
-import { LpWelleContent } from '@/components/DashboardContent/LpWelleContent';
-import { PrintContent } from '@/components/DashboardContent/PrintContent';
+import { FotobuchContent } from '@/components/Dashboard/FotobuchContent';
+import { LpWelleContent } from '@/components/Dashboard/LpWelleContent';
+import { PrintContent } from '@/components/Dashboard/PrintContent';
 import { useState } from 'react';
 
 export default function Dashboard() {
