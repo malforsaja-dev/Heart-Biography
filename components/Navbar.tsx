@@ -59,16 +59,16 @@ const Navbar: React.FC = () => {
               {isHovered && <span className="ml-2">{texts.navbar?.lpWelle || 'Lp-Welle'}</span>}
             </Link>
             <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/fotobook">
-              <span>📝</span>
+              <span>🖼️</span>
               {isHovered && <span className="ml-2">{texts.navbar?.fotobook || 'Fotobook'}</span>}
+            </Link>
+            <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/workbench">
+              <span>📝</span>
+              {isHovered && <span className="ml-2">{texts.navbar?.workbench || 'Workbench'}</span>}
             </Link>
             <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/print">
               <span>🖨️</span>
               {isHovered && <span className="ml-2">{texts.navbar?.print || 'Print'}</span>}
-            </Link>
-            <Link className="text-blue-600 hover:text-blue-400 flex items-center button-3d" href="/workbench">
-              <span>🅰️</span>
-              {isHovered && <span className="ml-2">{texts.navbar?.workbench || 'Workbench'}</span>}
             </Link>
           </nav>
         </div>
