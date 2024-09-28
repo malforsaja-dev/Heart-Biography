@@ -1,12 +1,12 @@
 
 import AuthLayout from '@/components/AuthLayout'
-import WorkBench from '@/components/fotobook/WorkBench'
+import FotoWorkBench from '@/components/fotobook/FotoWorkBench'
 
 const Fotobook = () => {
 
   return (
     <AuthLayout>
-        <WorkBench />
+        <FotoWorkBench />
     </AuthLayout>
   )
 }
