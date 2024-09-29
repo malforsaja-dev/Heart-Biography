@@ -82,25 +82,21 @@ export const useInteractText = ({
           move(event) {
             if (isRotating) return;
     
-            let { width, height } = event.rect;
-            const { target } = event;
+            const { target, rect, deltaRect } = event;
 
             // Set the translated position
             let x = (parseFloat(target.getAttribute('data-x')) || 0);
             let y = (parseFloat(target.getAttribute('data-y')) || 0);
-    
-            if (event.edges) {
-              if (event.edges.left && event.deltaRect) {
-                x += event.deltaRect.left;
-              }
-              if (event.edges.top && event.deltaRect) {
-                y += event.deltaRect.top;
-              }
-            }
-
+      
             // Adjust translation during resizing
-            target.style.width = `${width}px`;
-            target.style.height = `${height}px`;
+            target.style.width = `${rect.width}px`;
+            target.style.height = `${rect.height}px`;
+            
+            // translate when resizing from top or left edges
+            x += deltaRect.left;
+            y += deltaRect.top;
+
+            target.style.transform = `translate(${x}px, ${y}px)`;
 
             // Update position attributes
             target.setAttribute('data-x', x);
@@ -110,12 +106,11 @@ export const useInteractText = ({
           },
           end(event) {
             if (isRotating) return;
-            const newWidth = event.rect.width;
-            const newHeight = event.rect.height;
+            const { width, height } = event.rect;
     
             // Commit local size state to parent after resizing ends
-            onStyleChange(id, { width: newWidth, height: newHeight });
-            console.log('Resize ended with:', { newWidth, newHeight });
+            onStyleChange(id, { width, height });
+            console.log('Resize ended with:', { width, height });
           },
         },
         modifiers: [

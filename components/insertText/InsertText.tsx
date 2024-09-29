@@ -150,7 +150,7 @@ const InsertText: React.FC<InsertTextProps> = ({
           )}
           {isDropdownOpen && (
             <DropdownMenu
-              className='top-8 z-10'
+              className='top-7 right-1 z-10'
               onEditText={() => toggleModal('text')}
               onEditStyle={() => toggleModal('style')}
               onRotate={() => toggleModal('rotate')}
