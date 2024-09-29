@@ -121,37 +121,37 @@ const LpWelleContent = () => {
         {/* InsertText Elements Section */}
         {Array.isArray(elements) && elements.map((element) => (
           <InsertText
-  key={element.id}
-  id={element.id}
-  x={element.x}
-  y={element.y}
-  rotation={element.rotation}
-  size={element.size}
-  content={element.content}
-  backgroundColor={element.style.backgroundColor}
-  borderColor={element.style.borderColor}
-  borderSize={element.style.borderSize}
-  isBgTransparent={element.style.isBgTransparent}
-  isBorderTransparent={element.style.isBorderTransparent}
-  onContentChange={(id, content) => {
-    console.log('onContentChange called with:', id, content);
-    handleSave(id, content, element.size);
-  }}
-  onPositionChange={(id, x, y, rotation) => {
-    console.log('onPositionChange called with:', id, x, y, rotation);
-    updateElementPosition(id, x, y, rotation);
-  }}
-  onStyleChange={(id, newStyle) => {
-    console.log('onStyleChange called with:', id, newStyle);
-    updateElementStyle(id, newStyle);
-  }}
-  onDelete={(id: string) => {
-    console.log('onDelete called with:', id);
-    deleteElement(id);
-    deleteText(user?.id || '', 'LpWelle', diagramIndex, `text${id}`);
-  }}
-  className="box-shadow"
-/>
+            key={element.id}
+            id={element.id}
+            x={element.x}
+            y={element.y}
+            rotation={element.rotation}
+            size={element.size}
+            content={element.content}
+            backgroundColor={element.style.backgroundColor}
+            borderColor={element.style.borderColor}
+            borderSize={element.style.borderSize}
+            isBgTransparent={element.style.isBgTransparent}
+            isBorderTransparent={element.style.isBorderTransparent}
+            onContentChange={(id, content) => {
+              console.log('onContentChange called with:', id, content);
+              handleSave(id, content, element.size);
+            }}
+            onPositionChange={(id, x, y, rotation) => {
+              console.log('onPositionChange called with:', id, x, y, rotation);
+              updateElementPosition(id, x, y, rotation);
+            }}
+            onStyleChange={(id, newStyle) => {
+              console.log('onStyleChange called with:', id, newStyle);
+              updateElementStyle(id, newStyle);
+            }}
+            onDelete={(id: string) => {
+              console.log('onDelete called with:', id);
+              deleteElement(id);
+              deleteText(user?.id || '', 'LpWelle', diagramIndex, `text${id}`);
+            }}
+            className="box-shadow"
+          />
         ))}
 
         {/* Diagram Content Section */}

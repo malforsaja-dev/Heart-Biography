@@ -30,16 +30,9 @@ export const useInteractText = ({
 }: UseInteractTextProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const interactableRef = useRef<any>(null);
-
-  // Local state for tracking position and size changes
-  const [localPosition, setLocalPosition] = useState({ x, y });
-  const [localSize, setLocalSize] = useState({ width: '200px', height: '100px' });
-
   const [isEditing, setIsEditing] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
   const [activeModal, setActiveModal] = useState<'none' | 'style' | 'text' | 'rotate'>('none');
-  const [modalPosition, setModalPosition] = useState<{ left: number; top: number }>({ left: x + 100, top: y });
-  const [dropdownPosition, setDropdownPosition] = useState<{ left: number; top: number }>({ left: x, top: y });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const [backgroundColor, setBackgroundColor] = useState(initialBgColor);
@@ -70,82 +63,59 @@ export const useInteractText = ({
         listeners: {
           move(event) {
             if (isRotating) return;
-            const target = event.target as HTMLDivElement;
-            const newX = localPosition.x + event.dx;
-            const newY = localPosition.y + event.dy;
+            const { target } = event;
+            const newX = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            const newY = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
     
             // Update local position state during dragging
-            setLocalPosition({ x: newX, y: newY });
-    
             target.style.transform = `translate(${newX}px, ${newY}px)`;
-            target.setAttribute('data-x', newX.toString());
-            target.setAttribute('data-y', newY.toString());
-    
-            setModalPosition({ left: newX + 50, top: newY });
-            setDropdownPosition({ left: newX, top: newY });
+            target.setAttribute('data-x', newX);
+            target.setAttribute('data-y', newY);
+
             console.log('Dragging position:', { newX, newY });
-          },
-          end(event) {
-            if (isRotating) return;
-            const newX = localPosition.x;
-            const newY = localPosition.y;
-    
-            // Commit local position state to parent
-            onPositionChange(id, newX, newY, rotation);
-            console.log('Dragging ended with position:', { newX, newY });
-          },
+          }
         },
       })
       .resizable({
         edges: { left: true, right: true, bottom: true, top: true },
         listeners: {
-          move(event: Interact.ResizeEvent) {
+          move(event) {
             if (isRotating) return;
     
-            const target = event.target as HTMLDivElement;
-            const newWidth = event.rect.width;
-            const newHeight = event.rect.height;
-    
-            let newLeft = parseFloat(target.getAttribute('data-x') || '0');
-            let newTop = parseFloat(target.getAttribute('data-y') || '0');
+            let { width, height } = event.rect;
+            const { target } = event;
+
+            // Set the translated position
+            let x = (parseFloat(target.getAttribute('data-x')) || 0);
+            let y = (parseFloat(target.getAttribute('data-y')) || 0);
     
             if (event.edges) {
               if (event.edges.left && event.deltaRect) {
-                newLeft += event.deltaRect.left;
+                x += event.deltaRect.left;
               }
               if (event.edges.top && event.deltaRect) {
-                newTop += event.deltaRect.top;
+                y += event.deltaRect.top;
               }
             }
-    
-            target.style.width = `${newWidth}px`;
-            target.style.height = `${newHeight}px`;
-            target.style.left = `${newLeft}px`;
-            target.style.top = `${newTop}px`;
-    
-            target.setAttribute('data-x', newLeft.toString());
-            target.setAttribute('data-y', newTop.toString());
-    
-            // Update local size and position state during resizing
-            setLocalSize({ width: `${newWidth}px`, height: `${newHeight}px` });
-            setLocalPosition({ x: newLeft, y: newTop });
-    
-            setModalPosition({ left: newLeft + 50, top: newTop });
-            setDropdownPosition({ left: newLeft, top: newTop });
-            console.log('Resizing in progress:', { newWidth, newHeight, newLeft, newTop });
+
+            // Adjust translation during resizing
+            target.style.width = `${width}px`;
+            target.style.height = `${height}px`;
+
+            // Update position attributes
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+  
+            console.log('Resizing in progress:', { x, y });
           },
           end(event) {
             if (isRotating) return;
-            const target = event.target as HTMLDivElement;
             const newWidth = event.rect.width;
             const newHeight = event.rect.height;
-            const newX = parseFloat(target.getAttribute('data-x') || '0');
-            const newY = parseFloat(target.getAttribute('data-y') || '0');
     
             // Commit local size state to parent after resizing ends
             onStyleChange(id, { width: newWidth, height: newHeight });
-            onPositionChange(id, newX, newY, rotation);
-            console.log('Resize ended with:', { newWidth, newHeight, newX, newY });
+            console.log('Resize ended with:', { newWidth, newHeight });
           },
         },
         modifiers: [
@@ -162,7 +132,7 @@ export const useInteractText = ({
         interactableRef.current = null;
       }
     };
-  }, [rotation, id, localPosition, localSize, onPositionChange, onStyleChange, isRotating]);
+  }, [rotation, id, onPositionChange, onStyleChange, isRotating]);
 
   // Enable/disable interact.js interactions based on editing/rotating state
   useEffect(() => {
@@ -196,8 +166,6 @@ export const useInteractText = ({
         onPositionChange(id, parseFloat(target.getAttribute('data-x') || '0'), parseFloat(target.getAttribute('data-y') || '0'), newRotation);
       }
     },
-    modalPosition,
-    dropdownPosition,
     isDropdownOpen,
     setIsDropdownOpen,
     backgroundColor,

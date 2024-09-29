@@ -49,8 +49,6 @@ const InsertText: React.FC<InsertTextProps> = ({
     activeModal,
     toggleModal,
     handleRotationChange,
-    modalPosition,
-    dropdownPosition,
     isDropdownOpen,
     setIsDropdownOpen,
     setBackgroundColor,
@@ -84,13 +82,12 @@ const InsertText: React.FC<InsertTextProps> = ({
       borderSize,
     });
   }, [id, size, content, x, y, backgroundColor, borderColor, borderSize]);
-  
 
   return (
     <div className="relative z-20">
       <div
         ref={elementRef}
-        className={`absolute w-64 h-64 p-4 rounded-md border ${className} group`}
+        className={`absolute w-64 h-64 rounded-md border ${className} group`}
         style={{
           left: `${x}px`,
           top: `${y}px`,
@@ -104,101 +101,87 @@ const InsertText: React.FC<InsertTextProps> = ({
           userSelect: isEditing ? 'text' : 'none',
           transform: `rotate(${rotation}deg)`,
         }}
-        data-x={x}
-        data-y={y}
+        data-x={0}
+        data-y={0}
       >
-        {!isEditing && (
-          <div
-            className="w-full h-full overflow-auto ql-editor"
-            style={{ pointerEvents: isEditing ? 'auto' : 'none' }}
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        )}
-
-        <div className="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <button className="bg-amber-300 border-2 border-red-500 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-            &#x22EE;
-          </button>
-        </div>
-
-        {activeModal === 'style' && (
-          <StyleBox
-            backgroundColor={backgroundColor}
-            borderColor={borderColor}
-            borderSize={borderSize}
-            isBgTransparent={isBgTransparent}
-            isBorderTransparent={isBorderTransparent}
-            onBgColorChange={setBackgroundColor}
-            onBorderColorChange={setBorderColor}
-            onBorderSizeChange={setBorderSize}
-            onBgTransparencyToggle={() => setIsBgTransparent(!isBgTransparent)}
-            onBorderTransparencyToggle={() => setIsBorderTransparent(!isBorderTransparent)}
-            onClose={() => toggleModal('style')}
-          />
-        )}
-
-        {activeModal === 'text' && (
-          <TextEditor
-            id={id}
-            content={content}
-            onContentChange={(newContent, id) => {
-              console.log('onContentChange triggered for id:', id, ' with content:', newContent);
-              onContentChange(id, newContent);
-            }}
-            onClose={() => {
-              toggleModal('text');
-            }}
-          />
-        )}
-      </div>
-
-      {isDropdownOpen && (
-        <div
-          className="absolute bg-white border border-gray-300 shadow-md rounded-lg z-10"
-          style={{
-            left: `${dropdownPosition.left + 230}px`,
-            top: `${dropdownPosition.top + 10}px`,
-            transform: 'none',
-          }}
-        >
-          <DropdownMenu
-            onEditText={() => toggleModal('text')}
-            onEditStyle={() => toggleModal('style')}
-            onRotate={() => toggleModal('rotate')}
-            onDelete={() => onDelete(id)}
-          />
-        </div>
-      )}
-
-      {activeModal === 'rotate' && (
-        <div
-          className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80"
-          style={{
-            left: `${modalPosition.left}px`,
-            top: `${modalPosition.top}px`,
-            transform: 'none',
-          }}
-        >
-          <h3 className="text-lg font-bold mb-4 text-center">Rotate Box</h3>
-          <div className="flex items-center justify-between">
-            <label className="font-semibold">Rotation (°):</label>
-            <input
-              type="number"
-              value={rotation}
-              onChange={(e) => handleRotationChange(Number(e.target.value))}
-              className="border p-1 w-16"
+        <div className='relative w-full h-full p-4'>
+          {!isEditing && (
+            <div
+              className="w-full h-full overflow-auto ql-editor"
+              style={{ pointerEvents: isEditing ? 'auto' : 'none' }}
+              dangerouslySetInnerHTML={{ __html: content }}
             />
-          </div>
-          <div className="flex justify-end mt-4">
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              onClick={() => toggleModal('rotate')}
-            >
-              Done
+          )}
+
+          <div className="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <button className="bg-amber-300 border-2 border-red-500 px-2 rounded-full" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+              &#x22EE;
             </button>
           </div>
+
+          {activeModal === 'style' && (
+            <StyleBox
+              backgroundColor={backgroundColor}
+              borderColor={borderColor}
+              borderSize={borderSize}
+              isBgTransparent={isBgTransparent}
+              isBorderTransparent={isBorderTransparent}
+              onBgColorChange={setBackgroundColor}
+              onBorderColorChange={setBorderColor}
+              onBorderSizeChange={setBorderSize}
+              onBgTransparencyToggle={() => setIsBgTransparent(!isBgTransparent)}
+              onBorderTransparencyToggle={() => setIsBorderTransparent(!isBorderTransparent)}
+              onClose={() => toggleModal('style')}
+            />
+          )}
+
+          {activeModal === 'text' && (
+            <TextEditor
+              id={id}
+              content={content}
+              onContentChange={(newContent, id) => {
+                console.log('onContentChange triggered for id:', id, ' with content:', newContent);
+                onContentChange(id, newContent);
+              }}
+              onClose={() => {
+                toggleModal('text');
+              }}
+            />
+          )}
+          {isDropdownOpen && (
+            <DropdownMenu
+              className='top-8 z-10'
+              onEditText={() => toggleModal('text')}
+              onEditStyle={() => toggleModal('style')}
+              onRotate={() => toggleModal('rotate')}
+              onDelete={() => onDelete(id)}
+            />
+          )}
+
+          {activeModal === 'rotate' && (
+            <div className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80">
+              <h3 className="text-lg font-bold mb-4 text-center">Rotate Box</h3>
+              <div className="flex items-center justify-between">
+                <label className="font-semibold">Rotation (°):</label>
+                <input
+                  type="number"
+                  value={rotation}
+                  onChange={(e) => handleRotationChange(Number(e.target.value))}
+                  className="border p-1 w-16"
+                />
+              </div>
+              <div className="flex justify-end mt-4">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  onClick={() => toggleModal('rotate')}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
