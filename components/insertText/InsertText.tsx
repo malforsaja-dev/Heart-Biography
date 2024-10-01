@@ -48,8 +48,8 @@ const InsertText: React.FC<InsertTextProps> = ({
     isEditing,
     activeModal,
     toggleModal,
-    handleRotationChange,
     isDropdownOpen,
+    onRotationChange,
     setIsDropdownOpen,
     setBackgroundColor,
     setBorderColor,
@@ -60,6 +60,7 @@ const InsertText: React.FC<InsertTextProps> = ({
     id,
     x,
     y,
+    size,
     rotation,
     backgroundColor,
     borderColor,
@@ -80,8 +81,9 @@ const InsertText: React.FC<InsertTextProps> = ({
       backgroundColor,
       borderColor,
       borderSize,
+      rotation,
     });
-  }, [id, size, content, x, y, backgroundColor, borderColor, borderSize]);
+  }, [id, size, content, x, y, backgroundColor, borderColor, borderSize, rotation]);
 
   return (
     <div className="relative z-20">
@@ -89,8 +91,6 @@ const InsertText: React.FC<InsertTextProps> = ({
         ref={elementRef}
         className={`absolute w-64 h-64 rounded-md border ${className} group`}
         style={{
-          left: `${x}px`,
-          top: `${y}px`,
           backgroundColor: isBgTransparent ? 'transparent' : backgroundColor,
           borderColor: isBorderTransparent ? 'transparent' : borderColor,
           borderWidth: `${borderSize}px`,
@@ -99,10 +99,10 @@ const InsertText: React.FC<InsertTextProps> = ({
           height: size.height,
           cursor: isEditing ? 'text' : 'move',
           userSelect: isEditing ? 'text' : 'none',
-          transform: `rotate(${rotation}deg)`,
+          transform: `translate(${x}px, ${y}px) rotate(${rotation}deg)`,
         }}
-        data-x={0}
-        data-y={0}
+        data-x={x}
+        data-y={y}
       >
         <div className='relative w-full h-full p-4'>
           {!isEditing && (
@@ -151,6 +151,7 @@ const InsertText: React.FC<InsertTextProps> = ({
           {isDropdownOpen && (
             <DropdownMenu
               className='top-7 right-1 z-10'
+              style={{ transform: `rotate(${-rotation}deg)` }}
               onEditText={() => toggleModal('text')}
               onEditStyle={() => toggleModal('style')}
               onRotate={() => toggleModal('rotate')}
@@ -159,14 +160,17 @@ const InsertText: React.FC<InsertTextProps> = ({
           )}
 
           {activeModal === 'rotate' && (
-            <div className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80">
+            <div 
+              className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80" 
+              style={{ transform: `rotate(${-rotation}deg)` }}
+            >
               <h3 className="text-lg font-bold mb-4 text-center">Rotate Box</h3>
               <div className="flex items-center justify-between">
                 <label className="font-semibold">Rotation (°):</label>
                 <input
                   type="number"
                   value={rotation}
-                  onChange={(e) => handleRotationChange(Number(e.target.value))}
+                  onChange={(e) => onRotationChange(Number(e.target.value))}
                   className="border p-1 w-16"
                 />
               </div>

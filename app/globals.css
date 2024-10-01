@@ -8,6 +8,10 @@
   src: url('/florin.otf') format('opentype');
 }
 
+html {
+  -webkit-transform-origin: 50%  51%;
+}
+
 .font-florin {
   font-family: 'florin', sans-serif;
 }

@@ -45,7 +45,7 @@ export const fetchText = async (userId: string, column: 'LpWelle' | 'Fotobook' |
 export const savePageData = async (
   userId: string,
   column: 'LpWelle' | 'Fotobook' | 'WorkBench',
-  pageData: any
+  pageData: Record<string, any>
 ) => {
   console.log('Attempting to save pageData to Supabase:', pageData);
   const { error } = await supabase

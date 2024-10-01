@@ -59,17 +59,19 @@ export const useInsertText = () => {
   
 
   // Function to update the position of an element by id
-  const updateElementPosition = (id: string, x: number, y: number, rotation: number) => {
-    setElements((prevElements) =>
-      prevElements.map((el) => (el.id === id ? { ...el, x, y, rotation } : el))
-    );
+  const updateElementPosition = (id: string, newX: number, newY: number, newRotation: number) => {
+    setElements((prevElements) => {
+      const updatedElements = prevElements.map((el) => (el.id === id ? { ...el, x: newX ?? el.x, y: newY ?? el.y, rotation: newRotation ?? el.rotation } : el));
+      console.log('Updated elements after position change:', updatedElements)
+      return updatedElements;
+    })
   };
 
   // Function to update the style of an element by id
   const updateElementStyle = useCallback((id: string, newStyle: any) => {
     setElements((prevElements) => {
       const updatedElements = prevElements.map((el) =>
-        el.id === id ? { ...el, size: { width: `${newStyle.width}px`, height: `${newStyle.height}px` }, style: { ...el.style, ...newStyle } } : el
+        el.id === id ? { ...el, size: { width: newStyle.width, height: newStyle.height }, style: { ...el.style, ...newStyle } } : el
       );
       console.log('Updated Elements in useInsertText after style change:', updatedElements);
       return updatedElements;

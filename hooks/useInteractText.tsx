@@ -5,6 +5,10 @@ interface UseInteractTextProps {
   id: string;
   x: number;
   y: number;
+  size: {
+    width: string,
+    height: string,
+  };
   rotation: number;
   backgroundColor: string;
   borderColor: string;
@@ -19,6 +23,7 @@ export const useInteractText = ({
   id,
   x,
   y,
+  size,
   rotation,
   backgroundColor: initialBgColor,
   borderColor: initialBorderColor,
@@ -41,6 +46,16 @@ export const useInteractText = ({
   const [isBgTransparent, setIsBgTransparent] = useState(initialBgTransparent);
   const [isBorderTransparent, setIsBorderTransparent] = useState(initialBorderTransparent);
 
+  const onRotationChange = (newRotation: number) => {
+    const target = elementRef.current;
+    if (target) {
+      const x = parseFloat(target.getAttribute('data-x') || '0');
+      const y = parseFloat(target.getAttribute('data-y') || '0');
+      target.style.transform = `translate(${x}px, ${y}px) rotate(${newRotation}deg)`;
+      onPositionChange(id, x, y, newRotation);
+    }
+  };
+
   // Effect for updating the style in the parent component
   useEffect(() => {
     onStyleChange(id, {
@@ -50,6 +65,8 @@ export const useInteractText = ({
       isBgTransparent,
       isBorderTransparent,
       rotation,
+      width: size.width,
+      height: size.height,
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [backgroundColor, borderColor, borderSize, isBgTransparent, isBorderTransparent, rotation]);
@@ -57,6 +74,9 @@ export const useInteractText = ({
   // Effect for initializing interact.js
   useEffect(() => {
     if (elementRef.current && !interactableRef.current) {
+      // Convert the changes in width/height into values in the rotated axis
+      const cos = Math.cos(rotation * Math.PI / 180);
+      const sin = Math.sin(rotation * Math.PI / 180);
       interactableRef.current = interact(elementRef.current)
       .draggable({
         inertia: true,
@@ -66,47 +86,65 @@ export const useInteractText = ({
             const { target } = event;
             const newX = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
             const newY = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-    
+
             // Update local position state during dragging
-            target.style.transform = `translate(${newX}px, ${newY}px)`;
+            target.style.transform = `translate(${newX}px, ${newY}px) rotate(${rotation}deg)`;
             target.setAttribute('data-x', newX);
             target.setAttribute('data-y', newY);
 
             console.log('Dragging position:', { newX, newY });
-          }
+          },
+          end(event) {
+            if (isRotating) return;
+            const { target } = event;
+            const newX = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            const newY = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+            onPositionChange(id, newX, newY, rotation);
+            console.log('Dragging ended with position:', { newX, newY });
+          },
         },
       })
       .resizable({
         edges: { left: true, right: true, bottom: true, top: true },
+        inertia: true,
         listeners: {
           move(event) {
             if (isRotating) return;
     
-            const { target, rect, deltaRect } = event;
-
+            const { target, deltaRect } = event;
+            
             // Set the translated position
             let x = (parseFloat(target.getAttribute('data-x')) || 0);
             let y = (parseFloat(target.getAttribute('data-y')) || 0);
-      
-            // Adjust translation during resizing
-            target.style.width = `${rect.width}px`;
-            target.style.height = `${rect.height}px`;
-            
-            // translate when resizing from top or left edges
+
+            const deltaWidth = deltaRect.width * cos - deltaRect.height * sin;
+            const deltaHeight = deltaRect.width * sin + deltaRect.height * cos;
+
+            // Apply size changes to the element
+            target.style.width = `${parseFloat(target.style.width) + deltaWidth}px`;
+            target.style.height = `${parseFloat(target.style.height) + deltaHeight}px`;
+
+            // Translate based on the changes in position
             x += deltaRect.left;
             y += deltaRect.top;
 
-            target.style.transform = `translate(${x}px, ${y}px)`;
+            target.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
 
             // Update position attributes
             target.setAttribute('data-x', x);
             target.setAttribute('data-y', y);
-  
-            console.log('Resizing in progress:', { x, y });
           },
           end(event) {
             if (isRotating) return;
-            const { width, height } = event.rect;
+
+            const { target, deltaRect } = event;
+
+            const deltaWidth = deltaRect.width * cos - deltaRect.height * sin;
+            const deltaHeight = deltaRect.width * sin + deltaRect.height * cos;
+
+            const width = `${parseFloat(target.style.width) + deltaWidth}px`;
+            const height = `${parseFloat(target.style.height) + deltaHeight}px`;
     
             // Commit local size state to parent after resizing ends
             onStyleChange(id, { width, height });
@@ -154,20 +192,14 @@ export const useInteractText = ({
     isRotating,
     activeModal,
     toggleModal,
-    handleRotationChange: (newRotation: number) => {
-      const target = elementRef.current;
-      if (target) {
-        target.style.transform = `rotate(${newRotation}deg)`;
-        onPositionChange(id, parseFloat(target.getAttribute('data-x') || '0'), parseFloat(target.getAttribute('data-y') || '0'), newRotation);
-      }
-    },
     isDropdownOpen,
-    setIsDropdownOpen,
     backgroundColor,
     borderColor,
     borderSize,
     isBgTransparent,
     isBorderTransparent,
+    onRotationChange,
+    setIsDropdownOpen,
     setBackgroundColor,
     setBorderColor,
     setBorderSize,
