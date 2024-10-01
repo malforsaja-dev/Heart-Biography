@@ -1,4 +1,5 @@
 import { Inter } from "next/font/google";
+import 'quill/dist/quill.snow.css';
 import "./globals.css";
 import { Metadata } from "next";
 import { UserProvider } from "@/context/UserContext";

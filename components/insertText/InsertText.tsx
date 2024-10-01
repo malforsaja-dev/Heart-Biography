@@ -141,7 +141,7 @@ const InsertText: React.FC<InsertTextProps> = ({
             <TextEditor
               id={id}
               content={content}
-              toolbarStyle={{ transform: `rotate(${-rotation}deg) translate(0px, -50px)` }}
+              toolbarStyle={{ transform: `rotate(${-rotation}deg)` }}
               onContentChange={(newContent, id) => {
                 console.log('onContentChange triggered for id:', id, ' with content:', newContent);
                 onContentChange(id, newContent);
