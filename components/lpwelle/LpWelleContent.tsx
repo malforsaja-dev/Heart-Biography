@@ -1,8 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useUserData } from '@/context/UserDataContext';
 import { useUser } from '@/context/UserContext';
 import { useInsertText } from '@/hooks/useInsertText';
-import { savePageData, deleteText } from '@/utils/useSupabase';
 import InsertText from '@/components/insertText/InsertText';
 import A4Landscape from '../A4Landscape';
 import useDiagramDates from '@/hooks/useDiagramDates';
@@ -16,31 +13,21 @@ const colors = [
 ];
 
 const LpWelleContent = () => {
-  const { data, updatePageData } = useUserData();
-  const { elements, setElements, addElement, updateElement, updateElementPosition, updateElementStyle, deleteElement } = useInsertText();
-  const [diagramIndex, setDiagramIndex] = useState(0);
+  const { 
+    diagramIndex, 
+    elements,
+    setDiagramIndex, 
+    addElement, 
+    updateElement, 
+    updateElementPosition, 
+    updateElementStyle,
+    onSavePageData, 
+    deleteElement,
+  } = useInsertText();
   const { getDatesForDiagram, maxDiagrams } = useDiagramDates();
   const dates = getDatesForDiagram(diagramIndex);
   const { texts: languageTexts } = useLanguage();
   const { user } = useUser();
-
-  // Memoized LpWelleData to avoid unnecessary renders
-  const LpWelleData = useMemo(() => data.LpWelle || {}, [data.LpWelle]);
-
-  useEffect(() => {
-    const currentDiagram = `diagram${diagramIndex + 1}`;
-    console.log('Fetching Elements for Diagram:', currentDiagram, 'Data:', LpWelleData[currentDiagram]);
-    if (LpWelleData[currentDiagram]) {
-      setElements(LpWelleData[currentDiagram]);
-    } else {
-      setElements([]);
-    }
-  }, [LpWelleData, diagramIndex, setElements]);
-  
-
-  useEffect(() => {
-    console.log('Updated Elements in InsertText component:', elements);
-  }, [elements]);
 
   // Save element changes to context and database
   const handleSave = async (id: string, newContent: string, newSize?: { width: string; height: string }) => {
@@ -63,31 +50,15 @@ const LpWelleContent = () => {
     );
     console.log('Updated Elements before saving to context in handleSave:', updatedElements);
   
-    // Update the context state and save to database
-    updatePageData('LpWelle', { ...LpWelleData, [`diagram${diagramIndex + 1}`]: updatedElements });
-    console.log('Updated LpWelleData in context in handleSave:', { ...LpWelleData, [`diagram${diagramIndex + 1}`]: updatedElements });
-  
-    // Save to Supabase
-    await savePageData(user?.id || '', 'LpWelle', { ...LpWelleData, [`diagram${diagramIndex + 1}`]: updatedElements });
-    console.log('Data saved to Supabase in handleSave');
-  };
-  
-  
-
-  // Add a new text element
-  const addNewTextElement = () => {
-    addElement();
-    console.log('After Adding Element:', elements);
+    await onSavePageData(updatedElements);
   };
 
   console.log('Elements:', elements, Array.isArray(elements));
 
-  
-
   return (
     <div className="relative w-full h-auto block">
       <div className="absolute top-4 right-20 z-10 flex space-x-4">
-        <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={addNewTextElement}>
+        <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={addElement}>
           Add Text
         </button>
       </div>
@@ -148,7 +119,6 @@ const LpWelleContent = () => {
             onDelete={(id: string) => {
               console.log('onDelete called with:', id);
               deleteElement(id);
-              deleteText(user?.id || '', 'LpWelle', diagramIndex, `text${id}`);
             }}
             className="box-shadow"
           />

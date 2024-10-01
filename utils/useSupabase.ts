@@ -90,8 +90,8 @@ export const deleteText = async (
   const currentDiagram = currentData[`diagram${diagramIndex + 1}`];
 
   if (currentDiagram) {
-    delete currentDiagram[textKey];
-    currentData[`diagram${diagramIndex + 1}`] = currentDiagram;
+    // delete currentDiagram[textKey]; : textKey is not being used for now
+    delete currentData[`diagram${diagramIndex + 1}`];
 
     // Save the updated data
     await savePageData(userId, column, currentData);

@@ -5,12 +5,13 @@ import 'quill/dist/quill.snow.css';
 interface TextEditorProps {
   content: string;
   id: string;
+  toolbarStyle?: object;
   onContentChange: (content: string, id: string) => void;
   onClose: () => void;
   onCancel?: () => void;
 }
 
-const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, onClose, onCancel }) => {
+const TextEditor: React.FC<TextEditorProps> = ({ content, id, toolbarStyle, onContentChange, onClose, onCancel }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
   const initialContentRef = useRef<string>(content);
@@ -63,6 +64,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, id, onContentChange, o
       <div
         id={`quill-toolbar-${id}`}
         className="w-96 bg-gray-100 border-b flex justify-start items-center z-20"
+        style={toolbarStyle}
       >
         <button className="ql-bold px-2 py-1 mx-1">B</button>
         <button className="ql-italic px-2 py-1 mx-1">I</button>

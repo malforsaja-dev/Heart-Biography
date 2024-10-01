@@ -1,5 +1,5 @@
 // StyleBox.tsx
-import React, { useState } from 'react';
+import React from 'react';
 
 interface StyleBoxProps {
   backgroundColor: string;
@@ -7,6 +7,7 @@ interface StyleBoxProps {
   borderSize: number;
   isBgTransparent: boolean;
   isBorderTransparent: boolean;
+  style?: object;
   onBgColorChange: (color: string) => void;
   onBorderColorChange: (color: string) => void;
   onBorderSizeChange: (size: number) => void;
@@ -21,6 +22,7 @@ const StyleBox: React.FC<StyleBoxProps> = ({
   borderSize,
   isBgTransparent,
   isBorderTransparent,
+  style,
   onBgColorChange,
   onBorderColorChange,
   onBorderSizeChange,
@@ -29,7 +31,10 @@ const StyleBox: React.FC<StyleBoxProps> = ({
   onClose,
 }) => {
   return (
-    <div className="absolute bottom-[-180px] left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80">
+    <div 
+      className="absolute bottom-[-180px] left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80"
+      style={style}
+    >
       <h3 className="text-lg font-bold mb-4 text-center">Style Box</h3>
       <div className="mb-4 flex items-center justify-between">
         <label className="font-semibold">Background:</label>

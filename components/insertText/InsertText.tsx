@@ -1,8 +1,8 @@
+import { useEffect } from 'react';
 import { useInteractText } from '@/hooks/useInteractText';
 import DropdownMenu from './DropdownMenu';
 import StyleBox from './StyleBox';
 import dynamic from 'next/dynamic';
-import { useEffect } from 'react';
 
 const TextEditor = dynamic(() => import('./TextEditor'), { ssr: false });
 
@@ -47,8 +47,9 @@ const InsertText: React.FC<InsertTextProps> = ({
     elementRef,
     isEditing,
     activeModal,
-    toggleModal,
     isDropdownOpen,
+    angle,
+    toggleModal,
     onRotationChange,
     setIsDropdownOpen,
     setBackgroundColor,
@@ -126,6 +127,7 @@ const InsertText: React.FC<InsertTextProps> = ({
               borderSize={borderSize}
               isBgTransparent={isBgTransparent}
               isBorderTransparent={isBorderTransparent}
+              style={{ transform: `rotate(${-rotation}deg)` }}
               onBgColorChange={setBackgroundColor}
               onBorderColorChange={setBorderColor}
               onBorderSizeChange={setBorderSize}
@@ -139,13 +141,12 @@ const InsertText: React.FC<InsertTextProps> = ({
             <TextEditor
               id={id}
               content={content}
+              toolbarStyle={{ transform: `rotate(${-rotation}deg) translate(0px, -50px)` }}
               onContentChange={(newContent, id) => {
                 console.log('onContentChange triggered for id:', id, ' with content:', newContent);
                 onContentChange(id, newContent);
               }}
-              onClose={() => {
-                toggleModal('text');
-              }}
+              onClose={() => toggleModal('text')}
             />
           )}
           {isDropdownOpen && (
@@ -162,14 +163,14 @@ const InsertText: React.FC<InsertTextProps> = ({
           {activeModal === 'rotate' && (
             <div 
               className="absolute bg-white border border-gray-300 shadow-md p-4 rounded-lg z-50 w-80" 
-              style={{ transform: `rotate(${-rotation}deg)` }}
+              style={{ transform: `rotate(${-angle}deg)` }}
             >
               <h3 className="text-lg font-bold mb-4 text-center">Rotate Box</h3>
               <div className="flex items-center justify-between">
                 <label className="font-semibold">Rotation (°):</label>
                 <input
                   type="number"
-                  value={rotation}
+                  value={angle}
                   onChange={(e) => onRotationChange(Number(e.target.value))}
                   className="border p-1 w-16"
                 />
@@ -177,7 +178,10 @@ const InsertText: React.FC<InsertTextProps> = ({
               <div className="flex justify-end mt-4">
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  onClick={() => toggleModal('rotate')}
+                  onClick={() => {
+                    onPositionChange(id, x, y, angle);
+                    toggleModal('rotate');
+                  }}
                 >
                   Done
                 </button>

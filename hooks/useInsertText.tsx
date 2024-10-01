@@ -1,4 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useUser } from '@/context/UserContext';
+import { useUserData } from '@/context/UserDataContext';
+import { deleteText, savePageData } from '@/utils/useSupabase';
+import { usePathname } from 'next/navigation';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 // Import a unique ID generator
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,8 +37,32 @@ const defaultElementStructure = {
   },
 };
 
+const PageName: Record<string, "LpWelle" | "Fotobook" | "WorkBench"> = {
+  lebensplan: "LpWelle",
+  fotobook: "Fotobook",
+  workbench: "WorkBench",
+}
+
 export const useInsertText = () => {
+  const pathname = usePathname();
+  const { user } = useUser();
+  const { data, updatePageData } = useUserData();
+  const [diagramIndex, setDiagramIndex] = useState(0);
   const [elements, setElements] = useState<Element[]>([]);
+
+  const pagePath = pathname.split("/")[1];
+  const currentPage = PageName[pagePath];
+
+  const pageData = useMemo(() => data[currentPage] || {}, [data[currentPage]]);
+
+  const onSavePageData = async (updatedElements: Element[]) => {
+    updatePageData(currentPage, { ...pageData, [`diagram${diagramIndex + 1}`]: updatedElements });
+    console.log('Updated LpWelleData in context in handleSave:', { ...pageData, [`diagram${diagramIndex + 1}`]: updatedElements });
+  
+    // Save to Supabase
+    await savePageData(user?.id || '', currentPage, { ...pageData, [`diagram${diagramIndex + 1}`]: updatedElements });
+    console.log('Data saved to Supabase in handleSave');
+  }
 
   // Function to add a new element
   const addElement = () => {
@@ -60,41 +88,48 @@ export const useInsertText = () => {
 
   // Function to update the position of an element by id
   const updateElementPosition = (id: string, newX: number, newY: number, newRotation: number) => {
-    setElements((prevElements) => {
-      const updatedElements = prevElements.map((el) => (el.id === id ? { ...el, x: newX ?? el.x, y: newY ?? el.y, rotation: newRotation ?? el.rotation } : el));
-      console.log('Updated elements after position change:', updatedElements)
-      return updatedElements;
-    })
+    const changedElements = elements.map((el) => 
+      (el.id === id ? { ...el, x: newX ?? el.x, y: newY ?? el.y, rotation: newRotation ?? el.rotation } : el)
+    );
+    setElements(changedElements);
+    onSavePageData(changedElements);
   };
 
   // Function to update the style of an element by id
   const updateElementStyle = useCallback((id: string, newStyle: any) => {
-    setElements((prevElements) => {
-      const updatedElements = prevElements.map((el) =>
-        el.id === id ? { ...el, size: { width: newStyle.width, height: newStyle.height }, style: { ...el.style, ...newStyle } } : el
-      );
-      console.log('Updated Elements in useInsertText after style change:', updatedElements);
-      return updatedElements;
-    });
-  }, [setElements]);
+    const changedElements = elements.map((el) => 
+      el.id === id ? { ...el, size: { width: newStyle.width, height: newStyle.height }, style: { ...el.style, ...newStyle } } : el
+    );
+    setElements(changedElements);
+    onSavePageData(changedElements);
+  }, [elements, setElements]);
   
-
   useEffect(() => {
-    console.log('Elements state updated:', elements);
-  }, [elements]);
+    const currentDiagram = `diagram${diagramIndex + 1}`;
+    console.log('Fetching Elements for Diagram:', currentDiagram, 'Data:', pageData[currentDiagram]);
+    if (pageData[currentDiagram]) {
+      setElements(pageData[currentDiagram]);
+    } else {
+      setElements([]);
+    }
+  }, [pageData, diagramIndex, setElements]);
 
   // Function to delete an element by id
   const deleteElement = (id: string) => {
     setElements((prevElements) => prevElements.filter((el) => el.id !== id));
+    deleteText(user?.id || '', currentPage, diagramIndex, `text${id}`);
   };
 
   return {
     elements,
+    diagramIndex,
     setElements,
     addElement,
     updateElement,
+    setDiagramIndex,
     updateElementPosition,
     updateElementStyle,
+    onSavePageData,
     deleteElement,
   };
 };

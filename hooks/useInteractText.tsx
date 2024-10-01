@@ -40,6 +40,7 @@ export const useInteractText = ({
   const [activeModal, setActiveModal] = useState<'none' | 'style' | 'text' | 'rotate'>('none');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const [angle, setAngle] = useState<number>(rotation);
   const [backgroundColor, setBackgroundColor] = useState(initialBgColor);
   const [borderColor, setBorderColor] = useState(initialBorderColor);
   const [borderSize, setBorderSize] = useState(initialBorderSize);
@@ -52,8 +53,8 @@ export const useInteractText = ({
       const x = parseFloat(target.getAttribute('data-x') || '0');
       const y = parseFloat(target.getAttribute('data-y') || '0');
       target.style.transform = `translate(${x}px, ${y}px) rotate(${newRotation}deg)`;
-      onPositionChange(id, x, y, newRotation);
     }
+    setAngle(newRotation);
   };
 
   // Effect for updating the style in the parent component
@@ -82,7 +83,7 @@ export const useInteractText = ({
         inertia: true,
         listeners: {
           move(event) {
-            if (isRotating) return;
+            if (isRotating || isEditing) return;
             const { target } = event;
             const newX = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
             const newY = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
@@ -95,7 +96,7 @@ export const useInteractText = ({
             console.log('Dragging position:', { newX, newY });
           },
           end(event) {
-            if (isRotating) return;
+            if (isRotating || isEditing) return;
             const { target } = event;
             const newX = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
             const newY = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
@@ -110,7 +111,7 @@ export const useInteractText = ({
         inertia: true,
         listeners: {
           move(event) {
-            if (isRotating) return;
+            if (isRotating || isEditing) return;
     
             const { target, deltaRect } = event;
             
@@ -136,7 +137,7 @@ export const useInteractText = ({
             target.setAttribute('data-y', y);
           },
           end(event) {
-            if (isRotating) return;
+            if (isRotating || isEditing) return;
 
             const { target, deltaRect } = event;
 
@@ -165,7 +166,7 @@ export const useInteractText = ({
         interactableRef.current = null;
       }
     };
-  }, [rotation, id, onPositionChange, onStyleChange, isRotating]);
+  }, [rotation, id, onPositionChange, onStyleChange, isRotating, isEditing]);
 
   // Enable/disable interact.js interactions based on editing/rotating state
   useEffect(() => {
@@ -176,7 +177,7 @@ export const useInteractText = ({
   }, [isEditing, isRotating]);
 
   const toggleModal = (modalType: 'style' | 'text' | 'rotate') => {
-    if (modalType === 'text') {
+    if (modalType === 'text' || modalType === 'style') {
       setIsEditing(!isEditing);
     }
     if (modalType === 'rotate') {
@@ -193,6 +194,7 @@ export const useInteractText = ({
     activeModal,
     toggleModal,
     isDropdownOpen,
+    angle,
     backgroundColor,
     borderColor,
     borderSize,
